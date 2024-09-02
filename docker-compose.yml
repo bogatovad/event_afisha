@@ -1,0 +1,32 @@
+version: "3.4"
+
+services:
+  web:
+    build:
+      context: .
+    volumes:
+      - ./src:/app
+    env_file:
+      - enviroments/web.env
+    ports:
+      - 8000:8000
+    image: web_backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  bot:
+    image: web_backend
+    volumes:
+      - ./src:/app
+    env_file:
+      - enviroments/web.env
+    depends_on:
+      - web
+    command: python3 main.py
+  
+
+networks:
+  default:
+    external:
+      name: afisha

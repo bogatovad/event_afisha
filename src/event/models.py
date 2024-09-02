@@ -28,8 +28,8 @@ class Content(GenericModel):
     description = models.TextField()
     tags = models.ManyToManyField(Tags)
     image = models.ImageField(upload_to="images", max_length=300)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=250)
+    date = models.DateTimeField(null=True, blank=True)
 
 
 class Like(GenericModel):
