@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Content, Tags, Like
+from .models import Content, Tags, Like, User
 
 
 @admin.register(Content)
@@ -15,3 +15,8 @@ class TagsAdmin(admin.ModelAdmin):
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('username', )

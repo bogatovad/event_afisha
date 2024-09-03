@@ -10,12 +10,7 @@ class GenericModel(models.Model):
 
 
 class User(GenericModel):
-    name = models.CharField(max_length=250)
-    age = models.IntegerField()
-    gender = models.CharField(max_length=250)
-    type = models.CharField(max_length=250)
-    city = models.CharField(max_length=250)
-    tags = models.ManyToManyField("Tags")
+    username = models.CharField(max_length=250)
 
 
 class Tags(GenericModel):
@@ -41,4 +36,5 @@ class Like(GenericModel):
         unique_together = (
             "user",
             "content",
+            "value",
         )
