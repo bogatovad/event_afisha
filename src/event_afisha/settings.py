@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-u*q+ol&)tp5r6#qrw)y28e_c0vmv81jq*5oto-3s9*dc%c&uk=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0"]
 
 
 # Application definition
@@ -80,6 +80,7 @@ DATABASES = {
         "USER": os.getenv("DB_USER"),
         "PASSWORD": os.getenv("DB_PASSWORD"),
         "ATOMIC_REQUESTS": False,
+        "DISABLE_SERVER_SIDE_CURSORS": True,  # required when using pgbouncer's pool_mode=transaction
     },
 }
 

@@ -84,20 +84,20 @@ async def replay_message(message: types.Message, category: str, in_keyboard=None
             resize_keyboard=True,
         )
         await message.answer('Больше нет событий в этой категории, начинаем смотреть сначала, либо вернемся к категориям!', reply_markup=keyboard)
+    else:
+        content = Content.objects.all().filter(tags__name=category)[global_counter[key] - 1]
 
-    content = Content.objects.all().filter(tags__name=category)[global_counter[key] - 1]
+        if content is None:
+            return
 
-    if content is None:
-        return
-
-    client = Minio(
-        os.getenv("MINIO_URL", "minio:9000"),
-        access_key=os.getenv("ACCESS_KEY"),
-        secret_key=os.getenv("SECRET_KEY"),
-        secure=False,
-    )
-    data = client.get_object(bucket_name="afisha-files", object_name=str(content.image)).data
-    await message.answer_photo(photo=BufferedInputFile(data, filename=f"{str(content.image)}"), caption=content.description, reply_markup=in_keyboard)
+        client = Minio(
+            os.getenv("MINIO_URL", "minio:9000"),
+            access_key=os.getenv("ACCESS_KEY"),
+            secret_key=os.getenv("SECRET_KEY"),
+            secure=False,
+        )
+        data = client.get_object(bucket_name="afisha-files", object_name=str(content.image)).data
+        await message.answer_photo(photo=BufferedInputFile(data, filename=f"{str(content.image)}"), caption=content.description, reply_markup=in_keyboard)
 
 
 @dp.message(F.text == Category.education)
@@ -116,96 +116,6 @@ async def reply_education(message: types.Message):
     )
     await replay_message(message, Category.education, keyboard)
 
-
-@dp.message(F.text == "🔙")
-async def reply_education(message: types.Message):
-    if message.chat.username in history_user_button:
-        del history_user_button[message.chat.username]
-
-    tags = Tags.objects.all()
-    builder = ReplyKeyboardBuilder()
-
-    for tags in tags:
-        builder.add(types.KeyboardButton(text=tags.name))
-
-    builder.adjust(2)
-    await message.answer("Привет! Давай подберем тебе мероприятия",
-                         reply_markup=builder.as_markup(resize_keyboard=True))
-
-
-@dp.message(F.text == "👎")
-async def reply_education(message: types.Message):
-    category = history_user_button[message.chat.username]
-
-    user = await User.objects.filter(username=message.chat.username).afirst()
-    key: tuple[str, str] = (message.chat.username, category)
-    content = Content.objects.filter(tags__name=category)[global_counter[key] - 1]
-
-    dislike = await Like.objects.filter(user=user, content=content, value=False).afirst()
-
-    if not dislike:
-        await Like.objects.acreate(user=user, content=content, value=False)
-
-    if category == Category.education:
-        await replay_message(message, Category.education)
-    if category == Category.art:
-        await replay_message(message, Category.art)
-    if category == Category.music:
-        await replay_message(message, Category.music)
-    if category == Category.lecture:
-        await replay_message(message, Category.lecture)
-    if category == Category.photo:
-        await replay_message(message, Category.photo)
-
-
-@dp.message(F.text == "GO")
-async def reply_education(message: types.Message):
-    kb = [
-        [
-            types.KeyboardButton(text="💚"),
-            types.KeyboardButton(text="👎"),
-            types.KeyboardButton(text="🔙")
-        ],
-    ]
-    keyboard = types.ReplyKeyboardMarkup(
-        keyboard=kb,
-        resize_keyboard=True,
-    )
-    category = history_user_button[message.chat.username]
-    if category == Category.education:
-        await replay_message(message, Category.education, keyboard)
-    if category == Category.art:
-        await replay_message(message, Category.art, keyboard)
-    if category == Category.music:
-        await replay_message(message, Category.music, keyboard)
-    if category == Category.lecture:
-        await replay_message(message, Category.lecture, keyboard)
-    if category == Category.photo:
-        await replay_message(message, Category.photo, keyboard)
-
-
-@dp.message(F.text == "💚")
-async def reply_education(message: types.Message):
-    category = history_user_button[message.chat.username]
-    user = await User.objects.filter(username=message.chat.username).afirst()
-    key: tuple[str, str] = (message.chat.username, category)
-    content = Content.objects.filter(tags__name=category)[global_counter[key] - 1]
-
-    like = await Like.objects.filter(user=user, content=content, value=True).afirst()
-
-    if not like:
-        await Like.objects.acreate(user=user, content=content, value=True)
-
-    if category == Category.education:
-        await replay_message(message, Category.education)
-    if category == Category.art:
-        await replay_message(message, Category.art)
-    if category == Category.music:
-        await replay_message(message, Category.music)
-    if category == Category.lecture:
-        await replay_message(message, Category.lecture)
-    if category == Category.photo:
-        await replay_message(message, Category.photo)
 
 
 @dp.message(F.text == Category.art)
@@ -274,6 +184,98 @@ async def reply_photo(message: types.Message):
         resize_keyboard=True,
     )
     await replay_message(message, Category.photo, keyboard)
+
+
+@dp.message(F.text == "🔙")
+async def reply_back(message: types.Message):
+    if message.chat.username in history_user_button:
+        del history_user_button[message.chat.username]
+
+
+    tags = Tags.objects.all()
+    builder = ReplyKeyboardBuilder()
+
+    for tags in tags:
+        builder.add(types.KeyboardButton(text=tags.name))
+
+    builder.adjust(2)
+    await message.answer("Привет! Давай подберем тебе мероприятия",
+                         reply_markup=builder.as_markup(resize_keyboard=True))
+
+
+@dp.message(F.text == "GO")
+async def reply_go(message: types.Message):
+    kb = [
+        [
+            types.KeyboardButton(text="💚"),
+            types.KeyboardButton(text="👎"),
+            types.KeyboardButton(text="🔙")
+        ],
+    ]
+    keyboard = types.ReplyKeyboardMarkup(
+        keyboard=kb,
+        resize_keyboard=True,
+    )
+    category = history_user_button[message.chat.username]
+    if category == Category.education:
+        await replay_message(message, Category.education, keyboard)
+    if category == Category.art:
+        await replay_message(message, Category.art, keyboard)
+    if category == Category.music:
+        await replay_message(message, Category.music, keyboard)
+    if category == Category.lecture:
+        await replay_message(message, Category.lecture, keyboard)
+    if category == Category.photo:
+        await replay_message(message, Category.photo, keyboard)
+
+
+@dp.message(F.text == "💚")
+async def reply_like(message: types.Message):
+    category = history_user_button[message.chat.username]
+    user = await User.objects.filter(username=message.chat.username).afirst()
+    key: tuple[str, str] = (message.chat.username, category)
+    content = Content.objects.filter(tags__name=category)[global_counter[key] - 1]
+
+    like = await Like.objects.filter(user=user, content=content, value=True).afirst()
+
+    if not like:
+        await Like.objects.acreate(user=user, content=content, value=True)
+
+    if category == Category.education:
+        await replay_message(message, Category.education)
+    if category == Category.art:
+        await replay_message(message, Category.art)
+    if category == Category.music:
+        await replay_message(message, Category.music)
+    if category == Category.lecture:
+        await replay_message(message, Category.lecture)
+    if category == Category.photo:
+        await replay_message(message, Category.photo)
+
+
+@dp.message(F.text == "👎")
+async def reply_dislike(message: types.Message):
+    category = history_user_button[message.chat.username]
+
+    user = await User.objects.filter(username=message.chat.username).afirst()
+    key: tuple[str, str] = (message.chat.username, category)
+    content = Content.objects.filter(tags__name=category)[global_counter[key] - 1]
+
+    dislike = await Like.objects.filter(user=user, content=content, value=False).afirst()
+
+    if not dislike:
+        await Like.objects.acreate(user=user, content=content, value=False)
+
+    if category == Category.education:
+        await replay_message(message, Category.education)
+    if category == Category.art:
+        await replay_message(message, Category.art)
+    if category == Category.music:
+        await replay_message(message, Category.music)
+    if category == Category.lecture:
+        await replay_message(message, Category.lecture)
+    if category == Category.photo:
+        await replay_message(message, Category.photo)
 
 
 async def main():

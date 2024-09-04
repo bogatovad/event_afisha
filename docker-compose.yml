@@ -37,7 +37,19 @@ services:
       - environments/db.env
     volumes:
       - pg_data:/var/lib/postgresql/data
-  
+
+  pgbouncer:
+    image: bitnami/pgbouncer:1.21.0
+    restart: always
+    env_file:
+      - environments/pgbouncer.env
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - "6432:6432"
 
 volumes:
   pg_data:
