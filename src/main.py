@@ -61,7 +61,7 @@ async def cmd_start(message: types.Message):
                          reply_markup=builder.as_markup(resize_keyboard=True))
 
 
-async def replay_message(message: types.Message, category: str, in_keyboard = None):
+async def replay_message(message: types.Message, category: str, in_keyboard=None):
     """Message response handler."""
     key: tuple[str, str] = (message.chat.username, category)
 
@@ -69,6 +69,7 @@ async def replay_message(message: types.Message, category: str, in_keyboard = No
         global_counter[key] = 1
     else:
         global_counter[key] += 1
+
     if global_counter[key] > Content.objects.all().filter(tags__name=category).count():
         del global_counter[key]
 
@@ -83,9 +84,9 @@ async def replay_message(message: types.Message, category: str, in_keyboard = No
             resize_keyboard=True,
         )
         await message.answer('Больше нет событий в этой категории, начинаем смотреть сначала, либо вернемся к категориям!', reply_markup=keyboard)
-        return None, None
 
     content = Content.objects.all().filter(tags__name=category)[global_counter[key] - 1]
+
     if content is None:
         return
 
@@ -104,9 +105,9 @@ async def reply_education(message: types.Message):
     history_user_button[message.chat.username] = Category.education
     kb = [
         [
-            types.KeyboardButton(text="💚", category=Category.education),
-            types.KeyboardButton(text="👎", category=Category.education),
-            types.KeyboardButton(text="🔙", category=Category.education)
+            types.KeyboardButton(text="💚"),
+            types.KeyboardButton(text="👎"),
+            types.KeyboardButton(text="🔙")
         ],
     ]
     keyboard = types.ReplyKeyboardMarkup(
