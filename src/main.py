@@ -9,6 +9,7 @@ import os
 from aiogram import F
 from aiogram.types.input_file import BufferedInputFile
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
+import aioredis
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "event_afisha.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -18,7 +19,7 @@ django.setup()
 from event.models import Content, Tags, Like, User
 
 
-bot = Bot("5245004618:AAGBgb3tY32qzzBwdT4ltyEc6IDjn6Azj3A")
+bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 global_counter: dict[tuple[str, str]] = {}
 history_user_button = {}
@@ -29,6 +30,7 @@ client: Minio = Minio(
         secret_key=os.getenv("SECRET_KEY"),
         secure=False,
     )
+redis = aioredis.from_url("redis://redis")
 
 
 # todo: Задачи
@@ -38,14 +40,29 @@ client: Minio = Minio(
 # todo: 7. Сфурмулировать какие гипотезы мы проверяем через бота, что будет являться проверкой гипотезы, что нет;
 
 
-@dp.message(Command("start"))
-async def cmd_start(message: types.Message):
-    exists = await User.objects.filter(username=message.chat.username).aexists()
+class DjangoObject:
+    def __init__(self):
+        self.user = User.objects
+        self.content = Content.objects
+        self.tags = Tags.objects
+        self.like = Like.objects
+
+
+django_object = DjangoObject()
+
+
+async def check_user(message: types.Message):
+    exists = await django_object.user.filter(username=message.chat.username).aexists()
 
     if not exists:
-        await User.objects.acreate(username=message.chat.username)
+        await django_object.user.acreate(username=message.chat.username)
 
-    tags = Tags.objects.all()
+
+@dp.message(Command("start"))
+async def cmd_start(message: types.Message):
+    await check_user(message)
+
+    tags = django_object.tags.all()
     builder = ReplyKeyboardBuilder()
 
     for tags in tags:
@@ -74,9 +91,9 @@ async def get_back_or_go_keyboard(message: types.Message):
 def get_keyboard_scroll() -> ReplyKeyboardMarkup:
     kb = [
         [
-            types.KeyboardButton(text="💚"),
+            types.KeyboardButton(text="💚",),
             types.KeyboardButton(text="👎"),
-            types.KeyboardButton(text="🔙")
+            types.KeyboardButton(text="🔙"),
         ],
     ]
     return types.ReplyKeyboardMarkup(
@@ -84,53 +101,56 @@ def get_keyboard_scroll() -> ReplyKeyboardMarkup:
         resize_keyboard=True,
     )
 
+# todo: отваливается база
+# todo: File "/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py", line 122, in connect
+# todo: 2024-09-05 00:43:49     conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+# todo: 2024-09-05 00:43:49 django.db.utils.OperationalError: connection to server at "pgbouncer" (172.19.0.4),
+# todo: port 6432 failed: FATAL:  no more connections allowed (max_client_conn)
+
 
 async def replay_message(message: types.Message, category: str, in_keyboard=None):
     """Message response handler."""
-    global global_counter
     global client
 
-    key: tuple[str, str] = (message.chat.username, category)
+    key: str = message.chat.username + category
+    index = await redis.get(key)
 
-    if key not in global_counter:
-        global_counter[key] = 1
-    else:
-        global_counter[key] += 1
+    if not index:
+        index = 0
+        await redis.set(key, index)
 
-    if global_counter[key] > Content.objects.all().filter(tags__name=category).count():
-        del global_counter[key]
+    index = int(index)
+
+    content = django_object.content.prefetch_related('tags').filter(tags__name=category)
+
+    if index >= content.count():
+        await redis.set(key, 0)
         await get_back_or_go_keyboard(message)
         return
 
-    content = Content.objects.all().filter(tags__name=category)[global_counter[key] - 1]
-
-    if content is None:
-        return
-
+    content = content[index]
+    index += 1
+    await redis.set(key, index)
     data = client.get_object(bucket_name="afisha-files", object_name=str(content.image)).data
 
+    # todo: тут можно формировать более удобное сообщение используя все поля из бд
     await message.answer_photo(photo=BufferedInputFile(data, filename=f"{str(content.image)}"),
                                caption=content.description, reply_markup=in_keyboard)
 
 
 @dp.message(F.text.regexp('^[А-Яа-я_]{1,20}$'))
 async def reply_button_category(message: types.Message):
-    global history_user_button
+    await check_user(message)
 
     category: str = message.text
-    history_user_button[message.chat.username] = category
+    await redis.set(message.chat.username, category)
     keyboard = get_keyboard_scroll()
     await replay_message(message, category, keyboard)
 
 
 @dp.message(F.text == "🔙")
 async def reply_back(message: types.Message):
-    global history_user_button
-
-    if message.chat.username in history_user_button:
-        del history_user_button[message.chat.username]
-
-    tags = Tags.objects.all()
+    tags = django_object.tags.all()
     builder = ReplyKeyboardBuilder()
 
     for tags in tags:
@@ -143,34 +163,35 @@ async def reply_back(message: types.Message):
 
 @dp.message(F.text == "GO")
 async def reply_go(message: types.Message):
-    global history_user_button
-
     keyboard = get_keyboard_scroll()
-    category = history_user_button[message.chat.username]
+    category = await redis.get(message.chat.username)
+    category = category.decode()
     await replay_message(message, category, keyboard)
 
 
 async def next_reply_message(message: types.Message):
-    global history_user_button
-
-    category = history_user_button[message.chat.username]
+    category = await redis.get(message.chat.username)
+    category = category.decode()
     await replay_message(message, category)
 
 
 async def set_like(message: types.Message, value: bool):
-    category = history_user_button[message.chat.username]
-    key: tuple[str, str] = (message.chat.username, category)
-    content = Content.objects.filter(tags__name=category)[global_counter[key] - 1]
-    user = User.objects.filter(username=message.chat.username)
+    category = await redis.get(message.chat.username)
+    category = category.decode()
+    key = message.chat.username + category
+    index = await redis.get(key)
 
-    if not user.exists():
-        await User.objects.acreate(username=message.chat.username)
+    # так как в replay_message мы увеличили счетчик на следующую запись,
+    # а тут нам надо работать с текущей, то корректируем index
+    correct_index = int(index) - 1
 
-    user_obj = await user.afirst()
-    like = await Like.objects.filter(user=user_obj, content=content, value=value).afirst()
+    if correct_index >= 0:
+        content = django_object.content.prefetch_related('tags').filter(tags__name=category)[correct_index]
+        user_obj = await django_object.user.filter(username=message.chat.username).afirst()
+        like = await django_object.like.select_related('user', 'content').filter(user=user_obj, content=content, value=value).afirst()
 
-    if not like:
-        await Like.objects.acreate(user=user_obj, content=content, value=value)
+        if not like:
+            await django_object.like.acreate(user=user_obj, content=content, value=value)
 
 
 @dp.message(F.text == "💚")

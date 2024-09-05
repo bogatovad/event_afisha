@@ -14,7 +14,7 @@ class User(GenericModel):
 
 
 class Tags(GenericModel):
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, db_index=True)
     description = models.TextField()
 
     def __str__(self):

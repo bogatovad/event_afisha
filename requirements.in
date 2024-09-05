@@ -6,3 +6,4 @@ boto3==1.26.84
 minio==7.2.8
 psycopg2-binary
 django-timescaledb==0.2.13
+aioredis[hiredis]
