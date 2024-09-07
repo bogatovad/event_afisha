@@ -33,13 +33,6 @@ client: Minio = Minio(
 redis = aioredis.from_url("redis://redis")
 
 
-# todo: Задачи
-# todo: 2. Наполнить базу из разных источников на >= 8 сентября;
-# todo: 3. Сделать фильтрацию событий по дате;
-# todo: 5. Сделать красивое оформление в виде карточки;
-# todo: 7. Сфурмулировать какие гипотезы мы проверяем через бота, что будет являться проверкой гипотезы, что нет;
-
-
 class DjangoObject:
     def __init__(self):
         self.user = User.objects
@@ -51,11 +44,18 @@ class DjangoObject:
 django_object = DjangoObject()
 
 
+def create_username(message: types.Message) -> str:
+    if message.chat.username is None:
+        return str(message.from_user.id)
+    return message.chat.username
+
+
 async def check_user(message: types.Message):
-    exists = await django_object.user.filter(username=message.chat.username).aexists()
+    username = create_username(message)
+    exists = await django_object.user.filter(username=username).aexists()
 
     if not exists:
-        await django_object.user.acreate(username=message.chat.username)
+        await django_object.user.acreate(username=username)
 
 
 @dp.message(Command("start"))
@@ -101,20 +101,11 @@ def get_keyboard_scroll() -> ReplyKeyboardMarkup:
         resize_keyboard=True,
     )
 
-# todo: отваливается база
-# todo: File "/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py", line 122, in connect
-# todo: 2024-09-05 00:43:49     conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
-# todo: 2024-09-05 00:43:49 django.db.utils.OperationalError: connection to server at "pgbouncer" (172.19.0.4),
-# todo: port 6432 failed: FATAL:  no more connections allowed (max_client_conn)
-
 
 async def replay_message(message: types.Message, category: str, in_keyboard=None):
     """Message response handler."""
-    global client
-
-    key: str = message.chat.username + category
+    key: str = create_username(message) + category
     index = await redis.get(key)
-
     if not index:
         index = 0
         await redis.set(key, index)
@@ -143,7 +134,8 @@ async def reply_button_category(message: types.Message):
     await check_user(message)
 
     category: str = message.text
-    await redis.set(message.chat.username, category)
+    key = create_username(message)
+    await redis.set(key, category)
     keyboard = get_keyboard_scroll()
     await replay_message(message, category, keyboard)
 
@@ -164,21 +156,24 @@ async def reply_back(message: types.Message):
 @dp.message(F.text == "GO")
 async def reply_go(message: types.Message):
     keyboard = get_keyboard_scroll()
-    category = await redis.get(message.chat.username)
+    key = create_username(message)
+    category = await redis.get(key)
     category = category.decode()
     await replay_message(message, category, keyboard)
 
 
 async def next_reply_message(message: types.Message):
-    category = await redis.get(message.chat.username)
+    key = create_username(message)
+    category = await redis.get(key)
     category = category.decode()
     await replay_message(message, category)
 
 
 async def set_like(message: types.Message, value: bool):
-    category = await redis.get(message.chat.username)
-    category = category.decode()
-    key = message.chat.username + category
+    key_username: str = create_username(message)
+    category: bytes = await redis.get(key_username)
+    category: str = category.decode()
+    key: str = key_username + category
     index = await redis.get(key)
 
     # так как в replay_message мы увеличили счетчик на следующую запись,
@@ -187,7 +182,7 @@ async def set_like(message: types.Message, value: bool):
 
     if correct_index >= 0:
         content = django_object.content.prefetch_related('tags').filter(tags__name=category)[correct_index]
-        user_obj = await django_object.user.filter(username=message.chat.username).afirst()
+        user_obj = await django_object.user.filter(username=key_username).afirst()
         like = await django_object.like.select_related('user', 'content').filter(user=user_obj, content=content, value=value).afirst()
 
         if not like:
@@ -197,6 +192,8 @@ async def set_like(message: types.Message, value: bool):
 @dp.message(F.text == "💚")
 async def reply_like(message: types.Message):
     await set_like(message, value=True)
+    link = "https://forms.yandex.ru/u/66dc5de42530c2501299acb8/"
+    await message.answer(f"Рады что событие тебя заинтересовало! Давай зарегистрируемся на него прямо сейчас! {link}")
     await next_reply_message(message)
 
 
