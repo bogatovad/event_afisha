@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'event',
     'django.contrib.postgres',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,15 @@ AWS_ACCESS_KEY_ID = MINIO_ACCESS_KEY
 AWS_SECRET_ACCESS_KEY = MINIO_SECRET_KEY
 AWS_STORAGE_BUCKET_NAME = MINIO_BUCKET_NAME
 AWS_S3_ENDPOINT_URL = MINIO_ENDPOINT
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_BEAT_SCHEDULE = {}
+CELERY_TIMEZONE = 'UTC'  # Or your local timezone
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "event.tasks.sample_task",
+        "schedule": crontab(minute='59', hour='23',),
+    },
+}

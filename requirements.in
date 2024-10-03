@@ -7,3 +7,6 @@ minio==7.2.8
 psycopg2-binary
 django-timescaledb==0.2.13
 aioredis[hiredis]
+celery==5.4.0
+redis==5.0.7
+django-celery-beat

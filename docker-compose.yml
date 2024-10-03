@@ -56,6 +56,28 @@ services:
     ports:
       - "6379:6379"
 
+  celery:
+    image: web_backend
+    user: root
+    command: celery -A event_afisha worker -l info
+    volumes:
+      - ./src:/app
+    env_file:
+      - environments/web.env
+    depends_on:
+      - redis
+
+  celery-beat:
+    image: web_backend
+    command: celery -A event_afisha beat -l info
+    restart: always
+    volumes:
+      - ./src:/app
+    env_file:
+      - environments/web.env
+    depends_on:
+      - redis
+
 volumes:
   pg_data:
 
