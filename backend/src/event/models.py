@@ -10,17 +10,15 @@ class GenericModel(models.Model):
 
 
 class User(GenericModel):
-    name = models.CharField(max_length=250)
-    age = models.IntegerField()
-    gender = models.CharField(max_length=250)
-    type = models.CharField(max_length=250)
-    city = models.CharField(max_length=250)
-    tags = models.ManyToManyField("Tags")
+    username = models.CharField(max_length=250)
 
 
 class Tags(GenericModel):
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, db_index=True)
     description = models.TextField()
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class Content(GenericModel):
@@ -28,8 +26,11 @@ class Content(GenericModel):
     description = models.TextField()
     tags = models.ManyToManyField(Tags)
     image = models.ImageField(upload_to="images", max_length=300)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     contact = models.CharField(max_length=250)
+    date = models.DateTimeField(null=True, blank=True)
+
+    def get_tags(self):
+        return "\n".join([t.name for t in self.tags.all()])
 
 
 class Like(GenericModel):
@@ -41,4 +42,8 @@ class Like(GenericModel):
         unique_together = (
             "user",
             "content",
+            "value",
         )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.content.name} - {self.value}"
