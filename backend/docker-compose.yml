@@ -13,6 +13,7 @@ services:
     image: web_backend
     depends_on:
       - db
+    restart: unless-stopped
     command: >
       sh -c "python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
@@ -25,6 +26,7 @@ services:
       - environments/web.env
     depends_on:
       - web
+    restart: unless-stopped
     command: python3 main.py
 
 
@@ -35,6 +37,7 @@ services:
       - "5532:5432"
     env_file:
       - environments/db.env
+    restart: unless-stopped
     volumes:
       - pg_data:/var/lib/postgresql/data
 
@@ -53,6 +56,7 @@ services:
 
   redis:
     image: redis:7.2.3
+    restart: unless-stopped
     ports:
       - "6379:6379"
 
@@ -60,6 +64,7 @@ services:
     image: web_backend
     user: root
     command: celery -A event_afisha worker -l info
+    restart: always
     volumes:
       - ./src:/app
     env_file:
