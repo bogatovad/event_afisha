@@ -16,6 +16,7 @@ class User(GenericModel):
 class Tags(GenericModel):
     name = models.CharField(max_length=250, db_index=True)
     description = models.TextField()
+    # todo: нужно сохранять картинку к тегу
 
     def __str__(self):
         return f"{self.name}"
@@ -24,7 +25,7 @@ class Tags(GenericModel):
 class Content(GenericModel):
     name = models.CharField(max_length=250)
     description = models.TextField()
-    tags = models.ManyToManyField(Tags)
+    tags = models.ManyToManyField(Tags, related_name='contents')
     image = models.ImageField(upload_to="images", max_length=300)
     contact = models.CharField(max_length=250)
     date = models.DateTimeField(null=True, blank=True)
