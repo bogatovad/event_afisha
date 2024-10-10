@@ -10,6 +10,7 @@ from aiogram import F
 from aiogram.types.input_file import BufferedInputFile
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 import aioredis
+from aiogram.exceptions import TelegramBadRequest
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "event_afisha.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -65,8 +66,9 @@ async def cmd_start(message: types.Message):
     tags = django_object.tags.all()
     builder = ReplyKeyboardBuilder()
 
-    for tags in tags:
-        builder.add(types.KeyboardButton(text=tags.name))
+    for tag in tags:
+        if tag.contents.count() > 0:
+            builder.add(types.KeyboardButton(text=tag.name))
 
     builder.adjust(2)
     await message.answer("Привет! Давай подберем тебе мероприятия, выбери категорию",
@@ -125,8 +127,14 @@ async def replay_message(message: types.Message, category: str, in_keyboard=None
     data = client.get_object(bucket_name="afisha-files", object_name=str(content.image)).data
 
     # todo: тут можно формировать более удобное сообщение используя все поля из бд
-    await message.answer_photo(photo=BufferedInputFile(data, filename=f"{str(content.image)}"),
+    try:
+        await message.answer_photo(photo=BufferedInputFile(data, filename=f"{str(content.image)}"),
                                caption=content.description, reply_markup=in_keyboard)
+    except TelegramBadRequest:
+        caption = content.description[:1024]
+        await message.answer_photo(photo=BufferedInputFile(data, filename=f"{str(content.image)}"),
+                                   caption=caption, reply_markup=in_keyboard)
+
 
 
 @dp.message(F.text.regexp('^[А-Яа-я_]{1,20}$'))
@@ -145,8 +153,9 @@ async def reply_back(message: types.Message):
     tags = django_object.tags.all()
     builder = ReplyKeyboardBuilder()
 
-    for tags in tags:
-        builder.add(types.KeyboardButton(text=tags.name))
+    for tag in tags:
+        if tag.contents.count() > 0:
+            builder.add(types.KeyboardButton(text=tag.name))
 
     builder.adjust(2)
     await message.answer("Привет! Давай подберем тебе мероприятия",
