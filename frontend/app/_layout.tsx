@@ -1,9 +1,10 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import {ThemeProvider} from '@shopify/restyle';
+import theme from '@/constants/Theme';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -13,7 +14,10 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    InterItalic: require('@/assets/fonts/Inter-Italic.otf'),
+    InterMedium: require('@/assets/fonts/Inter-Medium.otf'),
+    InterRegular: require('@/assets/fonts/Inter-Regular.otf'),
+    InterSemiBold: require('@/assets/fonts/Inter-SemiBold.otf'),
   });
 
   useEffect(() => {
@@ -27,9 +31,9 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider theme={theme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
