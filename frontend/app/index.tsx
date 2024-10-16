@@ -52,7 +52,14 @@ export default function HomeScreen() {
           AFISHA
         </Text>
 
-        <WebLottieView src={require("@/assets/lottie/waving.json")}/>
+        <Box
+          style={{
+            position: "absolute",
+            top: -10
+          }}
+        >
+          <WebLottieView src={require("@/assets/lottie/waving.json")}/>
+        </Box>
       </Box>
 
       <Box
