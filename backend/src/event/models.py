@@ -16,7 +16,7 @@ class User(GenericModel):
 class Tags(GenericModel):
     name = models.CharField(max_length=250, db_index=True)
     description = models.TextField()
-    # todo: нужно сохранять картинку к тегу
+    image = models.ImageField(upload_to="images_tag", max_length=300)
 
     def __str__(self):
         return f"{self.name}"
