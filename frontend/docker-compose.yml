@@ -5,8 +5,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./app:/app/app
+      - ./components:/app/components
+      - ./constants:/app/constants
+      - ./scripts:/app/scripts
+      - ./assets:/app/assets
+      - ./server.js:/app/server.js
     networks:
       - afisha
+    restart: always
 
   nginx:
     image: nginx:latest
