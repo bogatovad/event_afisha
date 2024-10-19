@@ -1,4 +1,4 @@
-import {Linking, Pressable, ScrollView} from 'react-native';
+import {Pressable, ScrollView} from 'react-native';
 
 import Box from "@/components/Box";
 import Text from "@/components/Text";
@@ -6,9 +6,11 @@ import {config} from "@/scripts/config";
 import WebLottieView from "@/components/containers/WebLottieView";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/constants/Theme";
+import {useRouter} from "expo-router";
 
 export default function HomeScreen() {
   const theme = useTheme<Theme>();
+  const router = useRouter();
   const { first_name } = config().initDataUnsafe.user;
 
   return (
@@ -120,7 +122,7 @@ export default function HomeScreen() {
             paddingHorizontal: 32,
             paddingBottom: 32
           }}
-          onPress={() => {Linking.openURL("https://google.com").then(r => console.log(r))}}
+          onPress={ () => { router.push("/feedback") }}
         >
           <Box
             backgroundColor="button_color"
