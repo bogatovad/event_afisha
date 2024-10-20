@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from "@/services/AxiosConfig";
 
 export const sendFeedback = async (
   username: string,
@@ -7,7 +7,7 @@ export const sendFeedback = async (
   try {
     console.log(username, message);
 
-    return await axios.post('http://130.193.41.98:8000/user/api/v1/feedback', {
+    return await axiosInstance.post('/feedback', {
       username: username,
       message: message
     });

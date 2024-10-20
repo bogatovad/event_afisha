@@ -1,10 +1,12 @@
-import axios from 'axios';
+import axiosInstance from "@/services/AxiosConfig";
 
 export const getContentByTag = async (tag: string) => {
   try {
-    const response = await axios.get('/api/v1/contents', {
-      params: { tag }
-    });
+    const response = await axiosInstance.get(
+      '/contents',
+      {
+        params: { tag }
+      });
 
     return response.data;
   } catch (error) {
