@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {sendFeedback} from "@/services/feedbackService";
+import {sendFeedback} from "@/services/FeedbackService";
 import {config} from "@/scripts/config";
 
 interface FeedbackState {
