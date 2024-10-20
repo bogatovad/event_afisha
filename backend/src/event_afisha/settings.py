@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django_celery_beat',
     'corsheaders',
+    'ninja_extra',
 ]
 
 MIDDLEWARE = [
