@@ -25,7 +25,9 @@ argon2-cffi==23.1.0
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 asgiref==3.8.1
-    # via django
+    # via
+    #   django
+    #   django-cors-headers
 async-timeout==4.0.3
     # via aioredis
 attrs==24.2.0
@@ -66,9 +68,12 @@ django==4.2
     # via
     #   -r requirements.in
     #   django-celery-beat
+    #   django-cors-headers
     #   django-storages
     #   django-timezone-field
 django-celery-beat==2.7.0
+    # via -r requirements.in
+django-cors-headers==4.5.0
     # via -r requirements.in
 django-storages==1.14.3
     # via -r requirements.in
