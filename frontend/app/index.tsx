@@ -1,59 +1,43 @@
 import Box from "@/components/Box";
-import Swiper from 'react-native-deck-swiper'
-import EventCard from "@/components/cards/EventCard";
-import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
-import Text from "@/components/Text";
-import {useEventStore} from "@/stores/useEventsStore";
 import {useEffect} from "react";
+import {useTagsStore} from "@/stores/useTagsStore";
+import LoadingCard from "@/components/cards/LoadingCard";
+import ErrorCard from "@/components/cards/ErrorCard";
+import TagCard from "@/components/cards/TagCard";
 
 export default function HomeScreen() {
-  const theme = useTheme<Theme>()
-  const { events, loading, error, fetchEvents } = useEventStore();
+  const { tags, isLoading, hasError, fetchTags } = useTagsStore();
 
   useEffect(() => {
-    fetchEvents('sport')
-      .catch(() => console.log(error?.toString()));
+    fetchTags()
+      .finally(() => console.log("Tags: " + tags.toString()));
   }, []);
 
-  if (loading) {
-    return (
-      <Box
-        flex={1}
-        backgroundColor="bg_color"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Text
-          variant="header"
-          color="text_color"
-        >
-          Loading...
-        </Text>
-      </Box>
-    )
+  if (isLoading) {
+    return <LoadingCard/>
+  }
+
+  if (hasError) {
+    return <ErrorCard/>
   }
 
   return (
     <Box
       flex={1}
+      backgroundColor="bg_color"
+      alignItems="center"
+      justifyContent="center"
     >
-      <Swiper
-        cards={events}
-        renderCard={EventCard}
-        infinite
-        backgroundColor="white"
-        cardHorizontalMargin={0}
-        stackSize={2}
-        disableTopSwipe={true}
-        disableBottomSwipe={true}
-        containerStyle={{
-          flex: 1,
-          backgroundColor: theme.colors.bg_color,
-        }}
-        cardVerticalMargin={16}
-      >
-      </Swiper>
+      {
+        tags.map((tag) => (
+          <TagCard
+            key={tag.name}
+            name={tag.name}
+            description={tag.description}
+            image={ tag.image }
+          />
+        ))
+      }
     </Box>
   );
 }
