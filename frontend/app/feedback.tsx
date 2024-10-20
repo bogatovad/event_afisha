@@ -2,13 +2,13 @@ import {Pressable, TextInput} from 'react-native';
 
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/constants/Theme";
-import {useState} from "react";
 import Box from "@/components/Box";
 import Text from "@/components/Text";
+import {useFeedbackStore} from "@/stores/useFeedbackState";
 
 export default function FeedbackScreen() {
   const theme = useTheme<Theme>();
-  const [text, setText] = useState("");
+  const { text, setText, submitFeedback, hasError, isSuccess } = useFeedbackStore();
 
   return (
     <Box
@@ -44,8 +44,32 @@ export default function FeedbackScreen() {
         }}
       />
 
+      {
+        hasError && (
+          <Text
+            variant="body"
+            color="text_color"
+            textAlign="center"
+          >
+            { "😬 Упс... Что-то пошло не так." }
+          </Text>
+        )
+      }
+
+      {
+        isSuccess && (
+          <Text
+            variant="body"
+            color="text_color"
+            textAlign="center"
+          >
+            { "✅ Ваш ответ записан. Спасибо!" }
+          </Text>
+        )
+      }
+
       <Pressable
-        onPress={ () => { console.log("SUBMIT PRESSED") }}
+        onPress={ submitFeedback }
       >
         <Box
           backgroundColor="button_color"

@@ -11,6 +11,8 @@ services:
       - ./constants:/app/constants
       - ./scripts:/app/scripts
       - ./assets:/app/assets
+      - ./stores:/app/stores
+      - ./services:/app/services
       - ./server.js:/app/server.js
     networks:
       - afisha
