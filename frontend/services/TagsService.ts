@@ -1,25 +1,12 @@
 import axiosInstance from "@/services/AxiosConfig";
 
-type Tag = {
-  name: string;
-  description: string;
-  image: string | null;
-}
-
-type getTagsResponse = {
-  data: Tag[];
-}
-
 export const getTags = async () => {
   try {
-    const { data: response, status } = await axiosInstance.get<getTagsResponse>(
+    return await axiosInstance.get(
       "/tags"
     );
-
-    console.log("Responce: " + response);
-
-    return { response, status };
   } catch (error) {
+    console.error("Error fetching content:", error);
     throw error;
   }
 }
