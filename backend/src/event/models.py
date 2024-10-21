@@ -47,4 +47,4 @@ class Like(GenericModel):
         )
 
     def __str__(self):
-        return f"{self.user.username} - {self.content.name} - {self.value}"
+        return f"{self.user.username} - {self.content.name} - {self.value} - {self.created}"

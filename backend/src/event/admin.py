@@ -4,7 +4,7 @@ from .models import Content, Tags, Like, User
 
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image', 'contact', 'get_tags')
+    list_display = ('name', 'image', 'contact', 'get_tags', 'date')
 
 
 @admin.register(Tags)
@@ -19,4 +19,4 @@ class LikeAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', )
+    list_display = ('username', 'created')
