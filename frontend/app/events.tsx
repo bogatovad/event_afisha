@@ -34,12 +34,19 @@ export default function EventsScreen() {
     >
       <Swiper
         cards={events}
-        renderCard={EventCard}
+        renderCard={(event) =>
+          <EventCard
+            name={ event.name }
+            date={ event.date }
+            description={ event.description }
+            image={ event.image }
+            contact={ event.contact }
+          />}
         backgroundColor="white"
-        cardHorizontalMargin={0}
+        cardHorizontalMargin={16}
+        horizontalSwipe={true}
+        verticalSwipe={false}
         stackSize={2}
-        disableTopSwipe={true}
-        disableBottomSwipe={true}
         containerStyle={{
           flex: 1,
           backgroundColor: theme.colors.bg_color,
