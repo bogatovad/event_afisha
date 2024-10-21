@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@/components/Box";
 import Text from "@/components/Text";
-import {Pressable} from "react-native";
+import {ImageBackground, Pressable} from "react-native";
 import {useRouter} from "expo-router";
 
 interface TagCardProps {
@@ -19,35 +19,42 @@ const TagCard: React.FC<TagCardProps> = ({
 
   return (
     <Pressable
+      style={{
+        flex: 1
+      }}
       onPress={ () => router.push({
         pathname: "/events",
         params: { tag: name }
       }) }
     >
-      <Box
-        flexDirection="row"
+      <ImageBackground
+        source={{ uri: image ? image.replace("/minio:", "/130.193.41.98:") : undefined }}
+        alt={description}
+        resizeMode="cover"
+        style={{
+          minHeight: 150,
+          backgroundColor: 'rgb(152,152,152)',
+          justifyContent: "flex-end",
+          alignItems: "center",
+          borderRadius: 16,
+          overflow: "hidden"
+        }}
       >
-        <Text
-          variant="body"
-          color="text_color"
+        <Box
+          width="100%"
+          backgroundColor="secondary_bg_color"
+          alignItems="center"
+          justifyContent="center"
+          padding="s"
         >
-          { name + " "}
-        </Text>
-
-        <Text
-          variant="body"
-          color="text_color"
-        >
-          { description + " "}
-        </Text>
-
-        <Text
-          variant="body"
-          color="text_color"
-        >
-          { image }
-        </Text>
-      </Box>
+          <Text
+            variant="body"
+            color="text_color"
+          >
+            { name + " "}
+          </Text>
+        </Box>
+      </ImageBackground>
     </Pressable>
   )
 }

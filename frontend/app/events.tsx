@@ -12,8 +12,6 @@ import {useLocalSearchParams} from "expo-router";
 export default function EventsScreen() {
   const { tag } = useLocalSearchParams<{ tag: string }>()
 
-  console.log(tag);
-
   const theme = useTheme<Theme>()
   const { events, isLoading, hasError, fetchEvents } = useEventStore();
 
@@ -37,7 +35,6 @@ export default function EventsScreen() {
       <Swiper
         cards={events}
         renderCard={EventCard}
-        infinite
         backgroundColor="white"
         cardHorizontalMargin={0}
         stackSize={2}

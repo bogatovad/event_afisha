@@ -7,7 +7,7 @@ import Box from "@/components/Box";
 interface EventCardProps {
   name: string,
   description: string,
-  image: string,
+  image: string | null,
   contact: string,
   date: string
 }
@@ -31,7 +31,7 @@ const EventCard = ({
 
   return (
     <ImageBackground
-      source={{ uri: image }}
+      source={{ uri: image ? image.replace("/minio:", "/130.193.41.98:") : undefined }}
       resizeMode="cover"
       style={{
         flex: 1,
