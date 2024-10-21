@@ -4,6 +4,8 @@ from http import HTTPStatus
 from ninja_extra import api_controller, route
 from event.models import Tags, Content
 from event.schemas import TagSchema, ContentSchema
+from datetime import datetime
+from django.db.models import Q
 
 
 @api_controller(
@@ -46,8 +48,14 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_content(self, tag: str):
-        content = Content.objects.filter(tags__name=tag)
+    def get_content(self, tag: str, date_start: datetime | None = None, date_end: datetime | None = None) ->\
+            list[ContentSchema]:
+        q_filter = Q(tags__name=tag)
+        if date_start and date_end:
+            q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+        if date_start and not date_end:
+            q_filter &= Q(date=date_start)
+        content = Content.objects.filter(q_filter)
         return content
 
 

@@ -28,10 +28,13 @@ class Content(GenericModel):
     tags = models.ManyToManyField(Tags, related_name='contents')
     image = models.ImageField(upload_to="images", max_length=300)
     contact = models.CharField(max_length=250)
-    date = models.DateTimeField(null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
 
     def get_tags(self):
         return "\n".join([t.name for t in self.tags.all()])
+
+    class Meta:
+        ordering = ["date"]
 
 
 class Like(GenericModel):
