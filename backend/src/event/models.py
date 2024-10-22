@@ -38,15 +38,14 @@ class Content(GenericModel):
 
 
 class Like(GenericModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.ForeignKey(Content, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
+    content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name='likes')
     value = models.BooleanField()
 
     class Meta:
         unique_together = (
             "user",
             "content",
-            "value",
         )
 
     def __str__(self):

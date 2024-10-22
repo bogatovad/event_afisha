@@ -9,8 +9,20 @@ class TagSchema(Schema):
 
 
 class ContentSchema(Schema):
+    id: int
     name: str
     description: str
     image: str
     contact: str
     date: date
+
+
+class LikeSchema(Schema):
+    user: str
+    content: int
+    value: bool
+
+
+class LikeRequestSchema(Schema):
+    username: str
+    content_id: int

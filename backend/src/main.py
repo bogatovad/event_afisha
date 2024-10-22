@@ -136,7 +136,6 @@ async def replay_message(message: types.Message, category: str, in_keyboard=None
                                    caption=caption, reply_markup=in_keyboard)
 
 
-
 @dp.message(F.text.regexp('^[А-Яа-я_]{1,20}$'))
 async def reply_button_category(message: types.Message):
     await check_user(message)

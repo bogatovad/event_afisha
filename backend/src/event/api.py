@@ -2,8 +2,8 @@ from ninja_extra import NinjaExtraAPI
 
 from http import HTTPStatus
 from ninja_extra import api_controller, route
-from event.models import Tags, Content
-from event.schemas import TagSchema, ContentSchema
+from event.models import Tags, Content, User, Like
+from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema
 from datetime import datetime
 from django.db.models import Q
 
@@ -58,10 +58,52 @@ class ContentController:
         content = Content.objects.filter(q_filter)
         return content
 
+    @route.get(
+        path="/contents/liked",
+        response={
+            200: list[ContentSchema],
+        },
+    )
+    def get_content(self, username: str) -> \
+            list[ContentSchema]:
+        likes = Like.objects.filter(user=User.objects.filter(username=username).first(), value=True)
+        content = Content.objects.filter(likes__in=likes)
+        return content
+
+
+@api_controller(
+    prefix_or_class="/api/v1",
+)
+class LikeController:
+    @route.post(
+        path="/like",
+        response={
+            200: LikeSchema,
+        },
+    )
+    def set_like(self, request_data: LikeRequestSchema):
+        user = User.objects.filter(username=request_data.username).first()
+        content = Content.objects.filter(id=request_data.content_id).first()
+        Like.objects.update_or_create(user=user, content=content, defaults={"value": True})
+        return {'user': request_data.username, 'content': request_data.content_id, 'value': True}
+
+    @route.post(
+        path="/dislike",
+        response={
+            200: LikeSchema,
+        },
+    )
+    def set_dislike(self, request_data: LikeRequestSchema):
+        user = User.objects.filter(username=request_data.username).first()
+        content = Content.objects.filter(id=request_data.content_id).first()
+        Like.objects.update_or_create(user=user, content=content, defaults={"value": False})
+        return {'user': request_data.username, 'content': request_data.content_id, 'value': False}
+
 
 api = NinjaExtraAPI(title="afisha", version="0.0.1")
 api.register_controllers(
     HealthController,
     TagsController,
-    ContentController
+    ContentController,
+    LikeController
 )
