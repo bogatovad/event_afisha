@@ -74,6 +74,7 @@ services:
 
   celery-beat:
     image: web_backend
+    user: root
     command: celery -A event_afisha beat -l info
     restart: always
     volumes:
