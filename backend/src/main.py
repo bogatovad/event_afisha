@@ -191,10 +191,7 @@ async def set_like(message: types.Message, value: bool):
     if correct_index >= 0:
         content = django_object.content.prefetch_related('tags').filter(tags__name=category)[correct_index]
         user_obj = await django_object.user.filter(username=key_username).afirst()
-        like = await django_object.like.select_related('user', 'content').filter(user=user_obj, content=content, value=value).afirst()
-
-        if not like:
-            await django_object.like.acreate(user=user_obj, content=content, value=value)
+        await django_object.like.aupdate_or_create(user=user_obj, content=content, defaults={"value": value})
 
 
 @dp.message(F.text == "💚")
