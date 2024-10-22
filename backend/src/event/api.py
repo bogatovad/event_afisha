@@ -64,7 +64,7 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_content(self, username: str) -> \
+    def get_liked_content(self, username: str) -> \
             list[ContentSchema]:
         likes = Like.objects.filter(user=User.objects.filter(username=username).first(), value=True)
         content = Content.objects.filter(likes__in=likes)
