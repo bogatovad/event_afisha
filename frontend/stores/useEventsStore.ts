@@ -13,13 +13,16 @@ interface EventState {
   events: Event[];
   isLoading: boolean;
   hasError: boolean;
+  swipedAll: boolean;
   fetchEvents: (tag: string) => Promise<void>;
+  setSwipedAll: (state: boolean) => void;
 }
 
 export const useEventStore = create<EventState>((set) => ({
   events: [],
   isLoading: true,
   hasError: false,
+  swipedAll: false,
 
   fetchEvents: async (tag: string) => {
     set({ isLoading: true, hasError: false });
@@ -27,7 +30,7 @@ export const useEventStore = create<EventState>((set) => ({
     getContentByTag(tag)
       .then((response) => {
         if (response.status == 200) {
-          set({ events: response.data, isLoading: false });
+          set({ events: response.data, isLoading: false, swipedAll: false });
         } else {
           set({ hasError: true, isLoading: false });
         }
@@ -35,5 +38,9 @@ export const useEventStore = create<EventState>((set) => ({
       .catch(() => {
         set({ hasError: true, isLoading: false });
       });
+  },
+
+  setSwipedAll: async (state: boolean) => {
+    set({ swipedAll: state });
   }
 }));
