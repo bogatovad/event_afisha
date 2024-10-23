@@ -11,6 +11,7 @@ services:
       - ./constants:/app/constants
       - ./scripts:/app/scripts
       - ./assets:/app/assets
+      - ./hooks:/app/hooks
       - ./stores:/app/stores
       - ./services:/app/services
       - ./server.js:/app/server.js
@@ -31,6 +32,7 @@ services:
       - frontend
     networks:
       - afisha
+    restart: always
 
 networks:
   afisha:

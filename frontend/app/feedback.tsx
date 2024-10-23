@@ -5,9 +5,12 @@ import {Theme} from "@/constants/Theme";
 import Box from "@/components/Box";
 import Text from "@/components/Text";
 import {useFeedbackStore} from "@/stores/useFeedbackState";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import {useRouter} from "expo-router";
 
 export default function FeedbackScreen() {
   const theme = useTheme<Theme>();
+  const router = useRouter();
   const { text, setText, submitFeedback, hasError, isSuccess } = useFeedbackStore();
 
   return (
@@ -19,13 +22,26 @@ export default function FeedbackScreen() {
         padding: 32
       }}
     >
-      <Text
-        variant="header"
-        color="text_color"
-        textAlign="center"
+      <Box
+        width="100%"
+        flexDirection="row"
+        gap="m"
+        alignItems="center"
       >
-        { "Обратная связь" }
-      </Text>
+        <Pressable
+          onPress={ () => router.back() }
+        >
+          <Ionicons name={"arrow-back"} size={24} color={theme.colors.text_color}/>
+        </Pressable>
+
+        <Text
+          variant="header"
+          color="text_color"
+          textAlign="center"
+        >
+          { "Обратная связь" }
+        </Text>
+      </Box>
 
       <TextInput
         value={text}
