@@ -43,7 +43,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <ImageBackground
-      source={{ uri: image ? image.replace("/minio:", "/130.193.41.98:") : undefined }}
+      source={{ uri: image ? image : undefined }}
       resizeMode="cover"
       blurRadius={16}
       style={{
@@ -56,7 +56,7 @@ const EventCard: React.FC<EventCardProps> = ({
       }}
     >
       <Image
-        source={{ uri: image ? image.replace("/minio:", "/130.193.41.98:") : undefined }}
+        source={{ uri: image ? image : undefined }}
         resizeMode="contain"
         style={{
           width:"100%",

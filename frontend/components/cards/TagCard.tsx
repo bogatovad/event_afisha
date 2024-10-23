@@ -28,7 +28,7 @@ const TagCard: React.FC<TagCardProps> = ({
       }) }
     >
       <ImageBackground
-        source={{ uri: image ? image.replace("/minio:", "/130.193.41.98:") : undefined }}
+        source={{ uri: image ? image : undefined }}
         alt={description}
         resizeMode="cover"
         style={{
