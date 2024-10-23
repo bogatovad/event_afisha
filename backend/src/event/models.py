@@ -36,6 +36,9 @@ class Content(GenericModel):
     def get_tags(self):
         return "\n".join([t.name for t in self.tags.all()])
 
+    def __str__(self):
+        return f"{self.name}"
+
     class Meta:
         ordering = ["date"]
 

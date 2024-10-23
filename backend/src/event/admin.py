@@ -14,7 +14,7 @@ class TagsAdmin(admin.ModelAdmin):
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('user', 'content', 'value', 'created')
 
 
 @admin.register(User)
