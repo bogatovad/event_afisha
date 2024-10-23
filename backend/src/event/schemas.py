@@ -26,3 +26,8 @@ class LikeSchema(Schema):
 class LikeRequestSchema(Schema):
     username: str
     content_id: int
+
+
+class FeedbackRequestSchema(Schema):
+    message: str
+    username: str

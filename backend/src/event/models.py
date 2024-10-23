@@ -12,6 +12,9 @@ class GenericModel(models.Model):
 class User(GenericModel):
     username = models.CharField(max_length=250)
 
+    def __str__(self):
+        return f"{self.username}"
+
 
 class Tags(GenericModel):
     name = models.CharField(max_length=250, db_index=True)
@@ -50,3 +53,8 @@ class Like(GenericModel):
 
     def __str__(self):
         return f"{self.user.username} - {self.content.name} - {self.value} - {self.created}"
+
+
+class Feedback(GenericModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback')
+    message = models.TextField()

@@ -2,8 +2,8 @@ from ninja_extra import NinjaExtraAPI
 
 from http import HTTPStatus
 from ninja_extra import api_controller, route
-from event.models import Tags, Content, User, Like
-from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema
+from event.models import Tags, Content, User, Like, Feedback
+from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema
 from datetime import datetime
 from django.db.models import Q
 
@@ -100,10 +100,27 @@ class LikeController:
         return {'user': request_data.username, 'content': request_data.content_id, 'value': False}
 
 
+@api_controller(
+    prefix_or_class="/api/v1",
+)
+class FeedbackController:
+    @route.post(
+        path="/feedback",
+        response={
+            200: dict,
+        },
+    )
+    def create_feedback(self, request_data: FeedbackRequestSchema) -> dict:
+        user = User.objects.filter(username=request_data.username).first()
+        Feedback.objects.create(user=user, message=request_data.message)
+        return {"status": "ok"}
+
+
 api = NinjaExtraAPI(title="afisha", version="0.0.1")
 api.register_controllers(
     HealthController,
     TagsController,
     ContentController,
-    LikeController
+    LikeController,
+    FeedbackController
 )
