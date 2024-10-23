@@ -6,13 +6,10 @@ import 'react-native-reanimated';
 import {ThemeProvider} from '@shopify/restyle';
 import theme from '@/constants/Theme';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     InterItalic: require('@/assets/fonts/Inter-Italic.otf'),
     InterMedium: require('@/assets/fonts/Inter-Medium.otf'),
@@ -34,6 +31,9 @@ export default function RootLayout() {
     <ThemeProvider theme={theme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="feedback" options={{ headerShown: false }} />
+        <Stack.Screen name="events" options={{ headerShown: false }} />
+        <Stack.Screen name="about" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

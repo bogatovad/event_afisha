@@ -8,10 +8,8 @@ RUN npm install
 
 COPY . .
 
-RUN npx expo export --platform web
-
 RUN npm i -D express compression morgan
 
 EXPOSE 80
 
-CMD ["node", "server.js"]
+CMD ["npm", "run", "dev"]
