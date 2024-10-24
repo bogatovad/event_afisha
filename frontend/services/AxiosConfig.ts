@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://web:8000/api/v1',
-  timeout: 5000,
+  baseURL: 'https://130.193.41.98/api/v1',
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
