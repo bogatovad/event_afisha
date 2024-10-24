@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0ecd22db-3023-4535-b95c-0b8c7b72f653" name="Changes" comment="Завез postgres">
+      <change beforePath="$PROJECT_DIR$/backend/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/docker-compose.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="UML Sequence" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/add_date" />
+      </map>
+    </option>
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="5" />
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="develop" />
+                    <option name="lastUsedInstant" value="1729532478" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/add_date" />
+                    <option name="lastUsedInstant" value="1729532396" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/add_cors" />
+                    <option name="lastUsedInstant" value="1729453923" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="api" />
+                    <option name="lastUsedInstant" value="1729109774" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/tests" />
+                    <option name="lastUsedInstant" value="1728924928" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2ktXbJGKll16F8ACHcwaNJ80Bif" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="false" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultPlantUmlFileTemplate&quot;: &quot;UML Sequence&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/artembogatov/Documents/event_afisha/backend/nginx&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/nginx" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/nginx/conf.d" />
+      <recent name="$PROJECT_DIR$/backend/src/event_afisha" />
+      <recent name="$PROJECT_DIR$/backend" />
+      <recent name="$PROJECT_DIR$/src/utils" />
+      <recent name="$PROJECT_DIR$/src/event" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0ecd22db-3023-4535-b95c-0b8c7b72f653" name="Changes" comment="" />
+      <created>1724103916618</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1724103916618</updated>
+      <workItem from="1724103917732" duration="6297000" />
+      <workItem from="1724148978491" duration="598000" />
+      <workItem from="1724169513005" duration="598000" />
+      <workItem from="1725290009204" duration="56168000" />
+      <workItem from="1725463421899" duration="34072000" />
+      <workItem from="1725718220595" duration="11230000" />
+      <workItem from="1726242631273" duration="3100000" />
+      <workItem from="1727085411017" duration="37000" />
+      <workItem from="1727949386813" duration="6880000" />
+      <workItem from="1727956391171" duration="4945000" />
+      <workItem from="1727963995593" duration="45000" />
+      <workItem from="1727964051589" duration="6684000" />
+      <workItem from="1727989110416" duration="3578000" />
+      <workItem from="1728053623069" duration="44000" />
+      <workItem from="1728395569394" duration="3610000" />
+      <workItem from="1728548158386" duration="2421000" />
+      <workItem from="1728567603309" duration="1880000" />
+      <workItem from="1728924894125" duration="478000" />
+      <workItem from="1729099442751" duration="3949000" />
+      <workItem from="1729110602856" duration="8622000" />
+      <workItem from="1729150410985" duration="67000" />
+      <workItem from="1729150479020" duration="12000" />
+      <workItem from="1729150612420" duration="4507000" />
+      <workItem from="1729179131288" duration="3468000" />
+      <workItem from="1729194793119" duration="295000" />
+      <workItem from="1729195114829" duration="4515000" />
+      <workItem from="1729453539892" duration="1285000" />
+      <workItem from="1729530540227" duration="3324000" />
+      <workItem from="1729543800553" duration="7260000" />
+      <workItem from="1729614618036" duration="7954000" />
+      <workItem from="1729691429403" duration="8000" />
+      <workItem from="1729712749885" duration="3002000" />
+      <workItem from="1729758272719" duration="4247000" />
+    </task>
+    <task id="LOCAL-00001" summary="Завез postgres">
+      <created>1725376278552</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1725376278552</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Завез postgres" />
+    <option name="LAST_COMMIT_MESSAGE" value="Завез postgres" />
+  </component>
+</project>
