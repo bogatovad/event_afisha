@@ -12,3 +12,4 @@ redis==5.0.7
 django-celery-beat
 django-cors-headers
 django-ninja-extra
+gunicorn

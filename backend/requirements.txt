@@ -94,6 +94,8 @@ frozenlist==1.4.1
     # via
     #   aiohttp
     #   aiosignal
+gunicorn==23.0.0
+    # via -r requirements.in
 hiredis==3.0.0
     # via aioredis
 idna==3.10
@@ -114,6 +116,8 @@ multidict==6.1.0
     # via
     #   aiohttp
     #   yarl
+packaging==24.1
+    # via gunicorn
 pillow==10.0.0
     # via -r requirements.in
 prompt-toolkit==3.0.48
