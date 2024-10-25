@@ -16,3 +16,20 @@ export const getDatesInRange = (startDate: string, endDate: string): string[] =>
 
   return dates;
 };
+
+interface Borders {
+  date_start?: string,
+  date_end?: string
+}
+
+export const getPeriodBorders = (period: string[]): Borders => {
+  if (period.length == 0) {
+    return { date_start: undefined, date_end: undefined }
+  }
+
+  if (period.length == 1) {
+    return { date_start: period[0], date_end: undefined }
+  }
+
+  return { date_start: period[0], date_end: period[period.length - 1] }
+}

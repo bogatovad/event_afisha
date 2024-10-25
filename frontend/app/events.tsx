@@ -15,6 +15,7 @@ import Text from "@/components/Text";
 import {Modal, Pressable} from "react-native";
 import {useCalendarStore} from "@/stores/useCalendarStore";
 import DatePicker from "@/components/input/DatePicker";
+import {getPeriodBorders} from "@/scripts/date";
 
 export default function EventsScreen() {
   const { tag } = useLocalSearchParams<{ tag: string }>();
@@ -25,11 +26,6 @@ export default function EventsScreen() {
     opacity: swipedAllInfoOpacity.value,
     gap: 16
   }));
-
-  const onSwipedAll = () => {
-    setSwipedAll(true);
-    swipedAllInfoOpacity.value = withTiming(1);
-  }
 
   const theme = useTheme<Theme>();
   const router = useRouter();
@@ -51,9 +47,18 @@ export default function EventsScreen() {
   } = useCalendarStore();
 
   useEffect(() => {
-    fetchEvents(tag)
-      .then(() => console.log("Events loaded"));
+    const borders = getPeriodBorders(Object.keys(selectedDays));
+
+    fetchEvents(tag, borders.date_start, borders.date_end);
   }, []);
+
+  useEffect(() => {
+    if (swipedAll) {
+      swipedAllInfoOpacity.value = withTiming(1);
+    } else {
+      swipedAllInfoOpacity.value = withTiming(0);
+    }
+  }, [swipedAll]);
 
   if (isLoading) {
     return <LoadingCard/>
@@ -101,7 +106,7 @@ export default function EventsScreen() {
               horizontalSwipe={true}
               verticalSwipe={false}
               stackSize={2}
-              onSwipedAll={ onSwipedAll }
+              onSwipedAll={ () => setSwipedAll(true) }
               containerStyle={{
                 backgroundColor: theme.colors.bg_color,
               }}
@@ -180,7 +185,12 @@ export default function EventsScreen() {
               selectedDays={ selectedDays }
               onDaySelected={ updateSelectedDays }
               onClear={ () => clearSelectedDays() }
-              onAccept={ () => setCalendarVisible(false) }
+              onAccept={ () => {
+                const borders = getPeriodBorders(Object.keys(selectedDays));
+
+                fetchEvents(tag, borders.date_start, borders.date_end);
+                setCalendarVisible(false);
+              }}
             />
           </Box>
         </Modal>
