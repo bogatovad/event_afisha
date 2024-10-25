@@ -12,7 +12,9 @@ import Topbar from "@/components/navigation/Topbar";
 import {MaterialIcons} from "@expo/vector-icons";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import Text from "@/components/Text";
-import {Pressable} from "react-native";
+import {Modal, Pressable} from "react-native";
+import {useCalendarStore} from "@/stores/useCalendarStore";
+import DatePicker from "@/components/input/DatePicker";
 
 export default function EventsScreen() {
   const { tag } = useLocalSearchParams<{ tag: string }>();
@@ -40,6 +42,14 @@ export default function EventsScreen() {
     setSwipedAll
   } = useEventStore();
 
+  const {
+    isCalendarVisible,
+    selectedDays,
+    updateSelectedDays,
+    clearSelectedDays,
+    setCalendarVisible
+  } = useCalendarStore();
+
   useEffect(() => {
     fetchEvents(tag)
       .then(() => console.log("Events loaded"));
@@ -60,7 +70,17 @@ export default function EventsScreen() {
       <Topbar
         onBackPress={() => router.back() }
         title={ tag }
-        rightIcon={ <MaterialIcons name="date-range" size={20} color={theme.colors.text_color}/> }
+        rightIcon={
+          <MaterialIcons
+            name="date-range"
+            size={20}
+            color={ Object.keys(selectedDays).length > 0 && !isCalendarVisible ?
+              theme.colors.button_color :
+              theme.colors.text_color
+            }
+          />
+        }
+        onRightIconPress={ () => setCalendarVisible(true) }
       />
 
       <Box flex={1}>
@@ -141,6 +161,29 @@ export default function EventsScreen() {
             </Box>
           )
         }
+
+        <Modal
+          visible={isCalendarVisible}
+          transparent={true}
+          animationType={"fade"}
+        >
+          <Box
+            flex={1}
+            justifyContent={"center"}
+            padding={"l"}
+            overflow={"hidden"}
+            style={{
+              backgroundColor: 'rgba(0,0,0, 0.5)'
+            }}
+          >
+            <DatePicker
+              selectedDays={ selectedDays }
+              onDaySelected={ updateSelectedDays }
+              onClear={ () => clearSelectedDays() }
+              onAccept={ () => setCalendarVisible(false) }
+            />
+          </Box>
+        </Modal>
       </Box>
     </Box>
   );
