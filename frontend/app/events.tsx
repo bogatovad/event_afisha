@@ -21,6 +21,22 @@ export default function EventsScreen() {
   const { tag } = useLocalSearchParams<{ tag: string }>();
 
   const swipedAllInfoOpacity = useSharedValue(0);
+  const likeOpacity = useSharedValue(0);
+  const dislikeOpacity = useSharedValue(0);
+
+  const likeStyle = useAnimatedStyle(() => ({
+    opacity: likeOpacity.value,
+    transform: [{ translateX: withTiming(likeOpacity.value ? -20 : 20) }],
+  }));
+  const dislikeStyle = useAnimatedStyle(() => ({
+    opacity: dislikeOpacity.value,
+    transform: [{ translateX: withTiming(dislikeOpacity.value ? 20 : -20) }],
+  }));
+
+  const resetOpacity = () => {
+    likeOpacity.value = withTiming(0);
+    dislikeOpacity.value = withTiming(0);
+  }
 
   const swipedAllInfoStyle = useAnimatedStyle(() => ({
     opacity: swipedAllInfoOpacity.value,
@@ -91,32 +107,53 @@ export default function EventsScreen() {
       <Box flex={1}>
         {
           !swipedAll && (
-            <Swiper
-              cards={events}
-              renderCard={(event) =>
-                <EventCard
-                  name={ event.name }
-                  date={ event.date }
-                  description={ event.description }
-                  image={ event.image }
-                  contact={ event.contact }
-                />}
-              backgroundColor="white"
-              cardHorizontalMargin={16}
-              horizontalSwipe={true}
-              verticalSwipe={false}
-              stackSize={2}
-              onSwipedAll={ () => setSwipedAll(true) }
-              containerStyle={{
-                backgroundColor: theme.colors.bg_color,
-              }}
-              cardStyle={{
-                height: "100%",
-                paddingBottom: 16
-              }}
-              cardVerticalMargin={0}
-              childrenOnTop={true}
-            />
+            <Box flex={1} backgroundColor="bg_color">
+              <Swiper
+                cards={events}
+                renderCard={(event) => (
+                  <EventCard
+                    name={event.name}
+                    date={event.date}
+                    description={event.description}
+                    image={event.image}
+                    contact={event.contact}
+                  />
+                )}
+                backgroundColor="white"
+                cardHorizontalMargin={16}
+                horizontalSwipe={true}
+                verticalSwipe={false}
+                stackSize={2}
+                containerStyle={{ backgroundColor: theme.colors.bg_color }}
+                cardStyle={{ height: "100%", paddingBottom: 16 }}
+                cardVerticalMargin={0}
+                childrenOnTop={true}
+                onSwipedAll={() => setSwipedAll(true)}
+                onSwiping={(x) => {
+                  likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
+                  dislikeOpacity.value = x < 0 ? Math.min(-x / 100, 1) : 0;
+                }}
+                onSwipedRight={resetOpacity}
+                onSwipedLeft={resetOpacity}
+                onSwipedAborted={resetOpacity}
+              />
+
+              {/* Иконка лайка */}
+              <Animated.View style={[likeStyle, { position: "absolute", right: 0, top: "50%" }]}>
+                <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
+                     style={{ borderRadius: 25, backgroundColor: 'rgb(95,239,15)'}}>
+                  <MaterialIcons name="thumb-up" size={24} color="white" />
+                </Box>
+              </Animated.View>
+
+              {/* Иконка дизлайка */}
+              <Animated.View style={[dislikeStyle, { position: "absolute", left: 0, top: "50%" }]}>
+                <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
+                     style={{ borderRadius: 25, backgroundColor: 'rgb(255,0,0)'}}>
+                  <MaterialIcons name="thumb-up" size={24} color="white" />
+                </Box>
+              </Animated.View>
+            </Box>
           )
         }
 
