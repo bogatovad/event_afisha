@@ -48,9 +48,9 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_content(self, tag: str, date_start: datetime | None = None, date_end: datetime | None = None) ->\
+    def get_content(self, tag: str | None = None, date_start: datetime | None = None, date_end: datetime | None = None) ->\
             list[ContentSchema]:
-        q_filter = Q(tags__name=tag)
+        q_filter = Q(tags__name=tag) if tag else Q()
         if date_start and date_end:
             q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
         if date_start and not date_end:
