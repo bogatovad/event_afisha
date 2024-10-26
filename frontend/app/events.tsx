@@ -51,6 +51,7 @@ export default function EventsScreen() {
     hasError,
     swipedAll,
     fetchEvents,
+    saveAction,
     setSwipedAll
   } = useEventStore();
 
@@ -133,8 +134,9 @@ export default function EventsScreen() {
                   likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
                   dislikeOpacity.value = x < 0 ? Math.min(-x / 100, 1) : 0;
                 }}
-                onSwipedRight={resetOpacity}
-                onSwipedLeft={resetOpacity}
+                onSwiped={resetOpacity}
+                onSwipedRight={(cardIndex) => saveAction("like", events[cardIndex].id)}
+                onSwipedLeft={(cardIndex) => saveAction("dislike", events[cardIndex].id)}
                 onSwipedAborted={resetOpacity}
               />
 

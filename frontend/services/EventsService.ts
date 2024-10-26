@@ -20,3 +20,16 @@ export const getContent = async (
     throw error;
   }
 };
+
+export const postAction = async (
+  action: "like" | "dislike",
+  username: string,
+  contentId: number
+)=> {
+  return await axiosInstance.post(
+    `/${action}`,
+    {
+      username: username,
+      content_id: contentId
+    });
+}
