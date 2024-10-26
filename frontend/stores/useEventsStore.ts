@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import {getContentByTag} from "@/services/EventsService";
+import {ContentParams, getContent} from "@/services/EventsService";
+import {AxiosResponse} from "axios";
 
 interface Event {
   name: string;
@@ -14,7 +15,7 @@ interface EventState {
   isLoading: boolean;
   hasError: boolean;
   swipedAll: boolean;
-  fetchEvents: (tag: string) => Promise<void>;
+  fetchEvents: (tag: string, date_start?: string, date_end?: string) => void;
   setSwipedAll: (state: boolean) => void;
 }
 
@@ -24,20 +25,32 @@ export const useEventStore = create<EventState>((set) => ({
   hasError: false,
   swipedAll: false,
 
-  fetchEvents: async (tag: string) => {
+  fetchEvents: (
+    tag: string,
+    date_start?: string,
+    date_end?: string
+  ) => {
     set({ isLoading: true, hasError: false });
 
-    getContentByTag(tag)
-      .then((response) => {
-        if (response.status == 200) {
-          set({ events: response.data, isLoading: false, swipedAll: false });
-        } else {
-          set({ hasError: true, isLoading: false });
+    const params: ContentParams = { tag };
+    if (date_start) params.date_start = date_start;
+    if (date_end) params.date_end = date_end;
+
+    getContent(params)
+      .then((response: AxiosResponse) => {
+        switch (response.status) {
+          case 200: {
+            if (response.data.length > 0) {
+              set({ events: response.data, isLoading: false, swipedAll: false });
+            } else {
+              set({ isLoading: false, swipedAll: true })
+            }
+            break;
+          }
+          default: set({ hasError: true, isLoading: false });
         }
       })
-      .catch(() => {
-        set({ hasError: true, isLoading: false });
-      });
+      .catch(() => set({ hasError: true, isLoading: false }));
   },
 
   setSwipedAll: async (state: boolean) => {

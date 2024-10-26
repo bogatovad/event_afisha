@@ -3,7 +3,7 @@ import Text from "@/components/Text";
 import { Image, ImageBackground, Pressable, ScrollView } from "react-native";
 import Box from "@/components/Box";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
-import {formatDate} from "@/scripts/parseDate";
+import {formatDate} from "@/scripts/date";
 import { LinearGradient } from "expo-linear-gradient";
 import {Feather} from "@expo/vector-icons";
 
