@@ -31,11 +31,13 @@ export default function Root({ children }: PropsWithChildren) {
 }
 
 const responsiveBackground = `
-body {
+html, body {
+  overflow: hidden;
+  overscroll-behavior: none;
   background-color: #fff;
 }
 @media (prefers-color-scheme: dark) {
-  body {
+  html, body {
     background-color: #000;
   }
 }`;

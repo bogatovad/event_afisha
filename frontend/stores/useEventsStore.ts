@@ -1,8 +1,10 @@
 import { create } from 'zustand';
-import {ContentParams, getContent} from "@/services/EventsService";
-import {AxiosResponse} from "axios";
+import {ContentParams, getContent, postAction} from "@/services/EventsService";
+import {AxiosError, AxiosResponse} from "axios";
+import {config} from "@/scripts/config";
 
 interface Event {
+  id: number;
   name: string;
   description: string;
   image: string;
@@ -16,6 +18,7 @@ interface EventState {
   hasError: boolean;
   swipedAll: boolean;
   fetchEvents: (tag: string, date_start?: string, date_end?: string) => void;
+  saveAction: (action: "like" | "dislike", id: number) => void;
   setSwipedAll: (state: boolean) => void;
 }
 
@@ -51,6 +54,21 @@ export const useEventStore = create<EventState>((set) => ({
         }
       })
       .catch(() => set({ hasError: true, isLoading: false }));
+  },
+
+  saveAction: (
+    action,
+    id
+  ) => {
+    const { username } = config().initDataUnsafe.user;
+
+    postAction(action, username, id)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e: AxiosError) => {
+        console.log(e);
+      })
   },
 
   setSwipedAll: async (state: boolean) => {

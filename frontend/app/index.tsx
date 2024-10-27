@@ -8,9 +8,12 @@ import TagCard from "@/components/cards/TagCard";
 import {Animated, FlatList, Pressable} from "react-native";
 import ScrollView = Animated.ScrollView;
 import {router} from "expo-router";
+import {useTheme} from "@shopify/restyle";
+import {Theme} from "@/constants/Theme";
 
 export default function HomeScreen() {
   const { tags, isLoading, hasError, fetchTags } = useTagsStore();
+  const theme = useTheme<Theme>();
 
   useEffect(() => {
     fetchTags()
@@ -29,9 +32,11 @@ export default function HomeScreen() {
     <ScrollView
       overScrollMode="never"
       showsVerticalScrollIndicator={false}
+      style={{
+        backgroundColor: theme.colors.bg_color
+      }}
     >
       <Box
-        backgroundColor="bg_color"
         alignItems="center"
         justifyContent="center"
         padding="l"
