@@ -152,7 +152,7 @@ export default function EventsScreen() {
               <Animated.View style={[dislikeStyle, { position: "absolute", left: 0, top: "50%" }]}>
                 <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
                      style={{ borderRadius: 25, backgroundColor: 'rgb(255,0,0)'}}>
-                  <MaterialIcons name="thumb-up" size={24} color="white" />
+                  <MaterialIcons name="thumb-down" size={24} color="white" />
                 </Box>
               </Animated.View>
             </Box>
@@ -195,7 +195,7 @@ export default function EventsScreen() {
                   >
                     <Text
                       variant="body"
-                      color="text_color"
+                      color="button_text_color"
                     >
                       { "На главный экран" }
                     </Text>

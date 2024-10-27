@@ -122,8 +122,10 @@ const EventCard: React.FC<EventCardProps> = ({
         {/* Название события */}
         <Text
           variant="header"
-          color="text_color"
           textAlign="center"
+          style={{
+            color: 'white',
+          }}
         >
           { name }
         </Text>
