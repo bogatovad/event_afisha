@@ -76,6 +76,13 @@ async def any_message(message: types.Message):
     date_datetime = datetime.fromisoformat(date)
     time.sleep(5)
     category = llm_text_analysis.extract_category(message.caption)
+
+    import string
+
+    for p in string.punctuation:
+        if p in category:
+            category = category.replace(p, '')
+
     print(f'{category=}')
     tag = Tags.objects.filter(name=category).first()
     print(f'{tag=}')
@@ -97,7 +104,7 @@ async def any_message(message: types.Message):
     content.tags.add(tag)
     print('save tags and send answer')
     await message.answer(
-        "Post created successfully!",
+        f"Post created successfully! Category is {category}",
     )
 
 
