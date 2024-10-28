@@ -1,35 +1,32 @@
 import axiosInstance from "@/services/AxiosConfig";
+import {ContentParams, EventsResponse, Event} from "@/types/events.types";
+import {ActionData, ActionResponseData, ActionResponse} from "@/types/useraction.types";
 
-export interface ContentParams {
-  tag: string,
-  date_start?: string,
-  date_end?: string
-}
-
-export const getContent = async (
-  params: ContentParams
-) => {
-  try {
-    return await axiosInstance.get(
+class EventsService {
+  async getContent (
+    params: ContentParams
+  ) {
+    const response: EventsResponse = await axiosInstance.get<Event[]>(
       '/contents',
       {
         params: params
       });
-  } catch (error) {
-    console.error("Error fetching content:", error);
-    throw error;
-  }
-};
 
-export const postAction = async (
-  action: "like" | "dislike",
-  username: string,
-  contentId: number
-)=> {
-  return await axiosInstance.post(
-    `/${action}`,
-    {
-      username: username,
-      content_id: contentId
-    });
+    return response;
+  };
+
+  async postAction (
+    actionData: ActionData
+  ) {
+    const response: ActionResponse = await axiosInstance.post<ActionResponseData>(
+      `/${actionData.action}`,
+      {
+        username: actionData.username,
+        content_id: actionData.contentId
+      });
+
+    return response;
+  }
 }
+
+export default new EventsService();

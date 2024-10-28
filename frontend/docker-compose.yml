@@ -14,6 +14,7 @@ services:
       - ./hooks:/app/hooks
       - ./stores:/app/stores
       - ./services:/app/services
+      - ./types:/app/types
       - ./server.js:/app/server.js
     networks:
       - afisha

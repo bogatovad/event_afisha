@@ -1,18 +1,17 @@
 import axiosInstance from "@/services/AxiosConfig";
+import {FeedbackData, FeedbackResponse} from "@/types/feedback.types";
 
-export const sendFeedback = async (
-  username: string,
-  message: string,
-) => {
-  try {
-    console.log(username, message);
+class FeedbackService {
+  async sendFeedback (
+    feedbackData: FeedbackData,
+  ) {
+    const response: FeedbackResponse = await axiosInstance.post<{ status: string }>(
+      '/feedback',
+      feedbackData
+    );
 
-    return await axiosInstance.post('/feedback', {
-      username: username,
-      message: message
-    });
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
+    return response
+  };
+}
+
+export default new FeedbackService();

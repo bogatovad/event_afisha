@@ -1,12 +1,15 @@
 import axiosInstance from "@/services/AxiosConfig";
+import {Tag, TagsResponse} from "@/types/tags.types";
 
-export const getTags = async () => {
-  try {
-    return await axiosInstance.get(
+class TagsService {
+  async getTags () {
+    const response: TagsResponse = await axiosInstance.get<Tag[]>(
       "/tags"
     );
-  } catch (error) {
-    console.error("Error fetching content:", error);
-    throw error;
+
+    return response;
   }
 }
+
+
+export default new TagsService();

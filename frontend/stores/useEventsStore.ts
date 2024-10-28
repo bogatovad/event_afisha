@@ -1,16 +1,8 @@
 import { create } from 'zustand';
-import {ContentParams, getContent, postAction} from "@/services/EventsService";
-import {AxiosError, AxiosResponse} from "axios";
+import {AxiosError} from "axios";
 import {config} from "@/scripts/config";
-
-interface Event {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  contact: string;
-  date: string;
-}
+import EventsService from "@/services/EventsService";
+import {Event, ContentParams} from "@/types/events.types"
 
 interface EventState {
   events: Event[];
@@ -29,31 +21,40 @@ export const useEventStore = create<EventState>((set) => ({
   swipedAll: false,
 
   fetchEvents: (
-    tag: string,
+    tag?: string,
     date_start?: string,
     date_end?: string
   ) => {
     set({ isLoading: true, hasError: false });
 
-    const params: ContentParams = { tag };
+    const params: ContentParams = {};
+    if (tag)        params.tag = tag;
     if (date_start) params.date_start = date_start;
-    if (date_end) params.date_end = date_end;
+    if (date_end)   params.date_end = date_end;
 
-    getContent(params)
-      .then((response: AxiosResponse) => {
+    EventsService.getContent(params)
+      .then((response) => {
         switch (response.status) {
           case 200: {
+            console.log(`Successfully get events`);
             if (response.data.length > 0) {
               set({ events: response.data, isLoading: false, swipedAll: false });
             } else {
+              console.log(`No events on provided params`);
               set({ isLoading: false, swipedAll: true })
             }
             break;
           }
-          default: set({ hasError: true, isLoading: false });
+          default: {
+            console.log(`Events request error with code: ${response.status}`);
+            set({ hasError: true, isLoading: false });
+          }
         }
       })
-      .catch(() => set({ hasError: true, isLoading: false }));
+      .catch((e) => {
+        console.log(`Events request error: ${e}`);
+        set({ hasError: true, isLoading: false })
+      });
   },
 
   saveAction: (
@@ -62,12 +63,16 @@ export const useEventStore = create<EventState>((set) => ({
   ) => {
     const { username } = config().initDataUnsafe.user;
 
-    postAction(action, username, id)
+    EventsService.postAction({action: action, username: username, contentId: id})
       .then((response) => {
-        console.log(response);
+        if (response.status === 200) {
+          console.log(`Successfully post like/dislike`);
+        } else {
+          console.log(`Error in posting like/dislike with code: ${response.status}`);
+        }
       })
       .catch((e: AxiosError) => {
-        console.log(e);
+        console.log(`Error posting like/dislike with error: ${e}`);
       })
   },
 

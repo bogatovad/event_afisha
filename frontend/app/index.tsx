@@ -16,8 +16,7 @@ export default function HomeScreen() {
   const theme = useTheme<Theme>();
 
   useEffect(() => {
-    fetchTags()
-      .finally(() => console.log("Tags: " + tags.toString()));
+    fetchTags();
   }, []);
 
   if (isLoading) {
