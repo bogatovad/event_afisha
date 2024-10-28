@@ -72,14 +72,19 @@ async def any_message(message: types.Message):
     file_tg = await bot.get_file(file.file_id)
     download_file = await bot.download_file(file_tg.file_path)
     date = llm_text_analysis.extract_date(message.caption)
+    print(f'{date=}')
     date_datetime = datetime.fromisoformat(date)
     time.sleep(5)
     category = llm_text_analysis.extract_category(message.caption)
+    print(f'{category=}')
     tag = Tags.objects.filter(name=category).first()
+    print(f'{tag=}')
     time.sleep(5)
     description = llm_text_analysis.shorten_text(message.caption)
+    print(f'{description=}')
     time.sleep(5)
     name = llm_text_analysis.extract_name_event(message.caption)
+    print(f'{name=}')
     content = Content(
         name=name,
         description=description,
