@@ -11,6 +11,8 @@ class TagSchema(Schema):
     @field_validator('image')
     @classmethod
     def validate_x(cls, image: str) -> str:
+        if image is None:
+            return None
         image_not_addr = image[17:]
         return "https://afishabot.ru" + image_not_addr
 
@@ -19,13 +21,15 @@ class ContentSchema(Schema):
     id: int
     name: str
     description: str
-    image: str
+    image: str | None = None
     contact: str
     date: date
 
     @field_validator('image')
     @classmethod
     def validate_x(cls, image: str) -> str:
+        if image is None:
+            return None
         image_not_addr = image[17:]
         return "https://afishabot.ru" + image_not_addr
 
