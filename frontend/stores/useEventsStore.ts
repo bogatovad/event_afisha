@@ -4,17 +4,20 @@ import {config} from "@/scripts/config";
 import EventsService from "@/services/EventsService";
 import {Event, ContentParams} from "@/types/events.types"
 
-interface EventState {
+interface EventsState {
+  tag: string | undefined;
   events: Event[];
   isLoading: boolean;
   hasError: boolean;
   swipedAll: boolean;
-  fetchEvents: (tag: string, date_start?: string, date_end?: string) => void;
+  fetchEvents: (tag?: string, date_start?: string, date_end?: string) => void;
   saveAction: (action: "like" | "dislike", id: number) => void;
   setSwipedAll: (state: boolean) => void;
+  setTag: (tag: string | undefined) => void;
 }
 
-export const useEventStore = create<EventState>((set) => ({
+export const useEventsStore = create<EventsState>((set) => ({
+  tag: undefined,
   events: [],
   isLoading: true,
   hasError: false,
@@ -78,5 +81,9 @@ export const useEventStore = create<EventState>((set) => ({
 
   setSwipedAll: async (state: boolean) => {
     set({ swipedAll: state });
+  },
+
+  setTag: (newTag: string | undefined) => {
+    set({ tag: newTag });
   }
 }));

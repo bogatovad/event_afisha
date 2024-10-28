@@ -30,10 +30,8 @@ export default function RootLayout() {
   return (
     <ThemeProvider theme={theme}>
       <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="feedback" options={{ headerShown: false }} />
-        <Stack.Screen name="events" options={{ headerShown: false }} />
-        <Stack.Screen name="about" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} redirect />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

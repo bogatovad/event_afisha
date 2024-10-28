@@ -22,8 +22,8 @@ const TagCard: React.FC<TagCardProps> = ({
       style={{
         flex: 1
       }}
-      onPress={ () => router.push({
-        pathname: "/events",
+      onPress={ () => router.replace({
+        pathname: "/feed",
         params: { tag: name }
       }) }
     >

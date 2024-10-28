@@ -3,8 +3,8 @@ import Swiper from 'react-native-deck-swiper'
 import EventCard from "@/components/cards/EventCard";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/constants/Theme";
-import {useEventStore} from "@/stores/useEventsStore";
-import {useEffect} from "react";
+import {useEventsStore} from "@/stores/useEventsStore";
+import React, {useEffect} from "react";
 import LoadingCard from "@/components/cards/LoadingCard";
 import ErrorCard from "@/components/cards/ErrorCard";
 import {useLocalSearchParams, useRouter} from "expo-router";
@@ -18,7 +18,33 @@ import DatePicker from "@/components/input/DatePicker";
 import {getPeriodBorders} from "@/scripts/date";
 
 export default function EventsScreen() {
-  const { tag } = useLocalSearchParams<{ tag: string }>();
+  const theme = useTheme<Theme>();
+  const router = useRouter();
+  const {
+    tag,
+    events,
+    isLoading,
+    hasError,
+    swipedAll,
+    fetchEvents,
+    saveAction,
+    setSwipedAll,
+    setTag
+  } = useEventsStore();
+
+  let { tag: tagParam } = useLocalSearchParams<{ tag: string }>();
+
+  useEffect(() => {
+    setTag(tagParam);
+  }, [tagParam]);
+
+  const {
+    isCalendarVisible,
+    selectedDays,
+    updateSelectedDays,
+    clearSelectedDays,
+    setCalendarVisible
+  } = useCalendarStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
   const likeOpacity = useSharedValue(0);
@@ -43,31 +69,11 @@ export default function EventsScreen() {
     gap: 16
   }));
 
-  const theme = useTheme<Theme>();
-  const router = useRouter();
-  const {
-    events,
-    isLoading,
-    hasError,
-    swipedAll,
-    fetchEvents,
-    saveAction,
-    setSwipedAll
-  } = useEventStore();
-
-  const {
-    isCalendarVisible,
-    selectedDays,
-    updateSelectedDays,
-    clearSelectedDays,
-    setCalendarVisible
-  } = useCalendarStore();
-
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
 
     fetchEvents(tag, borders.date_start, borders.date_end);
-  }, []);
+  }, [tag]);
 
   useEffect(() => {
     if (swipedAll) {
@@ -78,11 +84,21 @@ export default function EventsScreen() {
   }, [swipedAll]);
 
   if (isLoading) {
-    return <LoadingCard/>
+    return (
+      <Box flex={1} backgroundColor="bg_color">
+        <Topbar title={ tag ? tag : "Лента" }/>
+        <LoadingCard />
+      </Box>
+    );
   }
 
   if (hasError) {
-    return <ErrorCard/>
+    return (
+      <Box flex={1} backgroundColor="bg_color">
+        <Topbar title={ tag ? tag : "Лента" }/>
+        <ErrorCard />
+      </Box>
+    );
   }
 
   return (
@@ -90,8 +106,11 @@ export default function EventsScreen() {
       flex={1}
     >
       <Topbar
-        onBackPress={() => router.back() }
-        title={ tag }
+        onBackPress={ tag ? () => {
+          router.replace("/tags");
+          setTag(undefined);
+        } : undefined }
+        title={ tag ? tag : "Лента" }
         rightIcon={
           <MaterialIcons
             name="date-range"
