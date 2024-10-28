@@ -28,4 +28,4 @@ COPY /src /app/
 EXPOSE 8000
 USER 33
 
-CMD ["sh", "-c", "gunicorn -c gunicorn.conf.py --chdir /app castle.wsgi"]
+CMD ["sh", "-c", "gunicorn -c gunicorn.conf.py --chdir /app event_afisha.wsgi"]
