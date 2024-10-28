@@ -63,54 +63,34 @@ async def check_user(message: types.Message):
 @dp.message(F.photo)
 async def any_message(message: types.Message):
     from datetime import datetime
-    from io import BytesIO
-
-    image = BytesIO()
-    llm_text_analysis = LLMTextAnalysis()
-    #print(message.photo)
-
-    from django.db import models
     from django.core.files import File
-    from PIL import Image
+    import time
+    import uuid
 
-    file = message.photo[0]
+    llm_text_analysis = LLMTextAnalysis()
+    file = message.photo[-1]
     file_tg = await bot.get_file(file.file_id)
     download_file = await bot.download_file(file_tg.file_path)
-
-    image = Image.open(download_file)
-
-    print('file', File(download_file))
-    tag = Tags.objects.filter(name='Кино').first()
-
-    #mage = File(download_file)
+    date = llm_text_analysis.extract_date(message.caption)
+    date_datetime = datetime.fromisoformat(date)
+    time.sleep(5)
+    category = llm_text_analysis.extract_category(message.caption)
+    tag = Tags.objects.filter(name=category).first()
+    time.sleep(5)
+    description = llm_text_analysis.shorten_text(message.caption)
+    time.sleep(5)
+    name = llm_text_analysis.extract_name_event(message.caption)
     content = Content(
-        name='test_name',
-        description='test_desc',
-        #image=image,
+        name=name,
+        description=description,
         contact='test_contact',
-        date=datetime.fromisoformat('2024-10-28')
+        date=date_datetime
     )
-    content.image.save(name='test.jpg', content=File(download_file))
+    content.image.save(name=f'autopost{uuid.uuid4()}', content=File(download_file))
     content.save()
     content.tags.add(tag)
-
-    # date = llm_text_analysis.extract_date(message.caption)
-    # date_datetime = datetime.fromisoformat(date)
-    # time.sleep(5)
-    # category = llm_text_analysis.extract_category(message.caption)
-    # time.sleep(5)
-    # description = llm_text_analysis.shorten_text(message.caption)
-    # time.sleep(5)
-    # name = llm_text_analysis.extract_name_event(message.caption)
-    #
-    # print(name)
-    # print(description)
-    # print(date_datetime)
-    # print(category)
-
-
     await message.answer(
-        "Hello, world!",
+        "Post created successfully!",
     )
 
 

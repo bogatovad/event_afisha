@@ -21,7 +21,7 @@ class LLMTextAnalysis:
     def extract_category(self, text: str) -> str:
         tags = [tag.name for tag in list(Tags.objects.only('name'))]
         categories = ",".join(tags)
-        extract_datetime_query = f"К какой категории больше всего относится это мероприятие {categories}. Ответ дать в виде одного слова без пояснений."
+        extract_datetime_query = f"К какой категории больше всего относится это мероприятие {categories}. Ответ дать в виде одного слова без пояснений и без точки в конце"
         task_extract_datetime = extract_datetime_query + text
         return self.account.create_completion(task_extract_datetime, '0.6', system_prompt='Отвечай на русском')
 
