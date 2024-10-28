@@ -91,9 +91,11 @@ async def any_message(message: types.Message):
         contact='test_contact',
         date=date_datetime
     )
+    print(f'{content=}')
     content.image.save(name=f'autopost{uuid.uuid4()}', content=File(download_file))
     content.save()
     content.tags.add(tag)
+    print('save tags and send answer')
     await message.answer(
         "Post created successfully!",
     )
