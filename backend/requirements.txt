@@ -49,8 +49,11 @@ certifi==2024.8.30
     # via
     #   aiogram
     #   minio
+    #   requests
 cffi==1.17.1
     # via argon2-cffi-bindings
+charset-normalizer==3.4.0
+    # via requests
 click==8.1.7
     # via
     #   celery
@@ -99,7 +102,9 @@ gunicorn==23.0.0
 hiredis==3.0.0
     # via aioredis
 idna==3.10
-    # via yarl
+    # via
+    #   requests
+    #   yarl
 injector==0.22.0
     # via django-ninja-extra
 jmespath==1.0.1
@@ -145,6 +150,8 @@ python-dateutil==2.9.0.post0
     #   python-crontab
 redis==5.0.7
     # via -r requirements.in
+requests==2.32.3
+    # via yandexgptlite
 s3transfer==0.6.2
     # via boto3
 six==1.16.0
@@ -167,6 +174,7 @@ urllib3==1.26.20
     # via
     #   botocore
     #   minio
+    #   requests
 vine==5.1.0
     # via
     #   amqp
@@ -174,5 +182,7 @@ vine==5.1.0
     #   kombu
 wcwidth==0.2.13
     # via prompt-toolkit
+yandexgptlite==0.1.7
+    # via -r requirements.in
 yarl==1.15.5
     # via aiohttp
