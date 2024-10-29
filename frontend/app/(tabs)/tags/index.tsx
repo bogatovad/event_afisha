@@ -8,10 +8,15 @@ import {FlatList} from "react-native";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/constants/Theme";
 import Topbar from "@/components/navigation/Topbar";
+import {useEventsStore} from "@/stores/useEventsStore";
+import {useRouter} from "expo-router";
 
 export default function TagsScreen() {
   const { tags, isLoading, hasError, fetchTags } = useTagsStore();
+  const { setTag } = useEventsStore();
+
   const theme = useTheme<Theme>();
+  const router = useRouter();
 
   useEffect(() => {
     fetchTags();
@@ -51,6 +56,10 @@ export default function TagsScreen() {
             name={ item.name }
             description={ item.description }
             image={ item.image }
+            onPress={ () => {
+              setTag(item.name);
+              router.replace("/feed") ;
+            }}
           />
         }
         keyExtractor={ item => item.name }

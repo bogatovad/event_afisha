@@ -11,7 +11,7 @@ interface EventsState {
   hasError: boolean;
   swipedAll: boolean;
   fetchEvents: (tag?: string, date_start?: string, date_end?: string) => void;
-  saveAction: (action: "like" | "dislike", id: number) => void;
+  saveAction: (action: "like" | "dislike", id: number) => Promise<void>;
   setSwipedAll: (state: boolean) => void;
   setTag: (tag: string | undefined) => void;
 }
@@ -60,13 +60,13 @@ export const useEventsStore = create<EventsState>((set) => ({
       });
   },
 
-  saveAction: (
+  saveAction: async (
     action,
     id
   ) => {
     const { username } = config().initDataUnsafe.user;
 
-    EventsService.postAction({action: action, username: username, contentId: id})
+    await EventsService.postAction({action: action, username: username, contentId: id})
       .then((response) => {
         if (response.status === 200) {
           console.log(`Successfully post like/dislike`);

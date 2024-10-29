@@ -2,30 +2,26 @@ import React from "react";
 import Box from "@/components/Box";
 import Text from "@/components/Text";
 import {ImageBackground, Pressable} from "react-native";
-import {useRouter} from "expo-router";
 
 interface TagCardProps {
   name: string,
   description: string,
   image: string | null,
+  onPress: () => void;
 }
 
 const TagCard: React.FC<TagCardProps> = ({
   name,
   description,
-  image
+  image,
+  onPress
 }) => {
-  const router = useRouter();
-
   return (
     <Pressable
       style={{
         flex: 1
       }}
-      onPress={ () => router.replace({
-        pathname: "/feed",
-        params: { tag: name }
-      }) }
+      onPress={ onPress }
     >
       <ImageBackground
         source={{ uri: image ? image : undefined }}

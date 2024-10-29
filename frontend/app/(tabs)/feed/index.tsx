@@ -7,7 +7,7 @@ import {useEventsStore} from "@/stores/useEventsStore";
 import React, {useEffect} from "react";
 import LoadingCard from "@/components/cards/LoadingCard";
 import ErrorCard from "@/components/cards/ErrorCard";
-import {useLocalSearchParams, useRouter} from "expo-router";
+import {useRouter} from "expo-router";
 import Topbar from "@/components/navigation/Topbar";
 import {MaterialIcons} from "@expo/vector-icons";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
@@ -31,12 +31,6 @@ export default function EventsScreen() {
     setSwipedAll,
     setTag
   } = useEventsStore();
-
-  let { tag: tagParam } = useLocalSearchParams<{ tag: string }>();
-
-  useEffect(() => {
-    setTag(tagParam);
-  }, [tagParam]);
 
   const {
     isCalendarVisible,
@@ -86,7 +80,24 @@ export default function EventsScreen() {
   if (isLoading) {
     return (
       <Box flex={1} backgroundColor="bg_color">
-        <Topbar title={ tag ? tag : "Лента" }/>
+        <Topbar
+          onBackPress={ tag ? () => {
+            router.navigate("/tags");
+            setTag(undefined);
+          } : undefined }
+          title={ tag ? tag : "Лента" }
+          rightIcon={
+            <MaterialIcons
+              name="date-range"
+              size={20}
+              color={ Object.keys(selectedDays).length > 0 && !isCalendarVisible ?
+                theme.colors.button_color :
+                theme.colors.text_color
+              }
+            />
+          }
+          onRightIconPress={ () => setCalendarVisible(true) }
+        />
         <LoadingCard />
       </Box>
     );
@@ -95,7 +106,24 @@ export default function EventsScreen() {
   if (hasError) {
     return (
       <Box flex={1} backgroundColor="bg_color">
-        <Topbar title={ tag ? tag : "Лента" }/>
+        <Topbar
+          onBackPress={ tag ? () => {
+            router.navigate("/tags");
+            setTag(undefined);
+          } : undefined }
+          title={ tag ? tag : "Лента" }
+          rightIcon={
+            <MaterialIcons
+              name="date-range"
+              size={20}
+              color={ Object.keys(selectedDays).length > 0 && !isCalendarVisible ?
+                theme.colors.button_color :
+                theme.colors.text_color
+              }
+            />
+          }
+          onRightIconPress={ () => setCalendarVisible(true) }
+        />
         <ErrorCard />
       </Box>
     );
@@ -107,7 +135,7 @@ export default function EventsScreen() {
     >
       <Topbar
         onBackPress={ tag ? () => {
-          router.replace("/tags");
+          router.navigate("/tags");
           setTag(undefined);
         } : undefined }
         title={ tag ? tag : "Лента" }
@@ -195,31 +223,38 @@ export default function EventsScreen() {
                   color="text_color"
                   textAlign="center"
                 >
-                  { "Мероприятия в этой категории закончились" }
+                  { tag ? "Мероприятия в этой категории закончились" : "Мероприятия закончились" }
                 </Text>
 
-                <Pressable
-                  onPress={ () => router.back() }
-                >
-                  <Box
-                    flexDirection="row"
-                    height={44}
-                    padding="l"
-                    alignItems="center"
-                    justifyContent="center"
-                    backgroundColor="button_color"
-                    style={{
-                      borderRadius: 12
-                    }}
-                  >
-                    <Text
-                      variant="body"
-                      color="button_text_color"
+                {
+                  tag && (
+                    <Pressable
+                      onPress={ () => {
+                        router.navigate("/tags");
+                        setTag(undefined);
+                      }}
                     >
-                      { "На главный экран" }
-                    </Text>
-                  </Box>
-                </Pressable>
+                      <Box
+                        flexDirection="row"
+                        height={44}
+                        padding="l"
+                        alignItems="center"
+                        justifyContent="center"
+                        backgroundColor="button_color"
+                        style={{
+                          borderRadius: 12
+                        }}
+                      >
+                        <Text
+                          variant="body"
+                          color="button_text_color"
+                        >
+                          { "Выбрать другую категорию" }
+                        </Text>
+                      </Box>
+                    </Pressable>
+                  )
+                }
               </Animated.View>
             </Box>
           )
