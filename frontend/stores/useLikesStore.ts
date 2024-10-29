@@ -7,13 +7,19 @@ interface LikesState {
   likes: Event[];
   isLoading: boolean;
   hasError: boolean;
+  modalVisible: boolean;
+  selectedEvent: number | undefined;
   fetchLikes: () => void;
+  setModalVisible: (visible: boolean) => void;
+  setEventSelected: (index: number | undefined ) => void;
 }
 
 export const useLikesStore = create<LikesState>((set) => ({
   likes: [],
   isLoading: true,
   hasError: false,
+  modalVisible: false,
+  selectedEvent: undefined,
 
   fetchLikes: () => {
     set({ isLoading: true, hasError: false });
@@ -38,4 +44,12 @@ export const useLikesStore = create<LikesState>((set) => ({
         set({ hasError: true, isLoading: false })
       });
   },
+
+  setEventSelected: (index: number | undefined ) => {
+    set({ selectedEvent: index });
+  },
+
+  setModalVisible: (visible: boolean) => {
+    set({ modalVisible: visible });
+  }
 }));

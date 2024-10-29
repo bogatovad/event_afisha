@@ -1,22 +1,47 @@
-import React, { useEffect } from "react";
+import React, {useCallback, useState} from "react";
 import Box from "@/components/Box";
 import Text from "@/components/Text";
 import { useLikesStore } from "@/stores/useLikesStore";
 import Topbar from "@/components/navigation/Topbar";
 import LoadingCard from "@/components/cards/LoadingCard";
 import ErrorCard from "@/components/cards/ErrorCard";
+import {FlatList, ImageBackground, Modal, Pressable, RefreshControl, ScrollView} from "react-native";
+import LikedEventCard from "@/components/cards/LikedEventCard";
+import {useTheme} from "@shopify/restyle";
+import {Theme} from "@/constants/Theme";
+import {useEventsStore} from "@/stores/useEventsStore";
+import {MaterialIcons} from "@expo/vector-icons";
+import {useFocusEffect} from "expo-router";
 
 export default function LikesScreen() {
   const {
     likes,
     isLoading,
     hasError,
+    modalVisible,
+    selectedEvent,
     fetchLikes,
+    setEventSelected,
+    setModalVisible
   } = useLikesStore();
 
-  useEffect(() => {
+  const { saveAction } = useEventsStore();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
     fetchLikes();
-  }, []);
+    setRefreshing(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchLikes();
+    }, [fetchLikes])
+  )
+
+  const theme = useTheme<Theme>();
 
   if (isLoading) {
     return (
@@ -52,19 +77,127 @@ export default function LikesScreen() {
   return (
     <Box flex={1} backgroundColor="bg_color">
       <Topbar title={"Понравилось"} />
-      <Box flex={1} backgroundColor="bg_color" paddingHorizontal="m">
-        {
-          likes.map((item, index) => (
-            <Text
-              key={index}
-              variant="body"
-              color="text_color"
-            >
-              {item.name}
-            </Text>
-          ))
-        }
+      <Box
+        flex={1}
+        backgroundColor="bg_color"
+        paddingHorizontal="m"
+      >
+        <FlatList
+          data={likes}
+          renderItem={({ item, index }) => (
+            <LikedEventCard
+              name={item.name}
+              date={item.date}
+              image={item.image}
+              onPress={() => {
+                setEventSelected(index);
+                setModalVisible(true);
+              }}
+            />
+          )}
+          keyExtractor={item => item.name}
+          style={{
+            width: "100%"
+          }}
+          contentContainerStyle={{
+            paddingBottom: theme.spacing.s,
+            gap: 12
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={theme.colors.button_color}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+          overScrollMode="never"
+        />
       </Box>
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onDismiss={ () => setEventSelected(undefined) }
+        transparent
+      >
+        <ImageBackground
+          source={{ uri: selectedEvent != undefined ? likes[selectedEvent].image : undefined }}
+          blurRadius={4}
+          style={{
+            flex: 1,
+            backgroundColor: "gray",
+          }}
+        >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            overScrollMode="never"
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.6)'
+            }}
+          >
+            <Box
+              gap="l"
+              padding="m"
+              paddingBottom="l"
+            >
+              <Text
+                variant="header"
+                style={{
+                  color: "white"
+                }}
+              >
+                { selectedEvent != undefined && likes[selectedEvent].name }
+              </Text>
+
+              <Text
+                variant="body"
+                style={{
+                  color: "white"
+                }}
+              >
+                { selectedEvent != undefined  && likes[selectedEvent].description }
+              </Text>
+
+              <Box
+                bottom={0}
+                width={"100%"}
+                flexDirection={"row"}
+                paddingHorizontal={"m"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <Pressable
+                  onPress={ () => {
+                    setModalVisible(false);
+                    saveAction("dislike", likes[selectedEvent!].id)
+                      .then(() => {
+                        handleRefresh();
+                        setEventSelected(undefined);
+                      });
+                  }}
+                >
+                  <Box width={44} height={44} alignItems={"center"} justifyContent={"center"}
+                       style={{ borderRadius: 25, backgroundColor: 'rgb(255,0,0)'}}>
+                    <MaterialIcons name="thumb-down" size={20} color="white" />
+                  </Box>
+                </Pressable>
+
+                <Pressable
+                  onPress={ () => setModalVisible(false) }
+                >
+                  <Box width={44} height={44} alignItems={"center"} justifyContent={"center"}
+                       backgroundColor={"button_color"}
+                       style={{ borderRadius: 25 }}>
+                    <MaterialIcons name="close" size={20} color="white" />
+                  </Box>
+                </Pressable>
+              </Box>
+            </Box>
+          </ScrollView>
+        </ImageBackground>
+      </Modal>
     </Box>
   );
 }
