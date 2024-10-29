@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {sendFeedback} from "@/services/FeedbackService";
+import FeedbackService from "@/services/FeedbackService";
 import {config} from "@/scripts/config";
 
 interface FeedbackState {
@@ -7,7 +7,7 @@ interface FeedbackState {
   hasError: boolean;
   isSuccess: boolean;
   setText: (text: string) => void;
-  submitFeedback: () => Promise<void>;
+  submitFeedback: () => void;
 }
 
 export const useFeedbackStore = create<FeedbackState>((set) => ({
@@ -17,20 +17,23 @@ export const useFeedbackStore = create<FeedbackState>((set) => ({
 
   setText: (text: string) => set({ text }),
 
-  submitFeedback: async () => {
+  submitFeedback: () => {
     set({ hasError: false, isSuccess: false });
 
-    try {
-      const { username } = config().initDataUnsafe.user
-      const response = await sendFeedback(username, useFeedbackStore.getState().text);
-
-      if (response.status === 200) {
-        set({ isSuccess: true });
-      } else {
+    const { username } = config().initDataUnsafe.user
+    FeedbackService.sendFeedback({ username: username, message: useFeedbackStore.getState().text })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(`Successfully submit feedback`);
+          set({ isSuccess: true });
+        } else {
+          console.log(`Feedback request error with code: ${response.status}`);
+          set({ hasError: true });
+        }
+      })
+      .catch((e) => {
+        console.log(`Feedback request error: ${e}`);
         set({ hasError: true });
-      }
-    } catch (error) {
-      set({ hasError: true });
-    }
+      })
   },
 }));

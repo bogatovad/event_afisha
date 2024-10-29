@@ -122,7 +122,7 @@ export default function AboutScreen() {
             paddingHorizontal: 32,
             paddingBottom: 32
           }}
-          onPress={ () => { router.push("/feedback") }}
+          onPress={ () => { router.push("/about/feedback") }}
         >
           <Box
             backgroundColor="button_color"
