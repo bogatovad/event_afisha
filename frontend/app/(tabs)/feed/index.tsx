@@ -29,7 +29,8 @@ export default function EventsScreen() {
     fetchEvents,
     saveAction,
     setSwipedAll,
-    setTag
+    setTag,
+    descriptionExpanded,
   } = useEventsStore();
 
   const {
@@ -169,7 +170,7 @@ export default function EventsScreen() {
                 )}
                 backgroundColor="white"
                 cardHorizontalMargin={16}
-                horizontalSwipe={true}
+                horizontalSwipe={!descriptionExpanded}
                 verticalSwipe={false}
                 stackSize={2}
                 containerStyle={{ backgroundColor: theme.colors.bg_color }}
