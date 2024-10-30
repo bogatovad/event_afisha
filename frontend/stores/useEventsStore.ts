@@ -14,9 +14,11 @@ interface EventsState {
   saveAction: (action: "like" | "dislike", id: number) => Promise<void>;
   setSwipedAll: (state: boolean) => void;
   setTag: (tag: string | undefined) => void;
+  descriptionExpanded: boolean;
+  toggleDescriptionExpanded: () => void;
 }
 
-export const useEventsStore = create<EventsState>((set) => ({
+export const useEventsStore = create<EventsState>((set, get) => ({
   tag: undefined,
   events: [],
   isLoading: true,
@@ -85,5 +87,11 @@ export const useEventsStore = create<EventsState>((set) => ({
 
   setTag: (newTag: string | undefined) => {
     set({ tag: newTag });
+  },
+
+  descriptionExpanded: false,
+  toggleDescriptionExpanded: () => {
+    const { descriptionExpanded } = get();
+    set({ descriptionExpanded: !descriptionExpanded })
   }
 }));

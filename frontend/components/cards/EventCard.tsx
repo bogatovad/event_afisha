@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect} from "react";
 import Text from "@/components/Text";
 import { Image, ImageBackground, Pressable, ScrollView } from "react-native";
 import Box from "@/components/Box";
@@ -6,6 +6,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-na
 import {formatDate} from "@/scripts/date";
 import { LinearGradient } from "expo-linear-gradient";
 import {Feather} from "@expo/vector-icons";
+import { useEventsStore } from "@/stores/useEventsStore";
 
 interface EventCardProps {
   name: string;
@@ -24,14 +25,20 @@ const EventCard: React.FC<EventCardProps> = ({
 }) => {
   const flexValue = useSharedValue(0);
   const overlayOpacity = useSharedValue(0);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const nameFlex = useSharedValue(1);
+  const nameOpacity = useSharedValue(1);
 
-  const handlePress = () => {
-    setIsExpanded(!isExpanded);
+  const {
+    descriptionExpanded,
+    toggleDescriptionExpanded
+  } = useEventsStore();
 
-    flexValue.value = withTiming(isExpanded ? 0 : 1, { duration: 500 });
-    overlayOpacity.value = withTiming(isExpanded ? 0 : 0.7, { duration: 500 });
-  };
+  useEffect(() => {
+    flexValue.value = withTiming(descriptionExpanded ? 1 : 0, { duration: 500 });
+    overlayOpacity.value = withTiming(descriptionExpanded ? 0.7 : 0, { duration: 500 });
+    nameFlex.value = withTiming(descriptionExpanded ? 0 : 1, { duration: 500 });
+    nameOpacity.value = withTiming(descriptionExpanded ? 0 : 1, { duration: 500 });
+  }, [descriptionExpanded]);
 
   const animatedDescriptionStyle = useAnimatedStyle(() => ({
     flex: flexValue.value,
@@ -39,6 +46,13 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const animatedOverlayStyle = useAnimatedStyle(() => ({
     opacity: overlayOpacity.value,
+  }));
+
+  const animatedNameStyle = useAnimatedStyle(() => ({
+    flex: nameFlex.value,
+    opacity: nameOpacity.value,
+    overflow: "hidden",
+    justifyContent: "flex-end"
   }));
 
   return (
@@ -113,26 +127,28 @@ const EventCard: React.FC<EventCardProps> = ({
                   color: 'white',
                 }}
               >
-                { description }
+                {description}
               </Text>
             </ScrollView>
           </Animated.View>
         </Box>
 
-        {/* Название события */}
-        <Text
-          variant="header"
-          textAlign="center"
-          style={{
-            color: 'white',
-          }}
-        >
-          { name }
-        </Text>
+        {/* Анимированное название мероприятия */}
+        <Animated.View style={animatedNameStyle}>
+          <Text
+            variant="header"
+            textAlign="center"
+            style={{
+              color: 'white',
+            }}
+          >
+            {name}
+          </Text>
+        </Animated.View>
 
         {/* Кнопка Информации (описания) */}
         <Pressable
-          onPress={handlePress}
+          onPress={toggleDescriptionExpanded}
           style={{
             position: 'absolute',
             bottom: 16,
