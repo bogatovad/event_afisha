@@ -70,16 +70,17 @@ async def any_message(message: types.Message):
         if entity.type == 'text_link':
             link_name = llm_text_analysis.create_name_for_link(entity.url)
             links.append({link_name: entity.url})
-            time.sleep(3)
+            time.sleep(1)
 
     print(f'{links=}')
     file_tg = await bot.get_file(file.file_id)
     download_file = await bot.download_file(file_tg.file_path)
     date = llm_text_analysis.extract_date(message.caption).replace(".", "-")
+    date = date.replace("Ответ: ", "")
     print(f'{date=}')
     date_datetime = datetime.fromisoformat(date)
-    time.sleep(5)
-    category = llm_text_analysis.extract_category(message.caption)
+    time.sleep(1)
+    category = llm_text_analysis.extract_category(message.caption).replace(" ", "")
 
     for p in string.punctuation:
         if p in category:
@@ -92,10 +93,10 @@ async def any_message(message: types.Message):
     if tag is None:
         tag = Tags.objects.create(name=category)
 
-    time.sleep(5)
+    time.sleep(1)
     description = llm_text_analysis.shorten_text(message.caption).replace("*", "")
     print(f'{description=}')
-    time.sleep(5)
+    time.sleep(1)
     name = llm_text_analysis.extract_name_event(message.caption).replace('"', "").replace("*", "")
     print(f'{name=}')
     content = Content(

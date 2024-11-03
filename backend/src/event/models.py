@@ -30,7 +30,7 @@ class Content(GenericModel):
     description = models.TextField()
     tags = models.ManyToManyField(Tags, related_name='contents')
     image = models.ImageField(upload_to="images", max_length=300)
-    contact = models.JSONField(null=True, blank=True)
+    contact = models.JSONField(default={}, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
 
     def get_tags(self):
