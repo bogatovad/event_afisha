@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Content, Tags, Like, User, Feedback
+from event.models import Content, Tags, Like, User, Feedback
 
 
 @admin.register(Content)
