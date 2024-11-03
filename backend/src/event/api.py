@@ -83,6 +83,7 @@ class LikeController:
     )
     def set_like(self, request_data: LikeRequestSchema):
         user = User.objects.filter(username=request_data.username).first()
+        # todo: создавать пользователя если такого нет.
         content = Content.objects.filter(id=request_data.content_id).first()
         Like.objects.update_or_create(user=user, content=content, defaults={"value": True})
         return {'user': request_data.username, 'content': request_data.content_id, 'value': True}

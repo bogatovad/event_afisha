@@ -22,7 +22,7 @@ class ContentSchema(Schema):
     name: str
     description: str
     image: str | None = None
-    contact: str
+    contact: list[dict]
     date: date
 
     @field_validator('image')

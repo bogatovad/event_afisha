@@ -26,7 +26,7 @@ class LLMTextAnalysis:
         return self.account.create_completion(task_extract_datetime, temperature='0', system_prompt='Отвечай на русском')
 
     def shorten_text(self, text: str) -> str:
-        extract_datetime_query = "Выдели из текста главную информацию и сократи его до 5 предложений. Ответ дать без пояснений и без обрамлений"
+        extract_datetime_query = "Оформи текст по структуре дата, место, время, адрес, краткое описание. Выровни текст по левому краю. Если нет данных для одного из полей, то пропусти это поле. Между полями оставь пустые строки."
         task_extract_datetime = extract_datetime_query + text
         return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
 
@@ -34,3 +34,9 @@ class LLMTextAnalysis:
         extract_datetime_query = "Составь название мероприятия, в ответе дать только название без пояснений в формате 'Название'. Ответ дать без пояснений и без обрамлений"
         task_extract_datetime = extract_datetime_query + text
         return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
+
+    def create_name_for_link(self, text: str) -> str:
+        extract_datetime_query = "Придумай имя для ссылки. В ответе дай только имя."
+        task_extract_datetime = extract_datetime_query + text
+        return self.account.create_completion(task_extract_datetime, temperature="0",
+                                              system_prompt='Отвечай на русском')

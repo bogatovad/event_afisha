@@ -69,9 +69,19 @@ async def any_message(message: types.Message):
 
     llm_text_analysis = LLMTextAnalysis()
     file = message.photo[-1]
+    caption_entities = message.caption_entities
+    links = []
+
+    for entity in caption_entities:
+        if entity.type == 'text_link':
+            link_name = llm_text_analysis.create_name_for_link(entity.url)
+            links.append({link_name: entity.url})
+            time.sleep(3)
+
+    print(f'{links=}')
     file_tg = await bot.get_file(file.file_id)
     download_file = await bot.download_file(file_tg.file_path)
-    date = llm_text_analysis.extract_date(message.caption)
+    date = llm_text_analysis.extract_date(message.caption).replace(".", "-")
     print(f'{date=}')
     date_datetime = datetime.fromisoformat(date)
     time.sleep(5)
@@ -86,16 +96,20 @@ async def any_message(message: types.Message):
     print(f'{category=}')
     tag = Tags.objects.filter(name=category).first()
     print(f'{tag=}')
+
+    if tag is None:
+        tag = Tags.objects.create(name=category)
+
     time.sleep(5)
-    description = llm_text_analysis.shorten_text(message.caption)
+    description = llm_text_analysis.shorten_text(message.caption).replace("*", "")
     print(f'{description=}')
     time.sleep(5)
-    name = llm_text_analysis.extract_name_event(message.caption)
+    name = llm_text_analysis.extract_name_event(message.caption).replace('"', "").replace("*", "")
     print(f'{name=}')
     content = Content(
         name=name,
         description=description,
-        contact='test_contact',
+        contact=links,
         date=date_datetime
     )
     print(f'{content=}')
@@ -104,7 +118,7 @@ async def any_message(message: types.Message):
     content.tags.add(tag)
     print('save tags and send answer')
     await message.answer(
-        f"Post created successfully! Category is {category}",
+        f"Post created successfully! Category is",
     )
 
 
