@@ -1,17 +1,16 @@
 import {Pressable, ScrollView} from 'react-native';
-
 import Box from "@/components/Box";
 import Text from "@/components/Text";
-import {config} from "@/scripts/config";
 import WebLottieView from "@/components/containers/WebLottieView";
 import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
 import {useRouter} from "expo-router";
+import {Theme} from "@/shared/providers/Theme";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export default function AboutScreen() {
   const theme = useTheme<Theme>();
   const router = useRouter();
-  const { first_name } = config().initDataUnsafe.user;
+  const first_name = useConfig().initDataUnsafe.user.first_name;
 
   return (
     <ScrollView

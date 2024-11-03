@@ -1,7 +1,7 @@
 import {create} from "zustand/index";
 import {MarkedDates} from "react-native-calendars/src/types";
 import {DateData} from "react-native-calendars";
-import {getDatesInRange} from "@/scripts/date";
+import {getDatesInRange} from "@/shared/scripts/date";
 
 interface CalendarState {
   isCalendarVisible: boolean;

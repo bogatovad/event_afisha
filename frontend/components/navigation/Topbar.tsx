@@ -2,9 +2,9 @@ import React from "react";
 import Box from "@/components/Box";
 import Text from "@/components/Text";
 import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {Pressable} from "react-native";
+import {Theme} from "@/shared/providers/Theme";
 
 interface TopbarProps {
   onBackPress?: () => void,

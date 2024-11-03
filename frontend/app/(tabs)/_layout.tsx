@@ -1,8 +1,8 @@
 import React from 'react';
 import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
 import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
 import {Tabs} from "expo-router";
+import {Theme} from "@/shared/providers/Theme";
 
 export default function TabLayout() {
   const theme = useTheme<Theme>();

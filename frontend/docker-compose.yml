@@ -8,13 +8,11 @@ services:
     volumes:
       - ./app:/app/app
       - ./components:/app/components
-      - ./constants:/app/constants
-      - ./scripts:/app/scripts
       - ./assets:/app/assets
-      - ./hooks:/app/hooks
       - ./stores:/app/stores
       - ./services:/app/services
       - ./types:/app/types
+      - ./shared:/app/shared
       - ./server.js:/app/server.js
     networks:
       - afisha

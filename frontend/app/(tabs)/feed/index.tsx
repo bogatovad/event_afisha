@@ -2,7 +2,6 @@ import Box from "@/components/Box";
 import Swiper from 'react-native-deck-swiper'
 import EventCard from "@/components/cards/EventCard";
 import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
 import {useEventsStore} from "@/stores/useEventsStore";
 import React, {useEffect} from "react";
 import LoadingCard from "@/components/cards/LoadingCard";
@@ -15,11 +14,14 @@ import Text from "@/components/Text";
 import {Modal, Pressable} from "react-native";
 import {useCalendarStore} from "@/stores/useCalendarStore";
 import DatePicker from "@/components/input/DatePicker";
-import {getPeriodBorders} from "@/scripts/date";
+import {getPeriodBorders} from "@/shared/scripts/date";
+import {Theme} from "@/shared/providers/Theme";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export default function EventsScreen() {
   const theme = useTheme<Theme>();
   const router = useRouter();
+  const username = useConfig().initDataUnsafe.user.username;
   const {
     tag,
     events,
@@ -183,8 +185,8 @@ export default function EventsScreen() {
                   dislikeOpacity.value = x < 0 ? Math.min(-x / 100, 1) : 0;
                 }}
                 onSwiped={resetOpacity}
-                onSwipedRight={(cardIndex) => saveAction("like", events[cardIndex].id)}
-                onSwipedLeft={(cardIndex) => saveAction("dislike", events[cardIndex].id)}
+                onSwipedRight={(cardIndex) => saveAction("like", events[cardIndex].id, username)}
+                onSwipedLeft={(cardIndex) => saveAction("dislike", events[cardIndex].id, username)}
                 onSwipedAborted={resetOpacity}
               />
 
