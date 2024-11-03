@@ -1,16 +1,17 @@
 import {Pressable, TextInput} from 'react-native';
-
-import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
 import Box from "@/components/Box";
 import Text from "@/components/Text";
 import {useFeedbackStore} from "@/stores/useFeedbackState";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {useRouter} from "expo-router";
+import {useTheme} from "@shopify/restyle";
+import {Theme} from "@/shared/providers/Theme";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export default function FeedbackScreen() {
   const theme = useTheme<Theme>();
   const router = useRouter();
+  const config = useConfig();
   const { text, setText, submitFeedback, hasError, isSuccess } = useFeedbackStore();
 
   return (
@@ -85,7 +86,7 @@ export default function FeedbackScreen() {
       }
 
       <Pressable
-        onPress={ submitFeedback }
+        onPress={ () => submitFeedback(config.initDataUnsafe.user.username) }
       >
         <Box
           backgroundColor="button_color"

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import {config} from "@/scripts/config";
 import {Event} from "@/types/events.types"
 import LikesService from "@/services/LikesService";
 
@@ -9,7 +8,7 @@ interface LikesState {
   hasError: boolean;
   modalVisible: boolean;
   selectedEvent: number | undefined;
-  fetchLikes: () => void;
+  fetchLikes: (username: string) => void;
   setModalVisible: (visible: boolean) => void;
   setEventSelected: (index: number | undefined ) => void;
 }
@@ -21,10 +20,11 @@ export const useLikesStore = create<LikesState>((set) => ({
   modalVisible: false,
   selectedEvent: undefined,
 
-  fetchLikes: () => {
+  fetchLikes: (
+    username: string
+  ) => {
     set({ isLoading: true, hasError: false });
 
-    const { username } = config().initDataUnsafe.user
     LikesService.getLikes({username: username })
       .then((response) => {
         switch (response.status) {

@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import {AxiosError} from "axios";
-import {config} from "@/scripts/config";
 import EventsService from "@/services/EventsService";
 import {Event, ContentParams} from "@/types/events.types"
 
@@ -11,7 +10,7 @@ interface EventsState {
   hasError: boolean;
   swipedAll: boolean;
   fetchEvents: (tag?: string, date_start?: string, date_end?: string) => void;
-  saveAction: (action: "like" | "dislike", id: number) => Promise<void>;
+  saveAction: (action: "like" | "dislike", id: number, username: string) => Promise<void>;
   setSwipedAll: (state: boolean) => void;
   setTag: (tag: string | undefined) => void;
   descriptionExpanded: boolean;
@@ -64,9 +63,9 @@ export const useEventsStore = create<EventsState>((set, get) => ({
 
   saveAction: async (
     action,
-    id
+    id,
+    username
   ) => {
-    const { username } = config().initDataUnsafe.user;
 
     await EventsService.postAction({action: action, username: username, contentId: id})
       .then((response) => {

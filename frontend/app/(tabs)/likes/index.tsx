@@ -8,12 +8,16 @@ import ErrorCard from "@/components/cards/ErrorCard";
 import {FlatList, ImageBackground, Modal, Pressable, RefreshControl, ScrollView} from "react-native";
 import LikedEventCard from "@/components/cards/LikedEventCard";
 import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
 import {useEventsStore} from "@/stores/useEventsStore";
 import {MaterialIcons} from "@expo/vector-icons";
 import {useFocusEffect} from "expo-router";
+import {useConfig} from "@/shared/providers/TelegramConfig";
+import {Theme} from "@/shared/providers/Theme";
 
 export default function LikesScreen() {
+  const theme = useTheme<Theme>();
+  const username = useConfig().initDataUnsafe.user.username;
+
   const {
     likes,
     isLoading,
@@ -31,17 +35,15 @@ export default function LikesScreen() {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchLikes();
+    fetchLikes(username);
     setRefreshing(false);
   };
 
   useFocusEffect(
     useCallback(() => {
-      fetchLikes();
+      fetchLikes(username);
     }, [fetchLikes])
   )
-
-  const theme = useTheme<Theme>();
 
   if (isLoading) {
     return (
@@ -171,7 +173,7 @@ export default function LikesScreen() {
                 <Pressable
                   onPress={ () => {
                     setModalVisible(false);
-                    saveAction("dislike", likes[selectedEvent!].id)
+                    saveAction("dislike", likes[selectedEvent!].id, username)
                       .then(() => {
                         handleRefresh();
                         setEventSelected(undefined);
