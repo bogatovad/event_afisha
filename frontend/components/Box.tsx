@@ -1,5 +1,5 @@
 import {createBox} from '@shopify/restyle';
-import {Theme} from '@/constants/Theme';
+import {Theme} from "@/shared/providers/Theme";
 
 const Box = createBox<Theme>();
 

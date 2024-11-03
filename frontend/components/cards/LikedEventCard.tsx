@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@/components/Box";
 import {Pressable, Image} from "react-native";
 import Text from "@/components/Text";
-import {formatDate} from "@/scripts/date";
+import {formatDate} from "@/shared/scripts/date";
 
 interface LikedEventCardProps {
   image?: string;

@@ -1,13 +1,12 @@
 import { create } from 'zustand';
 import FeedbackService from "@/services/FeedbackService";
-import {config} from "@/scripts/config";
 
 interface FeedbackState {
   text: string;
   hasError: boolean;
   isSuccess: boolean;
   setText: (text: string) => void;
-  submitFeedback: () => void;
+  submitFeedback: (username: string) => void;
 }
 
 export const useFeedbackStore = create<FeedbackState>((set) => ({
@@ -17,10 +16,11 @@ export const useFeedbackStore = create<FeedbackState>((set) => ({
 
   setText: (text: string) => set({ text }),
 
-  submitFeedback: () => {
+  submitFeedback: (
+    username: string
+  ) => {
     set({ hasError: false, isSuccess: false });
 
-    const { username } = config().initDataUnsafe.user
     FeedbackService.sendFeedback({ username: username, message: useFeedbackStore.getState().text })
       .then((response) => {
         if (response.status === 200) {

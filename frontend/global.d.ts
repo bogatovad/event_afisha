@@ -49,8 +49,10 @@ type TelegramWebapp = {
   headerColor: string;
   backgroundColor: string;
   expand: () => void;
+  disableVerticalSwipes: () => void;
+  openLink: (url: string, options?: { try_instant_view?: boolean }) => void;
   close: () => void;
-  HapticFeedback: TelegramHapticFeedback;
+  HapticFeedback?: TelegramHapticFeedback;
 };
 
 

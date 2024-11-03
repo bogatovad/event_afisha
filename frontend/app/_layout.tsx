@@ -3,8 +3,8 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import {ThemeProvider} from '@shopify/restyle';
-import theme from '@/constants/Theme';
+import {ConfigProvider} from "@/shared/providers/TelegramConfig/TelegramConfig";
+import {DynamicThemeProvider} from "@/shared/providers/Theme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -28,12 +28,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} redirect />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <ConfigProvider>
+      <DynamicThemeProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} redirect />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </DynamicThemeProvider>
+    </ConfigProvider>
   );
 }

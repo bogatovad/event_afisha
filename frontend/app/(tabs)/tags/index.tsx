@@ -6,10 +6,10 @@ import ErrorCard from "@/components/cards/ErrorCard";
 import TagCard from "@/components/cards/TagCard";
 import {FlatList} from "react-native";
 import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/constants/Theme";
 import Topbar from "@/components/navigation/Topbar";
 import {useEventsStore} from "@/stores/useEventsStore";
 import {useRouter} from "expo-router";
+import {Theme} from "@/shared/providers/Theme";
 
 export default function TagsScreen() {
   const { tags, isLoading, hasError, fetchTags } = useTagsStore();
