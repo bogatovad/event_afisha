@@ -49,11 +49,12 @@ async def any_message(message: types.Message):
     caption_entities = message.caption_entities
     links = []
 
-    for entity in caption_entities:
-        if entity.type == 'text_link':
-            link_name = llm_text_analysis.create_name_for_link(entity.url)
-            links.append({link_name: entity.url})
-            time.sleep(1)
+    if caption_entities:
+        for entity in caption_entities:
+            if entity.type == 'text_link':
+                link_name = llm_text_analysis.create_name_for_link(entity.url)
+                links.append({link_name: entity.url})
+                time.sleep(1)
 
     print(f'{links=}')
     file_tg = await bot.get_file(file.file_id)
