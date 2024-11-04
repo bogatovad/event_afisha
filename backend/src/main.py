@@ -22,9 +22,6 @@ from event.models import Content, Tags, Like, User
 
 bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
-global_counter: dict[tuple[str, str]] = {}
-history_user_button = {}
-
 client: Minio = Minio(
         os.getenv("MINIO_URL", "minio:9000"),
         access_key=os.getenv("ACCESS_KEY"),
@@ -43,20 +40,6 @@ class DjangoObject:
 
 
 django_object = DjangoObject()
-
-
-def create_username(message: types.Message) -> str:
-    if message.chat.username is None:
-        return str(message.from_user.id)
-    return message.chat.username
-
-
-async def check_user(message: types.Message):
-    username = create_username(message)
-    exists = await django_object.user.filter(username=username).aexists()
-
-    if not exists:
-        await django_object.user.acreate(username=username)
 
 
 @dp.message(F.photo)
@@ -111,7 +94,7 @@ async def any_message(message: types.Message):
     content.tags.add(tag)
     print('save tags and send answer')
     await message.answer(
-        f"Post created successfully! Category is",
+        f"Post created successfully! Category is {category}",
     )
 
 

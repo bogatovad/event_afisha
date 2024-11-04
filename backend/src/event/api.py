@@ -4,8 +4,8 @@ from http import HTTPStatus
 from ninja_extra import api_controller, route
 from event.models import Tags, Content, User, Like, Feedback
 from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema
-from datetime import datetime
 from django.db.models import Q
+from datetime import date
 
 
 @api_controller(
@@ -48,7 +48,7 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_content(self, tag: str | None = None, date_start: datetime | None = None, date_end: datetime | None = None) ->\
+    def get_content(self, tag: str | None = None, date_start: date | None = None, date_end: date | None = None) ->\
             list[ContentSchema]:
         q_filter = Q(tags__name=tag) if tag else Q()
         if date_start and date_end:
@@ -64,10 +64,17 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_liked_content(self, username: str) -> \
+    def get_liked_content(self, username: str, date_start: date | None = None, date_end: date | None = None) -> \
             list[ContentSchema]:
-        likes = Like.objects.filter(user=User.objects.filter(username=username).first(), value=True)
-        content = Content.objects.filter(likes__in=likes)
+        current_user = User.objects.filter(username=username).first()
+        likes = Like.objects.filter(user=current_user, value=True)
+        q_filter = Q()
+        if date_start and date_end:
+            q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+        if date_start and not date_end:
+            q_filter &= Q(date=date_start)
+        q_filter &= Q(likes__in=likes)
+        content = Content.objects.filter(q_filter)
         return content
 
 
