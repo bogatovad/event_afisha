@@ -7,11 +7,10 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./app:/app/app
-      - ./components:/app/components
-      - ./assets:/app/assets
-      - ./stores:/app/stores
-      - ./services:/app/services
-      - ./types:/app/types
+      - ./pages:/app/pages
+      - ./widgets:/app/widgets
+      - ./features:/app/features
+      - ./entities:/app/entities
       - ./shared:/app/shared
       - ./server.js:/app/server.js
     networks:

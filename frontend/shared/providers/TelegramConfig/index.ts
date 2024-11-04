@@ -1,1 +1,1 @@
-export { ConfigProvider, useConfig, ConfigContext } from "./TelegramConfig"
+export { ConfigProvider, useConfig, ConfigContext } from "./ui/TelegramConfig"
