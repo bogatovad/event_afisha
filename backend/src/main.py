@@ -73,10 +73,6 @@ async def any_message(message: types.Message):
     print(f'{category=}')
     tag = Tags.objects.filter(name=category).first()
     print(f'{tag=}')
-
-    if tag is None:
-        tag = Tags.objects.create(name=category)
-
     time.sleep(1)
     description = llm_text_analysis.shorten_text(message.caption).replace("*", "")
     print(f'{description=}')
