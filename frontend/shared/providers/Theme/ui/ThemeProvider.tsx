@@ -2,6 +2,7 @@ import React from "react";
 import {createTheme, ThemeProvider} from "@shopify/restyle";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {Theme} from "@/shared/providers/Theme";
+import {Colors, BorderRadii, Spacing, Text} from "@/shared/constants";
 
 export const DynamicThemeProvider:  React.FC<{ children: React.ReactNode }> = (
   { children }
@@ -24,26 +25,11 @@ export const DynamicThemeProvider:  React.FC<{ children: React.ReactNode }> = (
       section_header_text_color: config.themeParams.section_header_text_color,
       subtitle_text_color: config.themeParams.subtitle_text_color,
       destructive_text_color: config.themeParams.destructive_text_color,
+      ...Colors
     },
-    spacing: {
-      s: 8,
-      m: 16,
-      l: 24,
-      xl: 40,
-    },
-    textVariants: {
-      header: {
-        fontFamily: 'InterMedium',
-        fontSize: 28,
-      },
-      body: {
-        fontFamily: 'InterRegular',
-        fontSize: 16,
-        lineHeight: 24,
-      },
-      defaults: {
-      },
-    },
+    spacing: Spacing,
+    borderRadii: BorderRadii,
+    textVariants: Text,
   });
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;

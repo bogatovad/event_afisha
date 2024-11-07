@@ -7,4 +7,3 @@ export {LoadingCard} from "./MessageCards/LoadingCard";
 export {ErrorCard} from "./MessageCards/ErrorCard";
 
 export {Topbar} from "./Navigation/Topbar";
-export {TabBarIcon} from "./Navigation/TabBarIcon";
