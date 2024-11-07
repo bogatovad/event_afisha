@@ -1,21 +1,15 @@
+import {Spacing, BorderRadii, Text} from "@/shared/constants";
+
 export type Theme = {
-  colors: TelegramTheme;
-  spacing: {
-    s: number;
-    m: number;
-    l: number;
-    xl: number;
+  colors: TelegramTheme & {
+    cardBGColor: string,
+    cardMainTextColor: string,
+    cardSubtextColor: string,
+    lime: string,
+    black: string,
+    gray: string,
   };
-  textVariants: {
-    header: {
-      fontFamily: string;
-      fontSize: number;
-    };
-    body: {
-      fontFamily: string;
-      fontSize: number;
-      lineHeight: number;
-    };
-    defaults: {};
-  };
+  spacing: typeof Spacing;
+  borderRadii: typeof BorderRadii
+  textVariants: typeof Text;
 };

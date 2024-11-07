@@ -28,7 +28,7 @@ export const EventsSwiper = () => {
     saveAction,
     setSwipedAll,
     setTag,
-    descriptionExpanded,
+    swipeEnabled,
   } = useEventsStore();
 
   const {
@@ -75,7 +75,7 @@ export const EventsSwiper = () => {
   if (isLoading) {
     return (
       <Box flex={1} backgroundColor="bg_color" style={{ paddingHorizontal: 16, paddingBottom: 16}}>
-        <LoadingCard style={{ borderRadius: 16, overflow: 'hidden', height: "100%", width: "100%" }}/>
+        <LoadingCard style={{ borderRadius: 50, overflow: 'hidden', height: "100%", width: "100%" }}/>
       </Box>
     );
   }
@@ -100,12 +100,12 @@ export const EventsSwiper = () => {
                   date={event.date}
                   description={event.description}
                   image={event.image}
-                  contact={event.contact}
+                  contacts={event.contact}
                 />
               )}
               backgroundColor="white"
               cardHorizontalMargin={16}
-              horizontalSwipe={!descriptionExpanded}
+              horizontalSwipe={swipeEnabled}
               verticalSwipe={false}
               stackSize={3}
               containerStyle={{ backgroundColor: theme.colors.bg_color }}

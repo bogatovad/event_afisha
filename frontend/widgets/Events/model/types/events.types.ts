@@ -6,8 +6,12 @@ export type Event = {
   name: string;
   description: string;
   image: string;
-  contact: string;
+  contact: Contact[] | null;
   date: string;
+}
+
+export type Contact = {
+  [key: string]: string;
 }
 
 /**

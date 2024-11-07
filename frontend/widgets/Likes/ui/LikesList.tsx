@@ -9,10 +9,12 @@ import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {MaterialIcons} from "@expo/vector-icons";
 import {useEventsStore} from "@/widgets/Events";
+import {Hyperlink} from "react-native-hyperlink";
 
 export const LikesList = () => {
   const theme = useTheme<Theme>();
   const username = useConfig().initDataUnsafe.user.username;
+  const openLink = useConfig().openLink;
 
   const {
     likes,
@@ -161,6 +163,42 @@ export const LikesList = () => {
               >
                 { selectedEvent != undefined  && likes[selectedEvent].description }
               </Text>
+
+              {
+                selectedEvent != undefined && likes[selectedEvent].contact && (
+                  <Box
+                    gap={"s"}
+                  >
+                    <Text
+                      variant={"body"}
+                      color={"cardSubtextColor"}
+                    >
+                      { "\nСсылки:" }
+                    </Text>
+
+                    {likes[selectedEvent].contact?.map((con, index) => {
+                      return (
+                        <Hyperlink
+                          key={index}
+                          linkDefault={true}
+                          linkStyle={{ color: theme.colors.link_color }}
+                          onPress={ () => openLink(Object.values(con)[0], { try_instant_view: true }) }
+                          linkText={(url) => {
+                            const con = likes[selectedEvent].contact?.find((c) => Object.values(c)[0] === url);
+                            return con ? Object.keys(con)[0] : url;
+                          }}
+                        >
+                          <Text
+                            variant={"body"}
+                          >
+                            {Object.values(con)[0]}
+                          </Text>
+                        </Hyperlink>
+                      );
+                    })}
+                  </Box>
+                )
+              }
 
               <Box
                 bottom={0}

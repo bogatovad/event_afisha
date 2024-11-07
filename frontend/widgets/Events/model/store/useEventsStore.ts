@@ -13,7 +13,9 @@ interface EventsState {
   setSwipedAll: (state: boolean) => void;
   setTag: (tag: string | undefined) => void;
   descriptionExpanded: boolean;
-  toggleDescriptionExpanded: () => void;
+  setDescriptionExpanded: (state: boolean) => void;
+  swipeEnabled: boolean;
+  setSwipeEnabled: (state: boolean) => void;
 }
 
 export const useEventsStore = create<EventsState>((set, get) => ({
@@ -88,8 +90,12 @@ export const useEventsStore = create<EventsState>((set, get) => ({
   },
 
   descriptionExpanded: false,
-  toggleDescriptionExpanded: () => {
-    const { descriptionExpanded } = get();
-    set({ descriptionExpanded: !descriptionExpanded })
+  setDescriptionExpanded: (state: boolean) => {
+    set({ descriptionExpanded: state })
+  },
+
+  swipeEnabled: true,
+  setSwipeEnabled: (state: boolean) => {
+    set({ swipeEnabled: state })
   }
 }));
