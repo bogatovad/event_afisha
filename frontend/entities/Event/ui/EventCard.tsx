@@ -44,7 +44,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   useEffect(() => {
     heightValue.value = withTiming(
       descriptionExpanded ? (cardHeight - 200) : 0,
-      { duration: 500 },
+      { duration: 350 },
     );
   }, [descriptionExpanded]);
 

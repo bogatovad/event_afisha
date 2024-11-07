@@ -13,7 +13,7 @@ export const Text = {
   },
   cardText: {
     fontFamily: 'MontserratRegular',
-    fontSize: 10,
+    fontSize: 12,
   },
   cardDate: {
     fontFamily: 'MontserratBold',
