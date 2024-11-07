@@ -26,7 +26,8 @@ export default function TabLayout() {
           tabBarLabel: "Главная",
           tabBarLabelStyle: {
             fontFamily: "MontserratRegular",
-            fontSize: 8
+            fontSize: 8,
+            marginBottom: 4
           }
         }}
       />
@@ -38,7 +39,8 @@ export default function TabLayout() {
           tabBarLabel: "Категории",
           tabBarLabelStyle: {
             fontFamily: "MontserratRegular",
-            fontSize: 8
+            fontSize: 8,
+            marginBottom: 4
           }
         }}
       />
@@ -50,7 +52,8 @@ export default function TabLayout() {
           tabBarLabel: "Избранное",
           tabBarLabelStyle: {
             fontFamily: "MontserratRegular",
-            fontSize: 8
+            fontSize: 8,
+            marginBottom: 4
           }
         }}
       />
@@ -62,7 +65,8 @@ export default function TabLayout() {
           tabBarLabel: "Профиль",
           tabBarLabelStyle: {
             fontFamily: "MontserratRegular",
-            fontSize: 8
+            fontSize: 8,
+            marginBottom: 4
           }
         }}
       />
