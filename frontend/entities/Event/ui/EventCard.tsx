@@ -9,23 +9,27 @@ import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
 import {Gesture, GestureDetector} from "react-native-gesture-handler";
+import {Contact} from "@/widgets/Events/model/types/events.types";
+import {Hyperlink} from "react-native-hyperlink";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 interface EventCardProps {
   name: string;
   description: string;
   image: string | null;
   date: string;
-  contact: string
+  contacts: Contact[] | null;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
-  name = "",
-  description = "",
-  image = "",
-  date = "",
-  contact = ""
+  name,
+  description,
+  image,
+  date,
+  contacts
 }) => {
   const theme = useTheme<Theme>();
+  const config = useConfig();
 
   const heightValue = useSharedValue(0);
 
@@ -160,6 +164,40 @@ export const EventCard: React.FC<EventCardProps> = ({
                 >
                   {description}
                 </Text>
+
+                {contacts && contacts.length > 0 && (
+                  <Box
+                    gap={"s"}
+                  >
+                    <Text
+                      variant={"cardText"}
+                      color={"cardSubtextColor"}
+                    >
+                      { "\nСсылки:" }
+                    </Text>
+
+                    {contacts.map((contact, index) => {
+                      return (
+                        <Hyperlink
+                          key={index}
+                          linkDefault={true}
+                          linkStyle={{ color: theme.colors.link_color }}
+                          onPress={ () => config.openLink(Object.values(contact)[0], { try_instant_view: true }) }
+                          linkText={(url) => {
+                            const contact = contacts.find((c) => Object.values(c)[0] === url);
+                            return contact ? Object.keys(contact)[0] : url;
+                          }}
+                        >
+                          <Text
+                            variant={"cardText"}
+                          >
+                            {Object.values(contact)[0]}
+                          </Text>
+                        </Hyperlink>
+                      );
+                    })}
+                  </Box>
+                )}
               </ScrollView>
             </Animated.View>
 

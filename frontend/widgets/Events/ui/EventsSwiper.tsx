@@ -100,7 +100,7 @@ export const EventsSwiper = () => {
                   date={event.date}
                   description={event.description}
                   image={event.image}
-                  contact={event.contact}
+                  contacts={event.contact}
                 />
               )}
               backgroundColor="white"
