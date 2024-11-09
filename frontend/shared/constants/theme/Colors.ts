@@ -4,5 +4,11 @@ export const Colors = {
   cardSubtextColor: "#D8DFE9",
   lime: "#E1F44B",
   black: "#393939",
-  gray: "#ECEBE8"
+  totalBlack: "#000000",
+  gray: "#ECEBE8",
+  toxicBlue: "#5352EB",
+  blue: "#6361DD",
+  lightblue: "#B4C9FE",
+  white: "#FFFFFF",
+  transparent: "transparent",
 }
