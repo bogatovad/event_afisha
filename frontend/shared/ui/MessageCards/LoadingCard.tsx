@@ -5,9 +5,10 @@ import Animated, {
   useSharedValue,
   withRepeat,
   withSequence,
-  withTiming
+  withTiming,
+  Easing
 } from "react-native-reanimated";
-import {Easing, StyleProp, ViewStyle} from "react-native";
+import {StyleProp, ViewStyle} from "react-native";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 
