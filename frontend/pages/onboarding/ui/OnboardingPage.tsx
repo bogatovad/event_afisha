@@ -3,7 +3,6 @@ import Animated, {interpolateColor, useAnimatedStyle, useSharedValue, withTiming
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import {OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingStore} from "@/widgets/Onboarding";
-import {Box} from "@/shared/ui";
 
 export const OnboardingPage: React.FC = () => {
   const theme = useTheme<Theme>();
