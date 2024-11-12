@@ -11,24 +11,17 @@ export default function TabLayout() {
     <Tabs screenOptions={{
       tabBarActiveTintColor: theme.colors.button_color,
       headerShown: false,
+      tabBarShowLabel: false,
       tabBarStyle: {
         backgroundColor: theme.colors.bg_color,
         borderTopWidth: 0
       },
     }}
-    sceneContainerStyle={{
-      marginBottom: -1
-    }}>
+    >
       <Tabs.Screen
         name="feed"
         options={{
           tabBarIcon: ({color}) => <Icon name={"home"} size={24} color={color}/>,
-          tabBarLabel: "Главная",
-          tabBarLabelStyle: {
-            fontFamily: "MontserratRegular",
-            fontSize: 8,
-            marginBottom: 4
-          }
         }}
       />
 
@@ -36,12 +29,13 @@ export default function TabLayout() {
         name="tags"
         options={{
           tabBarIcon: ({color}) => <Icon name={"tags"} size={24} color={color}/>,
-          tabBarLabel: "Категории",
-          tabBarLabelStyle: {
-            fontFamily: "MontserratRegular",
-            fontSize: 8,
-            marginBottom: 4
-          }
+        }}
+      />
+
+      <Tabs.Screen
+        name="calendar"
+        options={{
+          tabBarIcon: ({color}) => <Icon name={"calendar"} size={24} color={color}/>,
         }}
       />
 
@@ -49,12 +43,6 @@ export default function TabLayout() {
         name="likes"
         options={{
           tabBarIcon: ({color}) => <Icon name={"like"} size={24} color={color}/>,
-          tabBarLabel: "Избранное",
-          tabBarLabelStyle: {
-            fontFamily: "MontserratRegular",
-            fontSize: 8,
-            marginBottom: 4
-          }
         }}
       />
 
@@ -62,12 +50,6 @@ export default function TabLayout() {
         name="about"
         options={{
           tabBarIcon: ({color}) => <Icon name={"user"} size={24} color={color}/>,
-          tabBarLabel: "Профиль",
-          tabBarLabelStyle: {
-            fontFamily: "MontserratRegular",
-            fontSize: 8,
-            marginBottom: 4
-          }
         }}
       />
     </Tabs>
