@@ -1,15 +1,16 @@
-import React, {useCallback, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, ErrorCard, LoadingCard, Text} from "@/shared/ui";
 import {FlatList, ImageBackground, Modal, Pressable, RefreshControl, ScrollView} from "react-native";
 import {LikedEventCard} from "@/entities/Event";
 import {useLikesStore} from "@/widgets/Likes";
-import {useFocusEffect} from "expo-router";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {MaterialIcons} from "@expo/vector-icons";
 import {useEventsStore} from "@/widgets/Events";
 import {Hyperlink} from "react-native-hyperlink";
+import {useCalendarStore} from "@/widgets/Date";
+import {getPeriodBorders} from "@/shared/scripts/date";
 
 export const LikesList = () => {
   const theme = useTheme<Theme>();
@@ -22,6 +23,7 @@ export const LikesList = () => {
     hasError,
     modalVisible,
     selectedEvent,
+    removeLikedEvent,
     fetchLikes,
     setEventSelected,
     setModalVisible
@@ -29,19 +31,21 @@ export const LikesList = () => {
 
   const { saveAction } = useEventsStore();
 
+  const { selectedDays } = useCalendarStore();
+
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchLikes(username);
+    const borders = getPeriodBorders(Object.keys(selectedDays));
+    fetchLikes(username, borders.date_start, borders.date_end);
     setRefreshing(false);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchLikes(username);
-    }, [fetchLikes])
-  )
+  useEffect(() => {
+    const borders = getPeriodBorders(Object.keys(selectedDays));
+    fetchLikes(username, borders.date_start, borders.date_end);
+  }, [selectedDays]);
 
   if (isLoading) {
     return (
@@ -213,7 +217,7 @@ export const LikesList = () => {
                     setModalVisible(false);
                     saveAction("dislike", likes[selectedEvent!].id, username)
                       .then(() => {
-                        handleRefresh();
+                        removeLikedEvent(likes[selectedEvent!].id);
                         setEventSelected(undefined);
                       });
                   }}

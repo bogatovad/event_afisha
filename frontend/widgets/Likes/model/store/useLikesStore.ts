@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import {Event} from "@/widgets/Events/model/types/events.types"
-import {likesServices} from "@/widgets/Likes";
+import {LikesParams, likesServices} from "@/widgets/Likes";
 
 interface LikesState {
   likes: Event[];
@@ -8,7 +8,9 @@ interface LikesState {
   hasError: boolean;
   modalVisible: boolean;
   selectedEvent: number | undefined;
-  fetchLikes: (username: string) => void;
+  addLikedEvent: (event: Event) => void;
+  removeLikedEvent: (eventId: number) => void;
+  fetchLikes: (username: string, date_start?: string, date_end?: string) => void;
   setModalVisible: (visible: boolean) => void;
   setEventSelected: (index: number | undefined ) => void;
 }
@@ -20,12 +22,31 @@ export const useLikesStore = create<LikesState>((set) => ({
   modalVisible: false,
   selectedEvent: undefined,
 
-  fetchLikes: (
-    username: string
+  addLikedEvent: (event) =>
+    set((state) => {
+      const updatedLikedEvents = [...state.likes, event];
+      updatedLikedEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+      return { likes: updatedLikedEvents };
+    }),
+
+  removeLikedEvent: (eventId) =>
+    set((state) => ({
+      likes: state.likes.filter((event) => event.id !== eventId),
+    })),
+
+  fetchLikes: async (
+    username: string,
+    date_start?: string,
+    date_end?: string
   ) => {
     set({ isLoading: true, hasError: false });
 
-    likesServices.getLikes({username: username })
+    const params: LikesParams = { username: username };
+    if (date_start) params.date_start = date_start;
+    if (date_end)   params.date_end = date_end;
+
+    likesServices.getLikes(params)
       .then((response) => {
         switch (response.status) {
           case 200: {

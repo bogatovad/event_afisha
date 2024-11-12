@@ -6,13 +6,14 @@ import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-nati
 import {useTheme} from "@shopify/restyle";
 import Swiper from "react-native-deck-swiper";
 import {useEventsStore} from "@/widgets/Events";
-import {useCalendarStore} from "@/features/Date";
+import {useCalendarStore} from "@/widgets/Date";
 import {EventCard} from "@/entities/Event";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
+import {useLikesStore} from "@/widgets/Likes";
 
 export const EventsSwiper = () => {
   const theme = useTheme<Theme>();
@@ -34,6 +35,11 @@ export const EventsSwiper = () => {
   const {
     selectedDays,
   } = useCalendarStore();
+
+  const {
+    addLikedEvent,
+    removeLikedEvent
+  } = useLikesStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
   const likeOpacity = useSharedValue(0);
@@ -60,9 +66,8 @@ export const EventsSwiper = () => {
 
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
-
     fetchEvents(tag, borders.date_start, borders.date_end);
-  }, [tag]);
+  }, [tag, selectedDays]);
 
   useEffect(() => {
     if (swipedAll) {
@@ -118,8 +123,14 @@ export const EventsSwiper = () => {
                 dislikeOpacity.value = x < 0 ? Math.min(-x / 100, 1) : 0;
               }}
               onSwiped={resetOpacity}
-              onSwipedRight={(cardIndex) => saveAction("like", events[cardIndex].id, username)}
-              onSwipedLeft={(cardIndex) => saveAction("dislike", events[cardIndex].id, username)}
+              onSwipedRight={(cardIndex) => {
+                saveAction("like", events[cardIndex].id, username)
+                  .then(() => addLikedEvent(events[cardIndex]))
+              }}
+              onSwipedLeft={(cardIndex) => {
+                saveAction("dislike", events[cardIndex].id, username)
+                  .then(() => removeLikedEvent(events[cardIndex].id))
+              }}
               onSwipedAborted={resetOpacity}
             />
 
@@ -186,6 +197,33 @@ export const EventsSwiper = () => {
                         color="button_text_color"
                       >
                         { "Выбрать другую категорию" }
+                      </Text>
+                    </Box>
+                  </Pressable>
+                )
+              }
+
+              {
+                Object.keys(selectedDays).length > 0 && (
+                  <Pressable
+                    onPress={ () => router.navigate("/(tabs)/calendar")}
+                  >
+                    <Box
+                      flexDirection="row"
+                      height={44}
+                      padding="l"
+                      alignItems="center"
+                      justifyContent="center"
+                      backgroundColor="button_color"
+                      style={{
+                        borderRadius: 12
+                      }}
+                    >
+                      <Text
+                        variant="body"
+                        color="button_text_color"
+                      >
+                        { "Изменить даты мероприятий" }
                       </Text>
                     </Box>
                   </Pressable>

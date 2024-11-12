@@ -2,18 +2,27 @@ import {create} from "zustand/index";
 import {MarkedDates} from "react-native-calendars/src/types";
 import {DateData} from "react-native-calendars";
 import {getDatesInRange} from "@/shared/scripts/date";
+import {likesServices} from "@/widgets/Likes";
+import {Event} from "@/widgets/Events"
 
 interface CalendarState {
   isCalendarVisible: boolean;
   selectedDays: MarkedDates;
+  likesDays: MarkedDates;
+  displayDays: MarkedDates;
   updateSelectedDays: (day: DateData) => void;
+  updateLikesDays: (days: Event[]) => void;
+  updateDisplayDays: () => void;
   clearSelectedDays: () => void;
+  fetchAllLikes: (username: string) => void;
   setCalendarVisible: (visible: boolean) => void;
 }
 
-export const useCalendarStore = create<CalendarState>((set) => ({
+export const useCalendarStore = create<CalendarState>((set, get) => ({
   isCalendarVisible: false,
   selectedDays: {},
+  likesDays: {},
+  displayDays: {},
 
   updateSelectedDays: (day: DateData) => {
     set((state) => {
@@ -46,12 +55,56 @@ export const useCalendarStore = create<CalendarState>((set) => ({
         });
       }
 
+      console.log("selected", updatedSelectedDays);
       return { selectedDays: updatedSelectedDays };
+    });
+
+    get().updateDisplayDays();
+  },
+
+  updateLikesDays: (likes) => {
+    set(() => {
+      const updatedLikesDays: MarkedDates = {};
+
+      likes.forEach((event) => {
+        updatedLikesDays[event.date] = { marked: true, dotColor: "red" }
+      })
+
+
+      console.log("liked", updatedLikesDays);
+      return { likesDays: updatedLikesDays };
+    });
+
+    get().updateDisplayDays();
+  },
+
+  fetchAllLikes: (username: string) => {
+    likesServices.getLikes({username: username})
+      .then((response) => get().updateLikesDays(response.data));
+  },
+
+  updateDisplayDays: () => {
+    set((state) => {
+      const updatedDisplayDays = { ...state.selectedDays };
+
+      Object.keys(state.likesDays).forEach((day) => {
+        if (updatedDisplayDays[day]) {
+          updatedDisplayDays[day].marked = true;
+        } else {
+          updatedDisplayDays[day] = { marked: true };
+        }
+        updatedDisplayDays[day].dotColor = "red";
+      })
+
+      console.log("display", updatedDisplayDays);
+      return { displayDays: updatedDisplayDays };
     });
   },
 
   clearSelectedDays: () => {
-    set({ selectedDays: {} })
+    set({ selectedDays: {} });
+
+    get().updateDisplayDays();
   },
 
   setCalendarVisible: (visible: boolean) => {

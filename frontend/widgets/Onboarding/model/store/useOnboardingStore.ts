@@ -33,7 +33,7 @@ export const useOnboardingStore = create<OnboardingState>((set,get) => ({
       }
       case 3: {
         set({
-          pageTitle: "СОХРОНЯЙ СОБЫТИЕ В КАЛЕНДАРЬ",
+          pageTitle: "СОХРАНЯЙ СОБЫТИЕ В КАЛЕНДАРЬ",
           pageSubtitle: "А мы напомним тебе, чтобы ничего не пропустить"
         })
         break;
