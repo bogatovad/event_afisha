@@ -27,6 +27,7 @@ export const TagsList = () => {
   if (isLoading) {
     return (
       <FlatList
+        overScrollMode={"never"}
         showsVerticalScrollIndicator={false}
         data={ Array(10) }
         renderItem={({ index }) => (
@@ -37,7 +38,7 @@ export const TagsList = () => {
         contentContainerStyle={{
           backgroundColor: theme.colors.bg_color,
           paddingHorizontal: theme.spacing.m,
-          paddingBottom: theme.spacing.s,
+          paddingVertical: theme.spacing.s,
           gap: 12
         }}
         columnWrapperStyle={{gap: 12}}
@@ -57,7 +58,7 @@ export const TagsList = () => {
     <FlatList
       scrollEnabled={true}
       showsVerticalScrollIndicator={false}
-      overScrollMode="never"
+      overScrollMode={"never"}
       data={ tags }
       renderItem={({ item }) => (
         <TagCard
@@ -73,12 +74,15 @@ export const TagsList = () => {
       keyExtractor={item => item.name}
       numColumns={2}
       style={{
+        flex: 1,
+        backgroundColor: theme.colors.bg_color,
+        paddingHorizontal: theme.spacing.m,
+        paddingVertical: theme.spacing.s,
         width: "100%"
       }}
       contentContainerStyle={{
+        flex: 1,
         backgroundColor: theme.colors.bg_color,
-        paddingHorizontal: theme.spacing.m,
-        paddingBottom: theme.spacing.s,
         gap: 12
       }}
       columnWrapperStyle={{

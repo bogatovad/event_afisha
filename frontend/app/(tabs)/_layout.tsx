@@ -1,20 +1,11 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useTheme} from "@shopify/restyle";
 import {Tabs} from "expo-router";
 import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
-import {useLikesStore} from "@/widgets/Likes";
-import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export default function TabLayout() {
   const theme = useTheme<Theme>();
-
-  const { fetchLikes } = useLikesStore();
-  const username = useConfig().initDataUnsafe.user.username;
-
-  useEffect(() => {
-    fetchLikes(username);
-  }, []);
 
   return (
     <Tabs screenOptions={{
