@@ -16,6 +16,11 @@ export const OnboardingText: React.FC = () => {
         runOnJS(setPageText)();
         opacity.value = withTiming(1, { duration: 200 });
       });
+    } else {
+      opacity.value = withTiming(1, { duration: 200 }, () => {
+        runOnJS(setPageSubTick)(page);
+        runOnJS(setPageText)();
+      });
     }
   }, [page]);
 

@@ -57,7 +57,7 @@ export const FeedbackPage = () => {
           flex: 1,
           height: "100%",
           color: theme.colors.text_color,
-          fontFamily: "InterRegular",
+          fontFamily: "MontserratRegular",
           textAlignVertical: "top"
         }}
       />
