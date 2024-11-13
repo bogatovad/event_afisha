@@ -11,6 +11,7 @@ const icons = {
   location: Icons.Location,
   tags: Icons.Tags,
   user: Icons.User,
+  dislike: Icons.Dislike
 };
 
 export interface IconProps extends SvgProps {
