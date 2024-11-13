@@ -21,7 +21,7 @@ export const OnboardingPage: React.FC = () => {
   const { page } = useOnboardingStore();
 
   useEffect(() => {
-    backgroundAnimation.value = withTiming(page, { duration: 400 });
+    backgroundAnimation.value = withTiming(page, { duration: page == 1 ? 0 : 400 });
   }, [page]);
 
   return (

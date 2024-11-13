@@ -1,6 +1,6 @@
 import {FeedbackService} from "@/pages/info/api/FeedbackService";
 
-export {InfoPage} from "./ui/InfoPage";
+export {ProfilePage} from "./ui/ProfilePage";
 export {FeedbackPage} from "./ui/FeedbackPage";
 
 export {useFeedbackStore} from "./model/store/useFeedbackState";

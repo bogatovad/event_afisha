@@ -17,6 +17,8 @@ export const OnboardingIllustration = () => {
         runOnJS(setPageSubTick)(page);
         opacity.value = withTiming(1, { duration: 200 });
       });
+    } else {
+      opacity.value = withTiming(1, { duration: 200 }, () => runOnJS(setPageSubTick)(page));
     }
   }, [page]);
 
