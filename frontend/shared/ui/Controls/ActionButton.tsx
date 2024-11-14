@@ -29,7 +29,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         justifyContent="center"
       >
         <Icon
-          name={ type == "like" ? "like" : "dislike" }
+          name={ type == "like" ? "likeFilled" : "dislike" }
           color={ type == "like" ? theme.colors.gray : theme.colors.red }
           size={24}
         />

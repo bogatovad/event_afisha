@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Image, ImageBackground, ScrollView } from "react-native";
+import {Image, ImageBackground, Pressable, ScrollView, FlatList } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { useEventsStore } from "@/widgets/Events";
 import {Box} from "@/shared/ui/Base/Box";
@@ -8,42 +8,42 @@ import {formatDate} from "@/shared/scripts/date";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
-import {Gesture, GestureDetector, GestureHandlerRootView} from "react-native-gesture-handler";
-import {Contact} from "@/widgets/Events/model/types/events.types";
 import {Hyperlink} from "react-native-hyperlink";
 import {useConfig} from "@/shared/providers/TelegramConfig";
+import {ActionButton, TagChip} from "@/shared/ui";
+import {Event} from "@/entities/Event/model/types/events"
+import {useRouter} from "expo-router";
 
 interface EventCardProps {
-  name: string;
-  description: string;
-  image: string | null;
-  date: string;
-  contacts: Contact[] | null;
+  event: Event;
+  onLike: () => void;
+  onDislike: () => void;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
-  name,
-  description,
-  image,
-  date,
-  contacts
+  event,
+  onLike,
+  onDislike
 }) => {
   const theme = useTheme<Theme>();
   const config = useConfig();
+  const router = useRouter();
 
-  const heightValue = useSharedValue(0);
+  const heightValue = useSharedValue(125);
 
   const [cardHeight, setCardHeight] = useState(0);
+  const [infoHeight, setInfoHeight] = useState(0);
 
   const {
     descriptionExpanded,
     setDescriptionExpanded,
-    setSwipeEnabled
+    setSwipeEnabled,
+    tag, setTag
   } = useEventsStore();
 
   useEffect(() => {
     heightValue.value = withTiming(
-      descriptionExpanded ? (cardHeight - 200) : 0,
+      descriptionExpanded ? (125 + cardHeight - infoHeight - 36 - 16 - 10) : 125,
       { duration: 350 },
     );
   }, [descriptionExpanded]);
@@ -60,160 +60,226 @@ export const EventCard: React.FC<EventCardProps> = ({
     height: heightValue.value,
   }));
 
-  const panGesture = Gesture.Pan().runOnJS(true)
-    .onStart(() => {
-      if (!descriptionExpanded) setSwipeEnabled(false);
-    })
-    .onEnd((event) => {
-      if (event.translationY < -50) {
-        setDescriptionExpanded(true);
-      } else if (event.translationY > 50) {
-        setDescriptionExpanded(false)
-      }
-    })
-    .onFinalize(() => {
-      if (!descriptionExpanded) setSwipeEnabled(true);
-    });
-
   return (
-    <GestureHandlerRootView>
-      <ImageBackground
-        source={{ uri: image ? image : undefined }}
-        resizeMode="cover"
-        blurRadius={16}
+    <ImageBackground
+      source={{ uri: event.image ? event.image : undefined }}
+      resizeMode="cover"
+      blurRadius={16}
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        overflow: "hidden",
+        backgroundColor: theme.colors.secondary_bg_color,
+      }}
+      onLayout={(event) => {
+        const { height } = event.nativeEvent.layout;
+        setCardHeight(height);
+      }}
+    >
+      <Image
+        source={{ uri: event.image ? event.image : undefined }}
+        resizeMode="contain"
         style={{
-          flex: 1,
-          flexDirection: "column",
-          borderRadius: theme.borderRadii.eventCard,
-          overflow: "hidden",
-          backgroundColor: theme.colors.secondary_bg_color,
+          width:"100%",
+          height: "100%",
+          position: "absolute"
         }}
-        onLayout={(event) => {
-          const { height } = event.nativeEvent.layout;
-          setCardHeight(height);
-        }}
-      >
-        <Image
-          source={{ uri: image ? image : undefined }}
-          resizeMode="contain"
-          style={{
-            width:"100%",
-            height: "100%",
-            position: "absolute"
-          }}
-        />
+      />
 
+      {/* Back button */}
+      {
+        tag && (
+          <Pressable
+            onPress={() => {
+              router.replace("/(tabs)/tags");
+              setTag(undefined);
+            }}
+            style={{
+              backgroundColor: theme.colors.cardBGColor,
+              width: 36, height: 36,
+              position: "absolute",
+              top: 16, left: 16,
+              borderRadius: 50,
+              zIndex: 1, alignItems: "center", justifyContent: "center"
+            }}
+          >
+            <Icon name={"chevronLeft"} color={theme.colors.gray} size={24}/>
+          </Pressable>
+        )
+      }
+
+      <Box
+        flex={1}
+        justifyContent="flex-end"
+      >
         <Box
-          flex={1}
-          justifyContent="flex-end"
+          backgroundColor={"cardBGColor"}
+          borderTopLeftRadius={"eventCard"}
+          borderTopRightRadius={"eventCard"}
+          gap={"l"}
+          paddingTop={"m"}
+          onLayout={(event) => {
+            const { height } = event.nativeEvent.layout;
+            setInfoHeight(height);
+          }}
         >
-          <GestureDetector gesture={panGesture}>
-            <Box
-              backgroundColor={"cardBGColor"}
-              borderTopLeftRadius={"eventCard"}
-              borderTopRightRadius={"eventCard"}
-              gap={"s"}
-              paddingHorizontal="eventCardPadding"
+          {/* Main info (name, tags) */}
+          <Box
+            gap={"s"}
+            paddingHorizontal={"eventCardPadding"}
+          >
+            {/* Event Title */}
+            <Text
+              variant={"cardHeader"}
+              color={"cardMainTextColor"}
             >
-              <Box
-                id="MainInfo"
-                flexDirection="column"
-                paddingTop="l"
-                gap="s"
+              { event.name }
+            </Text>
+
+            {/* Event Categories */}
+            {
+              event.categories && (
+                <Box height={40}>
+                  <FlatList
+                    data={event.categories}
+                    renderItem={ ({ item }) => (
+                      <TagChip text={item}/>
+                    )}
+                    keyExtractor={(item) => item}
+                    style={{ zIndex: 1, flexGrow: 1 }}
+                    horizontal
+                    accessible
+                    scrollEnabled
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ gap: 16 }}
+                  />
+                </Box>
+              )
+            }
+          </Box>
+
+          {/* Sub info (location, price, date) */}
+          <Box
+            flexDirection="column"
+            gap="s"
+            paddingHorizontal={"eventCardPadding"}
+          >
+            {/* Location here */}
+
+            {/* Price here */}
+
+            {/* Date with time */}
+            <Box
+              flexDirection="row"
+              gap="xs"
+              alignItems="center"
+            >
+              <Icon name={"calendar"} color={theme.colors.gray} size={16}/>
+
+              <Text
+                variant={"cardDate"}
+                color={"cardMainTextColor"}
               >
+                { formatDate(event.date) }
+              </Text>
+            </Box>
+          </Box>
+
+          {/* Description */}
+          <Box
+            overflow={"hidden"}
+            marginHorizontal={"l"}
+            borderRadius={"l"}
+          >
+            <Animated.View
+              style={[
+                animatedDescriptionStyle,
+                {
+                  overflow: "hidden",
+                  backgroundColor: theme.colors.cardBGColor,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                }
+              ]}
+            >
+              <ScrollView overScrollMode={"never"} style={{ flex: 1 }} contentContainerStyle={{ gap: 10 }}>
                 <Text
-                  variant={"cardHeader"}
+                  variant={"cardSubheader"}
                   color={"cardMainTextColor"}
                 >
-                  { name }
+                  { "О МЕРОПРИЯТИИ" }
                 </Text>
 
-                {/* Location here */}
-
-                {/* Price here */}
-                <Box
-                  flexDirection="row"
-                  gap="xs"
-                  alignItems="center"
+                <Text
+                  variant="cardText"
+                  color="cardSubtextColor"
                 >
-                  <Icon name={"calendar"} color={theme.colors.gray} size={16}/>
+                  {event.description}
+                </Text>
 
-                  <Text
-                    variant={"cardDate"}
-                    color={"cardMainTextColor"}
+                {event.contact && event.contact.length > 0 && (
+                  <Box
+                    gap={"s"}
                   >
-                    { formatDate(date) }
-                  </Text>
-                </Box>
-              </Box>
-
-              {/* Описание */}
-              <Animated.View
-                style={[
-                  animatedDescriptionStyle,
-                  {
-                    overflow: "hidden"
-                  }
-                ]}
-              >
-                <ScrollView>
-                  <Text
-                    variant="cardText"
-                    color="cardSubtextColor"
-                  >
-                    {description}
-                  </Text>
-
-                  {contacts && contacts.length > 0 && (
-                    <Box
-                      gap={"s"}
+                    <Text
+                      variant={"cardText"}
+                      color={"cardSubtextColor"}
                     >
-                      <Text
-                        variant={"cardText"}
-                        color={"cardSubtextColor"}
-                      >
-                        { "\nСсылки:" }
-                      </Text>
+                      { "\nСсылки:" }
+                    </Text>
 
-                      {contacts.map((contact, index) => {
-                        return (
-                          <Hyperlink
-                            key={index}
-                            linkDefault={true}
-                            linkStyle={{ color: theme.colors.link_color }}
-                            onPress={ () => config.openLink(Object.values(contact)[0], { try_instant_view: true }) }
-                            linkText={(url) => {
-                              const contact = contacts.find((c) => Object.values(c)[0] === url);
-                              return contact ? Object.keys(contact)[0] : url;
-                            }}
+                    {event.contact.map((con, index) => {
+                      return (
+                        <Hyperlink
+                          key={index}
+                          linkDefault={true}
+                          linkStyle={{ color: theme.colors.link_color }}
+                          onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
+                          linkText={(url) => {
+                            const contact = event.contact!.find((c) => Object.values(c)[0] === url);
+                            return contact ? Object.keys(contact)[0] : url;
+                          }}
+                        >
+                          <Text
+                            variant={"cardText"}
                           >
-                            <Text
-                              variant={"cardText"}
-                            >
-                              {Object.values(contact)[0]}
-                            </Text>
-                          </Hyperlink>
-                        );
-                      })}
-                    </Box>
-                  )}
-                </ScrollView>
-              </Animated.View>
+                            {Object.values(con)[0]}
+                          </Text>
+                        </Hyperlink>
+                      );
+                    })}
+                  </Box>
+                )}
+              </ScrollView>
+            </Animated.View>
 
-              <Box
-                id="SwipeArea"
-                width={"100%"}
-                paddingBottom="l"
-                gap={"s"}
-                alignItems={"center"}
-              >
-                <Box height={4} borderRadius={"l"} width={22} style={{ backgroundColor: "rgba(255,255,255,0.25)" }} />
-                <Box height={4} borderRadius={"l"} width={75} style={{ backgroundColor: "rgba(255,255,255,0.5)" }} />
-              </Box>
-            </Box>
-          </GestureDetector>
+            <Pressable
+              onPress={() => setDescriptionExpanded(!descriptionExpanded)}
+              style={{
+                alignItems: "center",
+                backgroundColor: theme.colors.cardBGColor
+              }}
+            >
+              <Icon
+                name={descriptionExpanded ? "chevronDown" : "chevronUp"}
+                color={theme.colors.gray}
+                size={24}/>
+            </Pressable>
+          </Box>
+
+          {/* Like/Dislike buttons */}
+          <Box
+            flexDirection={"row"}
+            width={"100%"}
+            paddingBottom={"l"}
+            paddingHorizontal={"l"}
+            gap={"s"}
+          >
+            <ActionButton type={"dislike"} onPress={onDislike}/>
+            <ActionButton type={"like"} onPress={onLike}/>
+          </Box>
         </Box>
-      </ImageBackground>
-    </GestureHandlerRootView>
+      </Box>
+    </ImageBackground>
   );
 };

@@ -1,11 +1,10 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {Pressable} from "react-native";
 import {useRouter} from "expo-router";
-import {MaterialIcons} from "@expo/vector-icons";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import Swiper from "react-native-deck-swiper";
-import {useEventsStore} from "@/widgets/Events";
+import {useEventsStore} from "@/widgets/Events/model/store/useEventsStore";
 import {useCalendarStore} from "@/widgets/Date";
 import {EventCard} from "@/entities/Event";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
@@ -14,11 +13,13 @@ import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
 import {useLikesStore} from "@/widgets/Likes";
+import {Event} from "@/entities/Event"
 
 export const EventsSwiper = () => {
   const theme = useTheme<Theme>();
   const router = useRouter();
   const username = useConfig().initDataUnsafe.user.username;
+  const swiperRef = useRef<Swiper<Event> | null>();
   const {
     tag,
     events,
@@ -29,7 +30,6 @@ export const EventsSwiper = () => {
     saveAction,
     setSwipedAll,
     setTag,
-    swipeEnabled,
   } = useEventsStore();
 
   const {
@@ -42,22 +42,6 @@ export const EventsSwiper = () => {
   } = useLikesStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
-  const likeOpacity = useSharedValue(0);
-  const dislikeOpacity = useSharedValue(0);
-
-  const likeStyle = useAnimatedStyle(() => ({
-    opacity: likeOpacity.value,
-    transform: [{ translateX: withTiming(likeOpacity.value ? -20 : 20) }],
-  }));
-  const dislikeStyle = useAnimatedStyle(() => ({
-    opacity: dislikeOpacity.value,
-    transform: [{ translateX: withTiming(dislikeOpacity.value ? 20 : -20) }],
-  }));
-
-  const resetOpacity = () => {
-    likeOpacity.value = withTiming(0);
-    dislikeOpacity.value = withTiming(0);
-  }
 
   const swipedAllInfoStyle = useAnimatedStyle(() => ({
     opacity: swipedAllInfoOpacity.value,
@@ -79,8 +63,8 @@ export const EventsSwiper = () => {
 
   if (isLoading) {
     return (
-      <Box flex={1} backgroundColor="bg_color" style={{ paddingHorizontal: 16, paddingBottom: 16}}>
-        <LoadingCard style={{ borderRadius: 50, overflow: 'hidden', height: "100%", width: "100%" }}/>
+      <Box flex={1} backgroundColor="bg_color">
+        <LoadingCard style={{ height: "100%", width: "100%" }}/>
       </Box>
     );
   }
@@ -98,31 +82,27 @@ export const EventsSwiper = () => {
         !swipedAll && (
           <Box flex={1} backgroundColor="bg_color">
             <Swiper
+              ref={swiper => {
+                swiperRef.current = swiper;
+              }}
               cards={events}
               renderCard={(event) => (
                 <EventCard
-                  name={event.name}
-                  date={event.date}
-                  description={event.description}
-                  image={event.image}
-                  contacts={event.contact}
+                  event={event}
+                  onLike={ () => { swiperRef.current?.swipeRight() } }
+                  onDislike={ () => { swiperRef.current?.swipeLeft() } }
                 />
               )}
               backgroundColor="white"
-              cardHorizontalMargin={16}
-              horizontalSwipe={swipeEnabled}
+              horizontalSwipe={false}
               verticalSwipe={false}
               stackSize={3}
               containerStyle={{ backgroundColor: theme.colors.bg_color }}
-              cardStyle={{ height: "100%", paddingBottom: 16 }}
+              cardStyle={{ height: "100%" }}
               cardVerticalMargin={0}
+              cardHorizontalMargin={0}
               childrenOnTop={true}
               onSwipedAll={() => setSwipedAll(true)}
-              onSwiping={(x) => {
-                likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
-                dislikeOpacity.value = x < 0 ? Math.min(-x / 100, 1) : 0;
-              }}
-              onSwiped={resetOpacity}
               onSwipedRight={(cardIndex) => {
                 saveAction("like", events[cardIndex].id, username)
                   .then(() => addLikedEvent(events[cardIndex]))
@@ -131,24 +111,9 @@ export const EventsSwiper = () => {
                 saveAction("dislike", events[cardIndex].id, username)
                   .then(() => removeLikedEvent(events[cardIndex].id))
               }}
-              onSwipedAborted={resetOpacity}
+              inputRotationRange={[-100 / 2, 0, 100 / 2]}
+              outputRotationRange={["0deg", "0deg", "0deg"]}
             />
-
-            {/* Иконка лайка */}
-            <Animated.View style={[likeStyle, { position: "absolute", right: 0, top: "50%" }]}>
-              <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
-                   style={{ borderRadius: 25, backgroundColor: 'rgb(95,239,15)'}}>
-                <MaterialIcons name="thumb-up" size={24} color="white" />
-              </Box>
-            </Animated.View>
-
-            {/* Иконка дизлайка */}
-            <Animated.View style={[dislikeStyle, { position: "absolute", left: 0, top: "50%" }]}>
-              <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
-                   style={{ borderRadius: 25, backgroundColor: 'rgb(255,0,0)'}}>
-                <MaterialIcons name="thumb-down" size={24} color="white" />
-              </Box>
-            </Animated.View>
           </Box>
         )
       }
