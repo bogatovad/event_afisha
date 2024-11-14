@@ -1,12 +1,12 @@
 import React, {useCallback} from "react";
 import {Pressable} from "react-native";
+import {useFocusEffect} from "expo-router";
+import {useTheme} from "@shopify/restyle";
 import {Calendar} from "react-native-calendars";
+import {useCalendarStore} from "@/features/Dates";
 import {Box} from "@/shared/ui/Base/Box";
 import {Text} from "@/shared/ui/Base/Text";
-import {useCalendarStore} from "@/widgets/Date";
-import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
-import {useFocusEffect} from "expo-router";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export const DatePicker: React.FC = () => {

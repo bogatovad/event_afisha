@@ -1,21 +1,21 @@
 import React, {useEffect, useState} from "react";
 import {Image, ImageBackground, Pressable, ScrollView, FlatList } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
-import { useEventsStore } from "@/widgets/Events";
+import {useTheme} from "@shopify/restyle";
+import {Hyperlink} from "react-native-hyperlink";
+import {Event} from "@/entities/Event/model/types/events";
 import {Box} from "@/shared/ui/Base/Box";
 import {Text} from "@/shared/ui/Base/Text";
 import {formatDate} from "@/shared/scripts/date";
-import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
-import {Hyperlink} from "react-native-hyperlink";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {ActionButton, TagChip} from "@/shared/ui";
-import {Event} from "@/entities/Event/model/types/events"
-import {useRouter} from "expo-router";
 
 interface EventCardProps {
   event: Event;
+  tag?: string | undefined;
+  onBackPressed?: () => void;
   onLike: () => void;
   onDislike: () => void;
 }
@@ -23,37 +23,25 @@ interface EventCardProps {
 export const EventCard: React.FC<EventCardProps> = ({
   event,
   onLike,
+  tag,
+  onBackPressed = () => console.log("Back Pressed"),
   onDislike
 }) => {
   const theme = useTheme<Theme>();
   const config = useConfig();
-  const router = useRouter();
 
   const heightValue = useSharedValue(125);
 
   const [cardHeight, setCardHeight] = useState(0);
   const [infoHeight, setInfoHeight] = useState(0);
 
-  const {
-    descriptionExpanded,
-    setDescriptionExpanded,
-    setSwipeEnabled,
-    tag, setTag
-  } = useEventsStore();
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
   useEffect(() => {
     heightValue.value = withTiming(
       descriptionExpanded ? (125 + cardHeight - infoHeight - 36 - 16 - 10) : 125,
       { duration: 350 },
     );
-  }, [descriptionExpanded]);
-
-  useEffect(() => {
-    if (descriptionExpanded) {
-      setSwipeEnabled(false);
-    } else {
-      setSwipeEnabled(true);
-    }
   }, [descriptionExpanded]);
 
   const animatedDescriptionStyle = useAnimatedStyle(() => ({
@@ -90,10 +78,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       {
         tag && (
           <Pressable
-            onPress={() => {
-              router.replace("/(tabs)/tags");
-              setTag(undefined);
-            }}
+            onPress={onBackPressed}
             style={{
               backgroundColor: theme.colors.cardBGColor,
               width: 36, height: 36,

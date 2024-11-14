@@ -1,8 +1,8 @@
 import React from "react";
-import {Box} from "@/shared/ui/Base/Box";
-import {Text} from "@/shared/ui/Base/Text";
 import {ImageBackground, Pressable} from "react-native";
 import {useTheme} from "@shopify/restyle";
+import {Box} from "@/shared/ui";
+import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 
 interface TagCardProps {

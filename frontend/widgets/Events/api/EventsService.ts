@@ -1,8 +1,9 @@
-import {ContentParams, EventsResponse, Event} from "@/widgets/Events";
+import {ContentParams, EventsResponse} from "@/widgets/Events";
+import {Event} from "@/entities/Event"
 import {ActionData, ActionResponseData, ActionResponse} from "@/widgets/Events";
 import axiosInstance from "@/shared/api/AxiosConfig";
 
-export class EventsService {
+class EventsService {
   async getContent (
     params: ContentParams
   ) {
@@ -32,3 +33,5 @@ export class EventsService {
     return response;
   }
 }
+
+export default new EventsService();

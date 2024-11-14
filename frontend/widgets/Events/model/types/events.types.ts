@@ -1,18 +1,4 @@
-/**
- * Structure of info about event
- */
-export type Event = {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  contact: Contact[] | null;
-  date: string;
-}
-
-export type Contact = {
-  [key: string]: string;
-}
+import {Event} from "@/entities/Event";
 
 /**
  * Structure of params to get events

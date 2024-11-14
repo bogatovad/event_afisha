@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Box} from "@/shared/ui";
-import {Text} from "@/shared/ui";
+import Animated, {runOnJS, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useOnboardingStore} from "@/widgets/Onboarding/model/store/useOnboardingStore";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
-import Animated, {runOnJS, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
+import {Box} from "@/shared/ui";
+import {Text} from "@/shared/ui";
 
 export const OnboardingIllustration = () => {
   const { page } = useOnboardingStore();

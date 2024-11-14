@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import {Event} from "@/widgets/Events/model/types/events.types"
-import {LikesParams, likesServices} from "@/widgets/Likes";
+import {LikesParams} from "@/widgets/Likes";
+import likesService from "@/widgets/Likes/api/LikesService";
+import {Event} from "@/entities/Event";
 
 interface LikesState {
   likes: Event[];
@@ -46,7 +47,7 @@ export const useLikesStore = create<LikesState>((set) => ({
     if (date_start) params.date_start = date_start;
     if (date_end)   params.date_end = date_end;
 
-    likesServices.getLikes(params)
+    likesService.getLikes(params)
       .then((response) => {
         switch (response.status) {
           case 200: {

@@ -1,6 +1,6 @@
 import React from "react";
-import {Box} from "@/shared/ui";
 import {DatePicker} from "@/widgets/Date";
+import {Box} from "@/shared/ui";
 
 export const CalendarPage: React.FC = () => {
   return (

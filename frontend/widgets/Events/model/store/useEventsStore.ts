@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import {eventsService} from "@/widgets/Events";
-import {Event, ContentParams} from "@/widgets/Events"
+import eventsService from "@/widgets/Events/api/EventsService";
+import {ContentParams} from "@/widgets/Events/model/types/events.types";
+import {Event} from "@/entities/Event";
 
 interface EventsState {
   tag: string | undefined;
@@ -14,11 +15,9 @@ interface EventsState {
   setTag: (tag: string | undefined) => void;
   descriptionExpanded: boolean;
   setDescriptionExpanded: (state: boolean) => void;
-  swipeEnabled: boolean;
-  setSwipeEnabled: (state: boolean) => void;
 }
 
-export const useEventsStore = create<EventsState>((set, get) => ({
+export const useEventsStore = create<EventsState>((set) => ({
   tag: undefined,
   events: [],
   isLoading: true,
@@ -93,9 +92,4 @@ export const useEventsStore = create<EventsState>((set, get) => ({
   setDescriptionExpanded: (state: boolean) => {
     set({ descriptionExpanded: state })
   },
-
-  swipeEnabled: true,
-  setSwipeEnabled: (state: boolean) => {
-    set({ swipeEnabled: state })
-  }
 }));

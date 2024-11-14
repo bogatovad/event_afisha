@@ -1,9 +1,9 @@
 import {create} from "zustand/index";
 import {MarkedDates} from "react-native-calendars/src/types";
 import {DateData} from "react-native-calendars";
+import likesService from "@/widgets/Likes/api/LikesService";
+import {Event} from "@/entities/Event";
 import {getDatesInRange} from "@/shared/scripts/date";
-import {likesServices} from "@/widgets/Likes";
-import {Event} from "@/widgets/Events"
 
 interface CalendarState {
   isCalendarVisible: boolean;
@@ -79,7 +79,7 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
   },
 
   fetchAllLikes: (username: string) => {
-    likesServices.getLikes({username: username})
+    likesService.getLikes({username: username})
       .then((response) => get().updateLikesDays(response.data));
   },
 

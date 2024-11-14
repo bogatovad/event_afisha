@@ -1,7 +1,7 @@
 import React from "react";
-import {Box, OnboardingButton, Stepper} from "@/shared/ui";
-import {useOnboardingStore} from "@/widgets/Onboarding/model/store/useOnboardingStore";
 import {useRouter} from "expo-router";
+import {useOnboardingStore} from "@/widgets/Onboarding/model/store/useOnboardingStore";
+import {Box, OnboardingButton, Stepper} from "@/shared/ui";
 
 export const OnboardingNav = () => {
   const router = useRouter();

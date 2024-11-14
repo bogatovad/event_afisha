@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Box, ErrorCard, LoadingCard, Text} from "@/shared/ui";
 import {FlatList, ImageBackground, Modal, Pressable, RefreshControl, ScrollView} from "react-native";
-import {LikedEventCard} from "@/entities/Event";
-import {useLikesStore} from "@/widgets/Likes";
+import {MaterialIcons} from "@expo/vector-icons";
 import {useTheme} from "@shopify/restyle";
+import {Hyperlink} from "react-native-hyperlink";
+import {useLikesStore} from "@/widgets/Likes/model/store/useLikesStore";
+import {useEventsStore} from "@/widgets/Events";
+import {LikedEventCard} from "@/entities/Event";
+import {useCalendarStore} from "@/features/Dates";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
-import {MaterialIcons} from "@expo/vector-icons";
-import {useEventsStore} from "@/widgets/Events";
-import {Hyperlink} from "react-native-hyperlink";
-import {useCalendarStore} from "@/widgets/Date";
 import {getPeriodBorders} from "@/shared/scripts/date";
 
 export const LikesList = () => {

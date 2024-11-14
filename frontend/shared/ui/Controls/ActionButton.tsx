@@ -1,5 +1,5 @@
 import React from "react";
-import {Box} from "@/shared/ui";
+import {Box} from "@/shared/ui/Base/Box";
 import {Pressable} from "react-native";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useTheme} from "@shopify/restyle";

@@ -3,7 +3,7 @@ import {Pressable, TextInput} from "react-native";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import {useFeedbackStore} from "@/pages/info";
+import {useFeedbackStore} from "@/pages/info/model/store/useFeedbackState";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {Text} from "@/shared/ui";

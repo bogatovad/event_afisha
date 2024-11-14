@@ -1,8 +1,8 @@
 import React, {useEffect} from "react";
 import Animated, {interpolateColor, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
-import {Theme} from "@/shared/providers/Theme";
 import {OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingStore} from "@/widgets/Onboarding";
+import {Theme} from "@/shared/providers/Theme";
 
 export const OnboardingPage: React.FC = () => {
   const theme = useTheme<Theme>();

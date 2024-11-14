@@ -5,15 +5,14 @@ import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-nati
 import {useTheme} from "@shopify/restyle";
 import Swiper from "react-native-deck-swiper";
 import {useEventsStore} from "@/widgets/Events/model/store/useEventsStore";
-import {useCalendarStore} from "@/widgets/Date";
-import {EventCard} from "@/entities/Event";
+import {useCalendarStore} from "@/features/Dates";
+import {useLikesStore} from "@/widgets/Likes/model/store/useLikesStore";
+import {Event, EventCard} from "@/entities/Event";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
-import {useLikesStore} from "@/widgets/Likes";
-import {Event} from "@/entities/Event"
 
 export const EventsSwiper = () => {
   const theme = useTheme<Theme>();
@@ -89,6 +88,11 @@ export const EventsSwiper = () => {
               renderCard={(event) => (
                 <EventCard
                   event={event}
+                  tag={tag}
+                  onBackPressed={() => {
+                    router.replace("/(tabs)/tags");
+                    setTag(undefined);
+                  }}
                   onLike={ () => { swiperRef.current?.swipeRight() } }
                   onDislike={ () => { swiperRef.current?.swipeLeft() } }
                 />

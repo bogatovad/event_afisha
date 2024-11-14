@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Animated, {runOnJS, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
+import { useOnboardingStore } from "@/widgets/Onboarding/model/store/useOnboardingStore";
 import { Box, Text } from "@/shared/ui";
-import { useOnboardingStore } from "@/widgets/Onboarding";
 
 export const OnboardingText: React.FC = () => {
   const { page, pageTitle, pageSubtitle, setPageText } = useOnboardingStore();

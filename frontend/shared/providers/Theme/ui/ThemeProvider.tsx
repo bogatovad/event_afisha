@@ -1,7 +1,7 @@
 import React from "react";
 import {createTheme, ThemeProvider} from "@shopify/restyle";
-import {useConfig} from "@/shared/providers/TelegramConfig";
-import {Theme} from "@/shared/providers/Theme";
+import {useConfig} from "@/shared/providers/TelegramConfig/ui/TelegramConfig";
+import {Theme} from "@/shared/providers/Theme/model/theme.type";
 import {Colors, BorderRadii, Spacing, Text} from "@/shared/constants";
 
 export const DynamicThemeProvider:  React.FC<{ children: React.ReactNode }> = (

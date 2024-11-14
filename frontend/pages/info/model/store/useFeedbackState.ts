@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {feedbackService} from "@/pages/info";
+import feedbackService from "@/pages/info/api/FeedbackService";
 
 interface FeedbackState {
   text: string;

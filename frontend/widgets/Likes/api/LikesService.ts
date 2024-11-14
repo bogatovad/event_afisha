@@ -1,8 +1,9 @@
 import {LikesParams} from "@/widgets/Likes";
-import {Event, EventsResponse} from "@/widgets/Events";
+import {EventsResponse} from "@/widgets/Events";
 import axiosInstance from "@/shared/api/AxiosConfig";
+import {Event} from "@/entities/Event"
 
-export class LikesService {
+class LikesService {
   async getLikes(
     params: LikesParams
   ) {
@@ -17,3 +18,5 @@ export class LikesService {
     return response;
   }
 }
+
+export default new LikesService();

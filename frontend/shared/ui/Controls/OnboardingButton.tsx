@@ -1,7 +1,7 @@
 import React from "react";
 import {Pressable} from "react-native";
 import {Box} from "@/shared/ui/Base/Box";
-import {Text} from "@/shared/ui";
+import {Text} from "@/shared/ui/Base/Text";
 
 interface OnboardingButtonProps {
   page: number;

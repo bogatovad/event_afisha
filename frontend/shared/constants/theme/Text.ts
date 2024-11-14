@@ -9,11 +9,15 @@ export const Text = {
   },
   cardHeader: {
     fontFamily: 'MontserratBold',
+    fontSize: 28,
+  },
+  cardSubheader: {
+    fontFamily: 'MontserratRegular',
     fontSize: 16,
   },
   cardText: {
     fontFamily: 'MontserratRegular',
-    fontSize: 12,
+    fontSize: 14,
   },
   cardDate: {
     fontFamily: 'MontserratBold',
@@ -46,6 +50,10 @@ export const Text = {
   onboardingIam: {
     fontFamily: 'MontserratBold',
     fontSize: 20,
+  },
+  tagChip: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 16,
   },
   defaults: {},
 }

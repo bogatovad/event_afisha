@@ -1,5 +1,6 @@
 import React from "react";
-import {Box, Text} from "@/shared/ui";
+import {Box} from "@/shared/ui/Base/Box";
+import {Text} from "@/shared/ui/Base/Text";
 
 interface TagChipProps {
   text: string;

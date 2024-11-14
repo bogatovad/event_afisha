@@ -1,3 +1,1 @@
-export { DatePicker } from "./ui/DatePicker"
-
-export {useCalendarStore} from "./model/useCalendarStore"
+export { DatePicker } from "./ui/DatePicker";

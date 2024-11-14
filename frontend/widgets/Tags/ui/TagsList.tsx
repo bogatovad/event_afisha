@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {FlatList} from "react-native";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
-import {useTagsStore} from "@/widgets/Tags";
+import {useTagsStore} from "@/widgets/Tags/model/store/useTagsStore";
 import {useEventsStore} from "@/widgets/Events";
 import {TagCard} from "@/entities/Tag";
 import {Theme} from "@/shared/providers/Theme";
