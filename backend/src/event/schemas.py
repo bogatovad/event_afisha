@@ -24,6 +24,7 @@ class ContentSchema(Schema):
     image: str | None = None
     contact: list[dict] | None = None
     date: date
+    tags: list[TagSchema]
 
     @field_validator('image')
     @classmethod
