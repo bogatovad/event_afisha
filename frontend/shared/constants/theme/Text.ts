@@ -19,15 +19,7 @@ export const Text = {
     fontFamily: 'MontserratRegular',
     fontSize: 14,
   },
-  cardDate: {
-    fontFamily: 'MontserratBold',
-    fontSize: 12,
-  },
-  cardTime: {
-    fontFamily: 'MontserratSemiBold',
-    fontSize: 12,
-  },
-  cardPrice: {
+  cardSubInfo: {
     fontFamily: 'MontserratRegular',
     fontSize: 12,
   },

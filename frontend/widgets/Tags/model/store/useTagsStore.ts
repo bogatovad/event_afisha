@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import {Tag} from "@/widgets/Tags/model/types/tags.types";
+import {Tag} from "@/entities/Tag";
 import tagsService from "@/widgets/Tags/api/TagsService";
 
 interface TagsState {

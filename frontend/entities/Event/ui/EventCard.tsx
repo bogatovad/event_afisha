@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Image, ImageBackground, Pressable, ScrollView, FlatList } from "react-native";
+import {Image, ImageBackground, Pressable, ScrollView } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import {Hyperlink} from "react-native-hyperlink";
@@ -11,6 +11,7 @@ import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {ActionButton, TagChip} from "@/shared/ui";
+import {DraggableScrollView} from "@/shared/providers/DraggableScroll";
 
 interface EventCardProps {
   event: Event;
@@ -64,6 +65,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         setCardHeight(height);
       }}
     >
+      {/* Full event image */}
       <Image
         source={{ uri: event.image ? event.image : undefined }}
         resizeMode="contain"
@@ -93,6 +95,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         )
       }
 
+      {/* Card content */}
       <Box
         flex={1}
         justifyContent="flex-end"
@@ -123,22 +126,16 @@ export const EventCard: React.FC<EventCardProps> = ({
 
             {/* Event Categories */}
             {
-              event.categories && (
-                <Box height={40}>
-                  <FlatList
-                    data={event.categories}
-                    renderItem={ ({ item }) => (
-                      <TagChip text={item}/>
-                    )}
-                    keyExtractor={(item) => item}
-                    style={{ zIndex: 1, flexGrow: 1 }}
-                    horizontal
-                    accessible
-                    scrollEnabled
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ gap: 16 }}
-                  />
-                </Box>
+              event.tags && event.tags.length > 0 && (
+                <DraggableScrollView
+                  showsHorizontalScrollIndicator={false}
+                >
+                  {
+                    event.tags.map((tag) => (
+                      <TagChip text={tag.name}/>
+                    ))
+                  }
+                </DraggableScrollView>
               )
             }
           </Box>
@@ -149,9 +146,43 @@ export const EventCard: React.FC<EventCardProps> = ({
             gap="s"
             paddingHorizontal={"eventCardPadding"}
           >
-            {/* Location here */}
+            {/* Location */}
+            {
+              event.location && (
+                <Box
+                  flexDirection={"row"}
+                  gap={"xs"}
+                  alignItems={"center"}
+                >
+                  <Icon name={"location"} color={theme.colors.white} size={16}/>
+
+                  <Text
+                    variant={"cardSubInfo"}
+                    color={"cardMainTextColor"}
+                  >
+                    { event.location }
+                  </Text>
+                </Box>
+              )
+            }
 
             {/* Price here */}
+            {
+              event.cost && (
+                <Box
+                  flexDirection={"row"}
+                  gap={"xs"}
+                  alignItems={"center"}
+                >
+                  <Text
+                    variant={"cardSubInfo"}
+                    color={"cardMainTextColor"}
+                  >
+                    { event.cost }
+                  </Text>
+                </Box>
+              )
+            }
 
             {/* Date with time */}
             <Box
@@ -159,98 +190,125 @@ export const EventCard: React.FC<EventCardProps> = ({
               gap="xs"
               alignItems="center"
             >
-              <Icon name={"calendar"} color={theme.colors.gray} size={16}/>
+              {
+                event.date && (
+                  <>
+                    <Icon name={"calendar"} color={theme.colors.gray} size={16}/>
 
-              <Text
-                variant={"cardDate"}
-                color={"cardMainTextColor"}
-              >
-                { formatDate(event.date) }
-              </Text>
+                    <Text
+                      variant={"cardSubInfo"}
+                      color={"cardMainTextColor"}
+                    >
+                      { formatDate(event.date) }
+                    </Text>
+                  </>
+                )
+              }
+
+              {
+                event.time && (
+                  <Text
+                    variant={"cardSubInfo"}
+                    color={"cardMainTextColor"}
+                  >
+                    { `В ${event.time}` }
+                  </Text>
+                )
+              }
             </Box>
           </Box>
 
           {/* Description */}
-          <Box
-            overflow={"hidden"}
-            marginHorizontal={"l"}
-            borderRadius={"l"}
-          >
-            <Animated.View
-              style={[
-                animatedDescriptionStyle,
-                {
-                  overflow: "hidden",
-                  backgroundColor: theme.colors.cardBGColor,
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
-                }
-              ]}
-            >
-              <ScrollView overScrollMode={"never"} style={{ flex: 1 }} contentContainerStyle={{ gap: 10 }}>
-                <Text
-                  variant={"cardSubheader"}
-                  color={"cardMainTextColor"}
+          {
+            (event.description || event.contact) && (
+              <Box
+                overflow={"hidden"}
+                marginHorizontal={"l"}
+                borderRadius={"l"}
+              >
+                <Animated.View
+                  style={[
+                    animatedDescriptionStyle,
+                    {
+                      overflow: "hidden",
+                      backgroundColor: theme.colors.cardBGColor,
+                      paddingHorizontal: 20,
+                      paddingVertical: 10,
+                    }
+                  ]}
                 >
-                  { "О МЕРОПРИЯТИИ" }
-                </Text>
-
-                <Text
-                  variant="cardText"
-                  color="cardSubtextColor"
-                >
-                  {event.description}
-                </Text>
-
-                {event.contact && event.contact.length > 0 && (
-                  <Box
-                    gap={"s"}
-                  >
+                  <ScrollView overScrollMode={"never"} style={{ flex: 1 }} contentContainerStyle={{ gap: 10 }}>
                     <Text
-                      variant={"cardText"}
-                      color={"cardSubtextColor"}
+                      variant={"cardSubheader"}
+                      color={"cardMainTextColor"}
                     >
-                      { "\nСсылки:" }
+                      { "О МЕРОПРИЯТИИ" }
                     </Text>
 
-                    {event.contact.map((con, index) => {
-                      return (
-                        <Hyperlink
-                          key={index}
-                          linkDefault={true}
-                          linkStyle={{ color: theme.colors.link_color }}
-                          onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
-                          linkText={(url) => {
-                            const contact = event.contact!.find((c) => Object.values(c)[0] === url);
-                            return contact ? Object.keys(contact)[0] : url;
-                          }}
+                    {
+                      event.description && (
+                        <Text
+                          variant={"cardText"}
+                          color={"cardSubtextColor"}
+                        >
+                          {event.description}
+                        </Text>
+                      )
+                    }
+
+                    {
+                      event.contact && event.contact.length > 0 && (
+                        <Box
+                          gap={"s"}
                         >
                           <Text
                             variant={"cardText"}
+                            color={"cardSubtextColor"}
                           >
-                            {Object.values(con)[0]}
+                            { "Ссылки:" }
                           </Text>
-                        </Hyperlink>
-                      );
-                    })}
-                  </Box>
-                )}
-              </ScrollView>
-            </Animated.View>
 
-            <Pressable
-              onPress={() => setDescriptionExpanded(!descriptionExpanded)}
-              style={{
-                alignItems: "center",
-                backgroundColor: theme.colors.cardBGColor
-              }}
-            >
-              <Icon
-                name={descriptionExpanded ? "chevronDown" : "chevronUp"}
-                color={theme.colors.gray}
-                size={24}/>
-            </Pressable>
-          </Box>
+                          {event.contact.map((con, index) => {
+                            return (
+                              <Hyperlink
+                                key={index}
+                                linkDefault={true}
+                                linkStyle={{ color: theme.colors.link_color }}
+                                onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
+                                linkText={(url) => {
+                                  const contact = event.contact!.find((c) => Object.values(c)[0] === url);
+                                  return contact ? Object.keys(contact)[0] : url;
+                                }}
+                              >
+                                <Text
+                                  variant={"cardText"}
+                                >
+                                  {Object.values(con)[0]}
+                                </Text>
+                              </Hyperlink>
+                            );
+                          })}
+                        </Box>
+                      )
+                    }
+                  </ScrollView>
+                </Animated.View>
+
+                <Pressable
+                  onPress={() => setDescriptionExpanded(!descriptionExpanded)}
+                  style={{
+                    alignItems: "center",
+                    backgroundColor: theme.colors.cardBGColor
+                  }}
+                >
+                  <Icon
+                    name={descriptionExpanded ? "chevronDown" : "chevronUp"}
+                    color={theme.colors.gray}
+                    size={24}/>
+                </Pressable>
+              </Box>
+            )
+          }
 
           {/* Like/Dislike buttons */}
           <Box

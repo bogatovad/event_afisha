@@ -13,10 +13,10 @@ export const TagChip: React.FC<TagChipProps> = ({
     <Box
       height={40}
       borderRadius={"l"}
-      padding={"s"}
       backgroundColor={"cardBGColor"}
       alignItems={"center"}
       justifyContent={"center"}
+      style={{ padding: 10 }}
     >
       <Text
         variant={"tagChip"}

@@ -1,5 +1,5 @@
 export const Colors = {
-  cardBGColor: "rgba(57,57,57,0.7)",
+  cardBGColor: "rgba(30,30,30,0.7)",
   cardMainTextColor: "#FFFFFF",
   cardSubtextColor: "#D8DFE9",
   lime: "#E1F44B",

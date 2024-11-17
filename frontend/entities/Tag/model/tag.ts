@@ -6,11 +6,3 @@ export type Tag = {
   description: string;
   image: string | null;
 }
-
-/**
- * Type of GET tags response
- */
-export type TagsResponse = {
-  status: number;
-  data: Tag[];
-};
