@@ -1,7 +1,11 @@
-import { useEffect, useRef, useMemo, ForwardedRef } from 'react'
-import { Platform, findNodeHandle } from 'react-native'
-import type { ScrollView } from 'react-native'
-import {mergeRefs} from 'react-merge-refs'
+import { useEffect, useRef, useMemo, ForwardedRef } from 'react';
+import { Platform, findNodeHandle } from 'react-native';
+import type { ScrollView } from 'react-native';
+
+const mergeRefs = Platform.select({
+  web: require("react-merge-refs/dist").mergeRefs,
+  default: null
+})
 
 type Props<Scrollable extends ScrollView = ScrollView> = {
   cursor?: string

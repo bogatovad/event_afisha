@@ -1,5 +1,5 @@
 import React from "react";
-import {EventsSwiper} from "@/widgets/Events";
+import {EventsSwiper} from "@/widgets/events-swiper";
 import {Box} from "@/shared/ui";
 
 export const FeedPage = () => {

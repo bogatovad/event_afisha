@@ -1,7 +1,7 @@
 import React, {useCallback} from "react";
 import {Image, Pressable} from "react-native";
 import {useFocusEffect, useRouter} from "expo-router";
-import {useOnboardingStore} from "@/widgets/Onboarding";
+import {useOnboardingStore} from "@/widgets/onboarding-elements";
 import {Box, Text} from "@/shared/ui";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 

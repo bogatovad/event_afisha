@@ -1,5 +1,5 @@
 import React from "react";
-import {TagsList} from "@/widgets/Tags";
+import {TagsList} from "@/widgets/tags-list";
 import {Box, Topbar} from "@/shared/ui";
 
 export const TagsPage = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import {LikesList} from "@/widgets/Likes";
+import {LikesList} from "@/widgets/liked-events-list";
 import {Box, Topbar} from "@/shared/ui";
 
 export const LikesPage = () => {
