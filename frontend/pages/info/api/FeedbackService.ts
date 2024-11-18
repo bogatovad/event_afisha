@@ -1,7 +1,7 @@
 import axiosInstance from "@/shared/api/AxiosConfig";
 import {FeedbackData, FeedbackResponse} from "@/pages/info";
 
-export class FeedbackService {
+class FeedbackService {
   async sendFeedback (
     feedbackData: FeedbackData,
   ) {
@@ -15,3 +15,5 @@ export class FeedbackService {
     return response
   };
 }
+
+export default new FeedbackService();

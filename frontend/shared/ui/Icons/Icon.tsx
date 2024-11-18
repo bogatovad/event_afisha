@@ -6,11 +6,15 @@ const icons = {
   back: Icons.Back,
   calendar: Icons.Calendar,
   chevronLeft: Icons.ChevronLeft,
+  chevronDown: Icons.ChevronDown,
+  chevronUp: Icons.ChevronUp,
   home: Icons.Home,
   like: Icons.Like,
+  likeFilled: Icons.LikeFilled,
   location: Icons.Location,
   tags: Icons.Tags,
   user: Icons.User,
+  dislike: Icons.Dislike
 };
 
 export interface IconProps extends SvgProps {

@@ -1,7 +1,7 @@
 import React from "react";
-import {Box} from "@/shared/ui/Base/Box";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
+import {Box} from "@/shared/ui/Base/Box";
 import {Theme} from "@/shared/providers/Theme";
 
 interface StepProps {

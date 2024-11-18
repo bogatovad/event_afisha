@@ -1,8 +1,8 @@
 import React, {useCallback} from "react";
 import {Image, Pressable} from "react-native";
 import {useFocusEffect, useRouter} from "expo-router";
+import {useOnboardingStore} from "@/widgets/onboarding-elements";
 import {Box, Text} from "@/shared/ui";
-import {useOnboardingStore} from "@/widgets/Onboarding";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export const ProfilePage = () => {
