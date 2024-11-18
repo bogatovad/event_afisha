@@ -10,11 +10,11 @@ interface EventsState {
   swipedAll: boolean;
   fetchEvents: (tag?: string, date_start?: string, date_end?: string) => void;
   setSwipedAll: (state: boolean) => void;
-  descriptionExpanded: boolean;
-  setDescriptionExpanded: (state: boolean) => void;
+  swipeEnabled: boolean;
+  setSwipeEnabled: (state: boolean) => void;
 }
 
-export const useEventsStore = create<EventsState>((set) => ({
+export const useEventsSwiperStore = create<EventsState>((set) => ({
   tag: undefined,
   events: [],
   isLoading: true,
@@ -62,8 +62,8 @@ export const useEventsStore = create<EventsState>((set) => ({
     set({ swipedAll: state });
   },
 
-  descriptionExpanded: false,
-  setDescriptionExpanded: (state: boolean) => {
-    set({ descriptionExpanded: state })
+  swipeEnabled: true,
+  setSwipeEnabled: (state: boolean) => {
+    set({ swipeEnabled: state })
   },
 }));
