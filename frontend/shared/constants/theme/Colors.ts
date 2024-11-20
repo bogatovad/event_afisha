@@ -1,5 +1,5 @@
 export const Colors = {
-  cardBGColor: "rgba(57,57,57,0.9)",
+  cardBGColor: "rgba(30,30,30,0.7)",
   cardMainTextColor: "#FFFFFF",
   cardSubtextColor: "#D8DFE9",
   lime: "#E1F44B",
@@ -11,4 +11,5 @@ export const Colors = {
   lightblue: "#B4C9FE",
   white: "#FFFFFF",
   transparent: "transparent",
+  red: "#F44B4B",
 }

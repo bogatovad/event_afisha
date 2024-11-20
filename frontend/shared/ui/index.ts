@@ -1,9 +1,11 @@
 export {Box} from "./Base/Box";
 export {Text} from "./Base/Text";
 
-export {OnboardingButton} from "./Controls/OnvoardingButton"
+export {OnboardingButton} from "./Controls/OnboardingButton";
+export {ActionButton} from "./Controls/ActionButton";
 
 export {WebLottieView} from "./Containers/WebLottieView";
+export {TagChip} from "./Containers/TagChip";
 
 export {LoadingCard} from "./MessageCards/LoadingCard";
 export {ErrorCard} from "./MessageCards/ErrorCard";
