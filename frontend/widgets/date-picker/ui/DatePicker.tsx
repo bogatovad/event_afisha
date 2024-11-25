@@ -1,23 +1,24 @@
-import React, {useCallback} from "react";
-import {Pressable} from "react-native";
-import {useFocusEffect} from "expo-router";
-import {useTheme} from "@shopify/restyle";
-import {Calendar} from "react-native-calendars";
-import {useCalendarStore} from "@/features/dates";
-import {Box} from "@/shared/ui/Base/Box";
-import {Text} from "@/shared/ui/Base/Text";
-import {Theme} from "@/shared/providers/Theme";
-import {useConfig} from "@/shared/providers/TelegramConfig";
+import React, { useCallback } from "react";
+import {Pressable, ScrollView} from "react-native";
+import { useFocusEffect } from "expo-router";
+import { useTheme } from "@shopify/restyle";
+import {CalendarList, LocaleConfig} from "react-native-calendars";
+import { useCalendarStore } from "@/features/dates";
+import { Box } from "@/shared/ui/Base/Box";
+import { Text } from "@/shared/ui/Base/Text";
+import { Theme } from "@/shared/providers/Theme";
+import { useConfig } from "@/shared/providers/TelegramConfig";
+import {CalendarHeader} from "./calendar-components/CalendarHeader";
+import {CalendarDay} from "@/widgets/date-picker/ui/calendar-components/CalendarDay";
 
 export const DatePicker: React.FC = () => {
-  const theme = useTheme<Theme>()
+  const theme = useTheme<Theme>();
   const minDate = new Date();
   const username = useConfig().initDataUnsafe.user.username;
 
   const {
     displayDays,
-    updateSelectedDays,
-    clearSelectedDays,
+    submitSelectedDays, updateSelectedDays, clearSelectedDays,
     fetchAllLikes
   } = useCalendarStore();
 
@@ -25,59 +26,123 @@ export const DatePicker: React.FC = () => {
     useCallback(() => {
       fetchAllLikes(username);
     }, [fetchAllLikes])
-  )
+  );
+
+  const monthNames = [
+      "Январь", "Февраль",
+      "Март", "Апрель", "Май",
+      "Июнь", "Июль", "Август",
+      "Сентябрь", "Октябрь", "Ноябрь",
+      "Декабрь",
+    ];
+
+  LocaleConfig.locales['ru'] = {
+    monthNames: monthNames,
+    monthNamesShort: [
+      "Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"
+    ],
+    dayNames: [
+      "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота",
+    ],
+    dayNamesShort: ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"],
+    today: "Сегодня",
+  };
+  LocaleConfig.defaultLocale = 'ru';
 
   return (
-    <Box
-      overflow={"hidden"}
+    <ScrollView
+      scrollEnabled
+      showsVerticalScrollIndicator={false}
       style={{
-        borderRadius: 8
+        flex: 1,
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        gap: 40,
+        justifyContent: "center",
+        marginVertical: 30,
       }}
     >
-      <Calendar
-        minDate={minDate.toString()}
+      <CalendarList
+        pastScrollRange={0}
+        futureScrollRange={1}
+        current={minDate.toISOString().split("T")[0]}
+        minDate={minDate.toISOString().split("T")[0]}
         markingType={"period"}
         markedDates={displayDays}
         onDayPress={updateSelectedDays}
-        style={{
-          backgroundColor: theme.colors.secondary_bg_color,
-        }}
+        calendarHeight={244}
+        contentContainerStyle={{ gap: 40 }}
+        hideExtraDays={false}
+        hideDayNames={true}
         theme={{
-          calendarBackground: theme.colors.secondary_bg_color,
-          dayTextColor: theme.colors.text_color,
-          textDisabledColor: theme.colors.subtitle_text_color,
-          monthTextColor: theme.colors.text_color
+          calendarBackground: theme.colors.bg_color,
+          weekVerticalMargin: 2,
+          contentStyle: { width: "100%"},
         }}
+
+        style={{ justifyContent: "center" }}
+
+        calendarStyle={{
+          paddingHorizontal: 40,
+          width: "100%",
+        }}
+
+        dayComponent={(day) => {
+          return <CalendarDay day={day} onPress={() => updateSelectedDays(day.date!)}/>
+        }}
+
+        customHeader={(date: { month: any; }) => {
+          return (<CalendarHeader month={monthNames[date.month.getMonth()]}/>)
+        }}
+
+        firstDay={1}
+        monthFormat={"MMMM"}
       />
 
+      {/* Buttons Section */}
       <Box
-        flexDirection="row"
+        flexDirection={"column"}
         width={"100%"}
         alignItems={"center"}
         justifyContent={"center"}
-        paddingHorizontal="xl"
-        backgroundColor={"secondary_bg_color"}
+        gap={"s"}
       >
-        <Pressable
-          onPress={ clearSelectedDays }
-        >
+        <Pressable onPress={submitSelectedDays}>
           <Box
-            width={"100%"}
-            height={40}
-            alignItems={"center"}
-            justifyContent={"center"}
-            padding="s"
+            width={254} height={30}
+            alignItems={"center"} justifyContent={"center"}
+            padding={"s"}
+            borderRadius={"l"}
+            backgroundColor={"calendarAcceptButton"}
           >
             <Text
-              variant="body"
+              variant={"calendarAcceptButton"}
+              color={"black"}
+              textAlign={"center"}
+            >
+              {"Выбрать Период"}
+            </Text>
+          </Box>
+        </Pressable>
+
+        <Pressable onPress={clearSelectedDays}>
+          <Box
+            width={254} height={30}
+            alignItems={"center"} justifyContent={"center"}
+            padding={"s"}
+            borderRadius={"l"}
+          >
+            <Text
+              variant={"calendarAcceptButton"}
               color={"text_color"}
               textAlign={"center"}
             >
-              { "Сбросить" }
+              {"Сброс"}
             </Text>
           </Box>
         </Pressable>
       </Box>
-    </Box>
-  )
-}
+    </ScrollView>
+  );
+};
