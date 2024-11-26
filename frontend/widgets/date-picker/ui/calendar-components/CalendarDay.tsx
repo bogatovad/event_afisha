@@ -3,6 +3,7 @@ import {Box, Text} from "@/shared/ui";
 import {DateData} from "react-native-calendars";
 import {Pressable} from "react-native";
 import {DayProps} from "react-native-calendars/src/calendar/day";
+import {formatDay} from "@/shared/scripts/date";
 
 interface CalendarDayProps {
   day: DayProps & { date?: DateData | undefined };
@@ -61,7 +62,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
           selectable={false}
           textAlign={"center"} textAlignVertical={"center"}
         >
-          { day.date!.day }
+          { formatDay(day.date!.day.toString()) }
         </Text>
       </Box>
 
@@ -70,7 +71,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
           <Box
             width={4} height={4} position={"absolute"} borderRadius={"s"}
             alignSelf={"center"}
-            bottom={1} backgroundColor={"red"}
+            bottom={1} backgroundColor={"lime"}
           />
         )
       }
