@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {Pressable, ScrollView} from "react-native";
+import {Pressable} from "react-native";
 import { useFocusEffect } from "expo-router";
 import { useTheme } from "@shopify/restyle";
 import {CalendarList, LocaleConfig} from "react-native-calendars";

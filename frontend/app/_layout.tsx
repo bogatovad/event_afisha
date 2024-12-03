@@ -5,7 +5,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import {ConfigProvider} from "@/shared/providers/TelegramConfig";
 import {DynamicThemeProvider} from "@/shared/providers/Theme";
 import {getFirstLaunchStatus, storeFirstLaunchStatus} from "@/shared/utils/storage/firstLaunch";
-import {SafeAreaView} from "react-native-safe-area-context";
 import {SafeAreaWrapper} from "@/shared/providers/SafeAreaWrapper";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
