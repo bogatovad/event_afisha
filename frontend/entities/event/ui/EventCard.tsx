@@ -39,6 +39,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   const [titleHeight, setTitleHeight] = useState(200);
 
   const {
+    tagsScrolling, setTagsScrolling,
     descriptionScrolling, setDescriptionScrolling,
     descriptionScrollOnTop, setDescriptionScrollOnTop,
     descriptionSwiping, setDescriptionSwiping,
@@ -57,7 +58,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   }));
 
   const panGesture = Gesture.Pan().runOnJS(true)
-    .enabled((!descriptionScrolling || descriptionScrollOnTop))
+    .enabled(!tagsScrolling && (!descriptionScrolling || descriptionScrollOnTop))
     .onBegin(() => {
       setDescriptionSwiping(true);
     })
@@ -167,6 +168,9 @@ export const EventCard: React.FC<EventCardProps> = ({
                     <DraggableScrollView
                       showsHorizontalScrollIndicator={false}
                       horizontal={true}
+                      scrollEnabled={true}
+                      onTouchStart={() => setTagsScrolling(true)}
+                      onTouchEnd={() => setTagsScrolling(false)}
                       contentContainerStyle={{ gap: 4, flexGrow: 1, justifyContent: "center", alignItems: "center" }}
                     >
                       {

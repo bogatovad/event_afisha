@@ -33,15 +33,15 @@ export const EventsSwiper = () => {
   const { selectedDays} = useCalendarStore();
   const { tag, setTag } = useSelectedTagStore();
   const { addLikedEvent, removeLikedEvent, saveAction } = useLikesStore();
-  const { descriptionExpanded, descriptionSwiping } = useEventCardStore();
+  const { descriptionExpanded, descriptionSwiping, tagsScrolling } = useEventCardStore();
 
   useEffect(() => {
-    if (descriptionExpanded || descriptionSwiping) {
+    if (descriptionExpanded || descriptionSwiping || tagsScrolling) {
       setSwipeEnabled(false)
     } else {
       setSwipeEnabled(true)
     }
-  }, [descriptionExpanded, descriptionSwiping]);
+  }, [descriptionExpanded, descriptionSwiping, tagsScrolling]);
 
   const swipedAllInfoOpacity = useSharedValue(0);
 
