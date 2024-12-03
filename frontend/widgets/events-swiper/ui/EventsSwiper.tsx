@@ -108,11 +108,6 @@ export const EventsSwiper = () => {
               renderCard={(event) => (
                 <EventCard
                   event={event}
-                  tag={tag}
-                  onBackPressed={() => {
-                    router.replace("/(tabs)/tags");
-                    setTag(undefined);
-                  }}
                   onLike={ () => { swiperRef.current?.swipeRight() } }
                   onDislike={ () => { swiperRef.current?.swipeLeft() } }
                 />
@@ -161,6 +156,28 @@ export const EventsSwiper = () => {
               </Box>
             </Animated.View>
           </Box>
+        )
+      }
+
+      {/* Back button */}
+      {
+        tag && !swipedAll && (
+          <Pressable
+            onPress={() => {
+              router.replace("/(tabs)/tags");
+              setTag(undefined);
+            }}
+            style={{
+              backgroundColor: theme.colors.cardBGColor,
+              width: 36, height: 36,
+              position: "absolute",
+              top: 16, left: 16,
+              borderRadius: 50,
+              zIndex: 1, alignItems: "center", justifyContent: "center"
+            }}
+          >
+            <Icon name={"chevronLeft"} color={theme.colors.gray} size={24}/>
+          </Pressable>
         )
       }
 
