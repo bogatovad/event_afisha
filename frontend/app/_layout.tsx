@@ -5,6 +5,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import {ConfigProvider} from "@/shared/providers/TelegramConfig";
 import {DynamicThemeProvider} from "@/shared/providers/Theme";
 import {getFirstLaunchStatus, storeFirstLaunchStatus} from "@/shared/utils/storage/firstLaunch";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {SafeAreaWrapper} from "@/shared/providers/SafeAreaWrapper";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -43,12 +45,14 @@ export default function RootLayout() {
   return (
     <ConfigProvider>
       <DynamicThemeProvider>
-        <Stack initialRouteName={firstLaunch ? "onboarding" : "(tabs)"}>
-          <Stack.Screen name="index" options={{ headerShown: false }} redirect />
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+        <SafeAreaWrapper>
+          <Stack initialRouteName={firstLaunch ? "onboarding" : "(tabs)"}>
+            <Stack.Screen name="index" options={{ headerShown: false }} redirect />
+            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </SafeAreaWrapper>
       </DynamicThemeProvider>
     </ConfigProvider>
   );
