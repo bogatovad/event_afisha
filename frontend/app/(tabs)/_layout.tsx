@@ -4,17 +4,17 @@ import {Tabs} from "expo-router";
 import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
-import {SafeAreaView} from "react-native-safe-area-context";
+import {Box} from "@/shared/ui";
 
 export default function TabLayout() {
   const theme = useTheme<Theme>();
   const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView
+    <Box
+      flex={1}
+      backgroundColor={"bg_color"}
       style={{
-        flex: 1,
-        backgroundColor: theme.colors.bg_color,
         paddingBottom: insets.bottom, paddingTop: insets.top,
         paddingLeft: insets.left, paddingRight: insets.right,
       }}
@@ -68,6 +68,6 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </SafeAreaView>
+    </Box>
   );
 }

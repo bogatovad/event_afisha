@@ -158,6 +158,7 @@ export const DatePicker: React.FC = () => {
         alignItems={"center"}
         justifyContent={"center"}
         gap={"s"}
+        paddingHorizontal={"l"}
       >
         <Pressable
           onPress={onCancelPress}
@@ -168,6 +169,11 @@ export const DatePicker: React.FC = () => {
             alignItems={"center"} justifyContent={"center"}
             padding={"s"}
             borderRadius={"l"}
+            backgroundColor={
+              Object.keys(tempSelectedDays).length == 0 ?
+                "transparent" :
+                "secondary_bg_color"
+            }
           >
             <Text
               variant={"calendarAcceptButton"}
