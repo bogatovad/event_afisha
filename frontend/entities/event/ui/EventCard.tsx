@@ -102,7 +102,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
       <ImageBackground
         source={{ uri: event.image || undefined }}
         resizeMode="cover"
-        blurRadius={16}
+        blurRadius={25}
         style={{
           flex: 1,
           flexDirection: "column",
