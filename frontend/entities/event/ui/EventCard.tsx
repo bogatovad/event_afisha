@@ -228,35 +228,59 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                     style={{ flex: 1 }}
                     contentContainerStyle={{ gap: 10 }}
                   >
-                    <Text variant="cardSubheader" color="cardMainTextColor">
+                    <Text
+                      variant={"cardSubheader"}
+                      color={"cardMainTextColor"}
+                    >
                       {"О МЕРОПРИЯТИИ"}
                     </Text>
-                    {event.description && (
-                      <Text variant="cardText" color="cardSubtextColor">
-                        {event.description}
-                      </Text>
-                    )}
-                    {event.contact && event.contact.length > 0 && (
-                      <Box gap="s">
-                        <Text variant="cardText" color="cardSubtextColor">
-                          {"Ссылки:"}
+
+                    {
+                      event.description && (
+                        <Text
+                          variant={"cardText"}
+                          color={"cardSubtextColor"}
+                        >
+                          {event.description}
                         </Text>
-                        {event.contact.map((con, index) => (
-                          <Hyperlink
-                            key={index}
-                            linkDefault
-                            linkStyle={{ color: theme.colors.link_color }}
-                            onPress={() =>
-                              config.openLink(Object.values(con)[0], { try_instant_view: true })
-                            }
+                      )
+                    }
+
+                    {
+                      event.contact && event.contact.length > 0 && (
+                        <Box
+                          gap={"s"}
+                        >
+                          <Text
+                            variant={"cardText"}
+                            color={"cardSubtextColor"}
                           >
-                            <Text variant="cardText">
-                              {Object.keys(con)[0]}
-                            </Text>
-                          </Hyperlink>
-                        ))}
-                      </Box>
-                    )}
+                            { "Ссылки:" }
+                          </Text>
+
+                          {event.contact.map((con, index) => {
+                            return (
+                              <Hyperlink
+                                key={index}
+                                linkDefault={true}
+                                linkStyle={{ color: theme.colors.link_color }}
+                                onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
+                                linkText={(url) => {
+                                  const contact = event.contact!.find((c) => Object.values(c)[0] === url);
+                                  return contact ? Object.keys(contact)[0] : url;
+                                }}
+                              >
+                                <Text
+                                  variant={"cardText"}
+                                >
+                                  {Object.values(con)[0]}
+                                </Text>
+                              </Hyperlink>
+                            );
+                          })}
+                        </Box>
+                      )
+                    }
                   </ScrollView>
                 </Box>
               )}
