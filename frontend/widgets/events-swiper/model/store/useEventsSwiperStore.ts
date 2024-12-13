@@ -10,8 +10,6 @@ interface EventsState {
   swipedAll: boolean;
   fetchEvents: (tag?: string, date_start?: string, date_end?: string) => void;
   setSwipedAll: (state: boolean) => void;
-  swipeEnabled: boolean;
-  setSwipeEnabled: (state: boolean) => void;
 }
 
 export const useEventsSwiperStore = create<EventsState>((set) => ({
@@ -60,10 +58,5 @@ export const useEventsSwiperStore = create<EventsState>((set) => ({
 
   setSwipedAll: async (state: boolean) => {
     set({ swipedAll: state });
-  },
-
-  swipeEnabled: true,
-  setSwipeEnabled: (state: boolean) => {
-    set({ swipeEnabled: state })
   },
 }));

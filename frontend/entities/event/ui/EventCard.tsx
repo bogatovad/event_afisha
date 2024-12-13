@@ -37,16 +37,25 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
     tagsScrolling, setTagsScrolling,
     descriptionScrolling, setDescriptionScrolling,
     descriptionScrollOnTop, setDescriptionScrollOnTop,
-    setDescriptionSwiping,
+    descriptionSwiping, setDescriptionSwiping,
     descriptionExpanded, setDescriptionExpanded,
+    setSwipeEnabled
   } = useEventCardStore();
 
   useEffect(() => {
     heightValue.value = withTiming(
       descriptionExpanded ? (cardHeight - 36 - 16 - 10) : titleHeight,
-      { duration: 300 },
+      { duration: 250 },
     );
   }, [descriptionExpanded, titleHeight, cardHeight]);
+
+  useEffect(() => {
+    if (descriptionExpanded || descriptionSwiping || tagsScrolling) {
+      setSwipeEnabled(false)
+    } else {
+      setSwipeEnabled(true)
+    }
+  }, [descriptionExpanded, descriptionSwiping, tagsScrolling]);
 
   const animatedInfoStyle = useAnimatedStyle(() => ({
     height: heightValue.value,
@@ -77,7 +86,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
       } else {
         heightValue.value = withTiming(
           descriptionExpanded ? cardHeight - 36 - 16 - 10 : titleHeight,
-          { duration: 300 }
+          { duration: 250 }
         );
       }
     },
