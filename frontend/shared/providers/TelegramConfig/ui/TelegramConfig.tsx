@@ -54,6 +54,10 @@ const getTelegramConfig = (): TelegramWebapp => {
     // @ts-ignore
     const TelegramWebappConfig: TelegramWebapp = window.Telegram.WebApp;
 
+    if (!TelegramWebappConfig.initDataUnsafe.user.username) {
+      TelegramWebappConfig.initDataUnsafe.user.username = TelegramWebappConfig.initDataUnsafe.user.id.toString()
+    }
+
     console.log("Calling config functions");
     TelegramWebappConfig.expand();
     TelegramWebappConfig.disableVerticalSwipes();
