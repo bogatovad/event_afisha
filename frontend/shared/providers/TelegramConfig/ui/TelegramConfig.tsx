@@ -9,6 +9,7 @@ export const MockConfig: TelegramWebapp = {
   openLink(url: string, options: { try_instant_view?: boolean } | undefined): void {
     console.log(`MockConfig.openLink() call with ${url} ${options}`);
   },
+  openTelegramLink(url: string): void { console.log(`MockConfig.openTelegramLink() call with ${url}`); },
   headerColor: "",
   initData: "",
   platform: "",
@@ -61,6 +62,8 @@ const getTelegramConfig = (): TelegramWebapp => {
     console.log("Calling config functions");
     TelegramWebappConfig.expand();
     TelegramWebappConfig.disableVerticalSwipes();
+
+    console.log("Start param:", TelegramWebappConfig.initDataUnsafe.start_param);
 
     return TelegramWebappConfig;
   } else {
