@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from "react";
-import { Platform } from "react-native";
+import React, {createContext, useContext} from "react";
+import {Platform} from "react-native";
 
 export const MockConfig: TelegramWebapp = {
   backgroundColor: "",
@@ -71,6 +71,21 @@ const getTelegramConfig = (): TelegramWebapp => {
   }
 };
 
+export const getStartParam = (): string => {
+  if (Platform.OS !== "web") {
+    return "";
+  }
+
+  // @ts-ignore
+  if (typeof window !== undefined && window.Telegram?.WebApp?.initDataUnsafe) {
+    // @ts-ignore
+
+    const startParam =  window.Telegram.WebApp.initDataUnsafe.start_param;
+    return startParam ? startParam : "";
+  } else {
+    return "";
+  }
+};
 
 export const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const config = getTelegramConfig();

@@ -161,7 +161,7 @@ export const EventsSwiper = () => {
             }}
             style={{
               backgroundColor: theme.colors.cardBGColor,
-              width: 36, height: 36,
+              width: 40, height: 40,
               position: "absolute",
               top: 16, left: 16,
               borderRadius: 50,

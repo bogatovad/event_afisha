@@ -5,12 +5,10 @@ import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
 import {Box} from "@/shared/ui";
-import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export default function TabLayout() {
   const theme = useTheme<Theme>();
   const insets = useSafeAreaInsets();
-  const start_param = useConfig().initDataUnsafe.start_param;
 
   return (
     <Box
@@ -22,7 +20,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs
-        initialRouteName={start_param ? "tags" : "feed"}
+        initialRouteName={"feed"}
         screenOptions={{
           tabBarActiveTintColor: theme.colors.button_color,
           headerShown: false,
