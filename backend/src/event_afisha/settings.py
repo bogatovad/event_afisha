@@ -159,4 +159,9 @@ CELERY_BEAT_SCHEDULE = {
         "task": "event.tasks.sample_task",
         "schedule": crontab(minute='59', hour='23',),
     },
+    "notification_task": {
+            "task": "event.tasks.notification_task",
+            # todo: задача будет выполняться каждый день в 9 утра
+            "schedule": crontab(hour=9, minute=0),
+        },
 }
