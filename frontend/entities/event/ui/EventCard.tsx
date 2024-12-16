@@ -45,7 +45,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
   useEffect(() => {
     heightValue.value = withTiming(
-      descriptionExpanded ? (cardHeight - 36 - 16 - 10) : titleHeight,
+      descriptionExpanded ? (cardHeight - 40 - 16 - 10) : titleHeight,
       { duration: 250 },
     );
   }, [descriptionExpanded, titleHeight, cardHeight]);
@@ -66,9 +66,9 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
     heightValue.value = Math.max(
       titleHeight,
       Math.min(
-        cardHeight - 36 - 16 - 10,
+        cardHeight - 40 - 16 - 10,
         descriptionExpanded
-          ? cardHeight - 36 - 16 - 10 - event.translationY
+          ? cardHeight - 40 - 16 - 10 - event.translationY
           : titleHeight - event.translationY
       )
     );
@@ -86,7 +86,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
         setDescriptionExpanded(false);
       } else {
         heightValue.value = withTiming(
-          descriptionExpanded ? cardHeight - 36 - 16 - 10 : titleHeight,
+          descriptionExpanded ? cardHeight - 40 - 16 - 10 : titleHeight,
           { duration: 250 }
         );
       }

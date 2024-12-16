@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import eventsService from "@/widgets/events-swiper/api/EventsService";
-import {ContentParams} from "@/widgets/events-swiper/model/types/events.types";
+import {ContentParams} from "@/features/content";
+import ContentService from "@/features/content/api/ContentService";
 import {Event} from "@/entities/event";
 
 interface EventsState {
@@ -31,7 +31,7 @@ export const useEventsSwiperStore = create<EventsState>((set) => ({
     if (date_start) params.date_start = date_start;
     if (date_end)   params.date_end = date_end;
 
-    eventsService.getContent(params)
+    ContentService.getContent(params)
       .then((response) => {
         switch (response.status) {
           case 200: {
