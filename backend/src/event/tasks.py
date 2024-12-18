@@ -9,8 +9,8 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 from event.models import Content, User, Like
 from datetime import datetime, date
-from asgiref.sync import async_to_sync
 import requests
+from pyrogram.errors import FloodWait
 
 logger = get_task_logger(__name__)
 
@@ -60,8 +60,8 @@ def resolve_username_to_user_id(username: str) -> int | None:
 @shared_task
 def sample_task():
     """Task to delete old events."""
-    datetime_now = datetime.now()
-    content = Content.objects.filter(date__lt=datetime_now).all()
+    date_now = date.today()
+    content = Content.objects.filter(date__lt=date_now).all()
     for event in content:
         event.delete()
 
@@ -72,17 +72,27 @@ def notification_task():
     today = date.today()
     for user in users:
         # todo: проверить что по датам все корректно отрабатывает
-        likes = Like.objects.filter(user=user, value=True, content__date=today)
+        likes = Like.objects.filter(user=user, value=True, content__date__lte=today)
+        print(f'{likes}')
         if likes:
             for like in likes:
                 link = f"https://t.me/EventAfishaBot/strelka?startapp={like.content.id}"
-                message = f"Привет! Сегодня у тебя запланировано мероприятие, напоминаю!\n\n{link}\n\n" \
-                          "Хорошо тебе провести время!"
-                chat_id = resolve_username_to_user_id(user.username)
-                time.sleep(1)
+                message = f"🎉 Привет!\nНе забывай, что у тебя сегодня запланировано мероприятие!\n🔗 " \
+                          f"[Перейти к подробностям]({link})\n" \
+                          f"Пусть это будет отличное время и море впечатлений! Наслаждайся! 😊✨"
                 try:
+                    chat_id = resolve_username_to_user_id(user.username)
+                    payload = {
+                        "chat_id": chat_id,
+                        "text": message,
+                        "parse_mode": "Markdown"
+                    }
                     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={chat_id}&text={message}"
-                    response = requests.get(url)
-                    print(f"{response}")
-                except:
-                    pass
+                    response = requests.post(url, json=payload)
+                    print(f"Response: {response.status_code}, {response.text}")
+                    time.sleep(1)
+                except FloodWait as e:
+                    print(f"FloodWait: жду {e.value} секунд...")
+                    time.sleep(e.value)  # Ждем указанное количество секунд
+                except Exception as ex:
+                    print(f"Ошибка: {ex}")
