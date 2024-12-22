@@ -1,23 +1,29 @@
 import { create } from 'zustand';
-import {LikesParams} from "@/features/likes-dislikes/model/types/likes.types";
+import {ReactionsParams} from "@/features/likes-dislikes/model/types/likes.types";
 import {ActionData} from "@/features/likes-dislikes/model/types/useraction.types";
 import likesService from "@/features/likes-dislikes/api/LikesService";
 import {Event} from "@/entities/event";
 
-interface LikesState {
+interface ReactionsState {
   likes: Event[];
-  isLoading: boolean;
-  hasError: boolean;
+  dislikes: Event[];
+  isLikesLoading: boolean;
+  hasLikesError: boolean;
+  isDislikesLoading: boolean;
+  hasDislikesError: boolean;
   addLikedEvent: (event: Event) => void;
   removeLikedEvent: (eventId: number) => void;
-  fetchLikes: (username: string, date_start?: string, date_end?: string) => void;
+  fetchReactions: (params: ReactionsParams) => void;
   saveAction: (actionData: ActionData) => Promise<void>;
 }
 
-export const useLikesStore = create<LikesState>((set) => ({
+export const useReactionsStore = create<ReactionsState>((set) => ({
   likes: [],
-  isLoading: true,
-  hasError: false,
+  dislikes: [],
+  isLikesLoading: true,
+  hasLikesError: false,
+  isDislikesLoading: true,
+  hasDislikesError: false,
 
   addLikedEvent: (event: Event) =>
     set((state) => {
@@ -25,8 +31,7 @@ export const useLikesStore = create<LikesState>((set) => ({
 
       if (eventExists) { return state }
 
-      const updatedLikedEvents = [...state.likes, event];
-      updatedLikedEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const updatedLikedEvents = [event, ...state.likes];
 
       return { likes: updatedLikedEvents };
     }),
@@ -36,34 +41,44 @@ export const useLikesStore = create<LikesState>((set) => ({
       likes: state.likes.filter((event) => event.id !== eventId),
     })),
 
-  fetchLikes: async (
-    username: string,
-    date_start?: string,
-    date_end?: string
-  ) => {
-    set({ isLoading: true, hasError: false });
+  fetchReactions: async (params: ReactionsParams) => {
+    if (params.value) {
+      set({ isDislikesLoading: true, hasDislikesError: false });
+    } else {
+      set({ isLikesLoading: true, hasLikesError: false });
+    }
 
-    const params: LikesParams = { username: username };
-    if (date_start) params.date_start = date_start;
-    if (date_end)   params.date_end = date_end;
-
-    likesService.getLikes(params)
+    likesService.getReactions(params)
       .then((response) => {
         switch (response.status) {
           case 200: {
-            console.log(`Successfully get liked events`);
-            set({ likes: response.data, isLoading: false });
+            if (params.value) {
+              console.log(`Successfully get disliked events`);
+              set({ dislikes: response.data, isDislikesLoading: false });
+            } else {
+              console.log(`Successfully get liked events`);
+              set({ likes: response.data, isLikesLoading: false });
+            }
+
             break;
           }
           default: {
             console.log(`Events request error with code: ${response.status}`);
-            set({ hasError: true, isLoading: false });
+            if (params.value) {
+              set({ isDislikesLoading: false, hasDislikesError: true });
+            } else {
+              set({ isLikesLoading: false, hasLikesError: true });
+            }
           }
         }
       })
       .catch((e) => {
         console.log(`Events request error: ${e}`);
-        set({ hasError: true, isLoading: false })
+        if (params.value) {
+          set({ isDislikesLoading: false, hasDislikesError: true });
+        } else {
+          set({ isLikesLoading: false, hasLikesError: true });
+        }
       });
   },
 
