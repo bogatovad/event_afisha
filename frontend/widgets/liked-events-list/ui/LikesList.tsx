@@ -1,49 +1,29 @@
 import React, {useEffect} from "react";
 import {Box, ErrorCard, LoadingCard, Text} from "@/shared/ui";
-import {FlatList, ImageBackground, Modal, Pressable, ScrollView} from "react-native";
+import {FlatList, Modal} from "react-native";
 import {useTheme} from "@shopify/restyle";
-import {Hyperlink} from "react-native-hyperlink";
 import {useCalendarStore} from "@/features/dates";
 import {useReactionsStore} from "@/features/likes-dislikes";
-import {LikedEventCard} from "@/entities/event";
+import {Event, LikedEventCard} from "@/entities/event";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
-import {WEB_APP_URL} from "@env";
-import Icon from "@/shared/ui/Icons/Icon";
-import {useEventsSwiperStore} from "@/features/content";
+import {SelectedEvent} from "@/widgets/liked-events-list/ui/SelectedEvent";
 
 export const LikesList = React.memo(() => {
   const theme = useTheme<Theme>();
   const username = useConfig().initDataUnsafe.user.username;
-  const config = useConfig();
 
-  const [selectedEvent, setEventSelected] = React.useState<number | undefined>(undefined);
+  const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
   const [modalVisible, setModalVisible] = React.useState(false);
 
   const {
     likes,
     isLikesLoading, hasLikesError,
-    removeLikedEvent,
     fetchReactions,
-    saveAction
   } = useReactionsStore();
 
   const { selectedDays } = useCalendarStore();
-  const { addEvent } = useEventsSwiperStore()
-
-  useEffect(() => {
-    if (config.BackButton) {
-      if (modalVisible) {
-        config.BackButton.show();
-        config.BackButton.onClick(() => setModalVisible(false))
-      } else {
-        config.BackButton.hide();
-      }
-    }
-
-    return () => { if (config.BackButton) config.BackButton!.hide(); }
-  }, [modalVisible]);
 
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
@@ -94,22 +74,21 @@ export const LikesList = React.memo(() => {
   return (
     <Box
       flex={1}
-      backgroundColor="bg_color"
     >
       <FlatList
         data={ likes }
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <LikedEventCard
             name={item.name}
             date={item.date}
             image={item.image}
             onPress={() => {
-              setEventSelected(index);
+              setEventSelected(item);
               setModalVisible(true);
             }}
           />
         )}
-        keyExtractor={item => item.name}
+        keyExtractor={item => item.id.toString()}
         style={{
           width: "100%"
         }}
@@ -127,159 +106,11 @@ export const LikesList = React.memo(() => {
         onDismiss={ () => setEventSelected(undefined) }
         transparent
       >
-        <ImageBackground
-          source={{ uri: selectedEvent != undefined ? likes[selectedEvent].image : undefined }}
-          blurRadius={4}
-          style={{
-            flex: 1,
-            backgroundColor: "gray",
-          }}
-        >
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            overScrollMode="never"
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0.6)'
-            }}
-          >
-            <Box
-              gap="l"
-              padding="m"
-              paddingBottom="l"
-            >
-              <Box
-                flexDirection={"row"}
-                alignItems={"center"}
-                gap={"s"}
-              >
-                <Text
-                  variant="header"
-                  color={"white"}
-                  style={{
-                    flex: 1
-                  }}
-                >
-                  { selectedEvent != undefined && likes[selectedEvent].name }
-                </Text>
-
-                {
-                  selectedEvent != undefined && (
-                    <Pressable
-                      onPress={ () => {
-                        const link = `${WEB_APP_URL}?startapp=${likes[selectedEvent].id}`;
-                        const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
-
-                        console.log("Sharing event with link:", link);
-
-                        config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
-                      }}
-                    >
-                      <Box
-                        backgroundColor={"cardBGColor"}
-                        height={40}
-                        width={40}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        borderRadius={"xl"}
-                      >
-                        <Icon
-                          name={"share"}
-                          color={theme.colors.white}
-                          size={24}
-                        />
-                      </Box>
-                    </Pressable>
-                  )
-                }
-              </Box>
-
-              <Text
-                variant="body"
-                style={{
-                  color: "white"
-                }}
-              >
-                { selectedEvent != undefined  && likes[selectedEvent].description }
-              </Text>
-
-              {
-                selectedEvent != undefined &&
-                likes[selectedEvent].contact &&
-                likes[selectedEvent].contact!.length > 0 &&
-                (
-                  <Box
-                    gap={"s"}
-                  >
-                    <Text
-                      variant={"body"}
-                      color={"cardSubtextColor"}
-                    >
-                      { "Ссылки:" }
-                    </Text>
-
-                    {likes[selectedEvent].contact?.map((con, index) => {
-                      return (
-                        <Hyperlink
-                          key={index}
-                          linkDefault={true}
-                          linkStyle={{ color: theme.colors.link_color }}
-                          onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
-                          linkText={(url) => {
-                            const contact = likes[selectedEvent].contact!.find((c) => Object.values(c)[0] === url);
-                            return contact ? Object.keys(contact)[0] : url;
-                          }}
-                        >
-                          <Text
-                            variant={"body"}
-                          >
-                            {Object.values(con)[0]}
-                          </Text>
-                        </Hyperlink>
-                      );
-                    })}
-                  </Box>
-                )
-              }
-            </Box>
-
-            <Box
-              gap={"m"}
-              padding={"m"}
-            >
-              <Pressable
-                onPress={ () => {
-                  setModalVisible(false);
-                  saveAction({
-                    action: "delete_mark",
-                    contentId: likes[selectedEvent!].id,
-                    username: username
-                  })
-                    .then(() => {
-                      removeLikedEvent(likes[selectedEvent!].id);
-                      addEvent(likes[selectedEvent!]);
-                      setEventSelected(undefined);
-                    });
-                }}
-              >
-                <Box
-                  width={"100%"} height={44}
-                  alignItems={"center"} justifyContent={"center"}
-                  backgroundColor={"lime"}
-                  borderRadius={"m"}
-                >
-                  <Text
-                    variant={"likedEventButton"}
-                    color={"black"}
-                    textAlign={"center"}
-                  >
-                    { "Удалить из избранного" }
-                  </Text>
-                </Box>
-              </Pressable>
-            </Box>
-          </ScrollView>
-        </ImageBackground>
+        <SelectedEvent
+          type={"liked"}
+          selectedEvent={selectedEvent}
+          setEventSelected={setEventSelected} setModalVisible={setModalVisible}
+        />
       </Modal>
     </Box>
   )

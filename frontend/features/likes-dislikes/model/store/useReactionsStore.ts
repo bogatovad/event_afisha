@@ -12,12 +12,14 @@ interface ReactionsState {
   isDislikesLoading: boolean;
   hasDislikesError: boolean;
   addLikedEvent: (event: Event) => void;
+  addDislikedEvent: (event: Event) => void;
   removeLikedEvent: (eventId: number) => void;
+  removeDislikedEvent: (eventId: number) => void;
   fetchReactions: (params: ReactionsParams) => void;
   saveAction: (actionData: ActionData) => Promise<void>;
 }
 
-export const useReactionsStore = create<ReactionsState>((set) => ({
+export const useReactionsStore = create<ReactionsState>((set, get) => ({
   likes: [],
   dislikes: [],
   isLikesLoading: true,
@@ -25,21 +27,34 @@ export const useReactionsStore = create<ReactionsState>((set) => ({
   isDislikesLoading: true,
   hasDislikesError: false,
 
-  addLikedEvent: (event: Event) =>
+  addLikedEvent: (event: Event) => {
+    const eventExists = get().likes.some((likedEvent) => likedEvent.id === event.id);
+    if (eventExists) return
+
     set((state) => {
-      const eventExists = state.likes.some((likedEvent) => likedEvent.id === event.id);
+      return { likes: [event, ...state.likes] };
+    })
+  },
 
-      if (eventExists) { return state }
+  addDislikedEvent: (event: Event) => {
+    const eventExists = get().dislikes.some((dislikedEvent) => dislikedEvent.id === event.id);
+    if (eventExists) return
 
-      const updatedLikedEvents = [event, ...state.likes];
-
-      return { likes: updatedLikedEvents };
-    }),
+    set((state) => {
+      return { dislikes: [event, ...state.dislikes] };
+    })
+  },
 
   removeLikedEvent: (eventId: number) =>
     set((state) => ({
       likes: state.likes.filter((event) => event.id !== eventId),
     })),
+
+  removeDislikedEvent: (eventId: number) =>
+    set((state) => ({
+      dislikes: state.dislikes.filter((event) => event.id !== eventId),
+    })),
+
 
   fetchReactions: async (params: ReactionsParams) => {
     if (params.value) {

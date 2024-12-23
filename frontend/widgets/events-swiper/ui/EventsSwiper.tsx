@@ -31,7 +31,7 @@ export const EventsSwiper = () => {
 
   const { selectedDays} = useCalendarStore();
   const { tag, setTag } = useSelectedTagStore();
-  const { addLikedEvent, removeLikedEvent, saveAction } = useReactionsStore();
+  const { addLikedEvent, addDislikedEvent, saveAction } = useReactionsStore();
   const { swipeEnabled } = useEventCardStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
@@ -131,7 +131,7 @@ export const EventsSwiper = () => {
                   action: "dislike",
                   contentId: events[cardIndex].id,
                   username: username
-                }).then(() => removeLikedEvent(events[cardIndex].id))
+                }).then(() => addDislikedEvent(events[cardIndex]))
               }}
               onSwiping={(x) => {
                 likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
