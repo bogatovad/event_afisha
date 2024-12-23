@@ -16,10 +16,21 @@ class User(GenericModel):
         return f"{self.username}"
 
 
+class MacroCategory(models.Model):
+    name = models.CharField(max_length=250, db_index=True)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to="images_macrocategory", max_length=300, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Tags(GenericModel):
     name = models.CharField(max_length=250, db_index=True)
     description = models.TextField()
     image = models.ImageField(upload_to="images_tag", max_length=300)
+    macro_category = models.ForeignKey(MacroCategory, on_delete=models.SET_NULL, related_name="tags", null=True,
+                                       blank=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -74,3 +85,14 @@ class RemovedFavorite(models.Model):
 
     class Meta:
         unique_together = ('user', 'content')
+
+
+class UserCategoryPreference(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="category_preferences")
+    tag = models.ForeignKey(Tags, on_delete=models.CASCADE, related_name="user_preferences")
+
+    class Meta:
+        unique_together = ('user', 'tag')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.tag.name}"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from event.models import Content, Tags, Like, User, Feedback, RemovedFavorite
+from event.models import Content, Tags, Like, User, Feedback, RemovedFavorite, MacroCategory
 
 
 @admin.register(Content)
@@ -9,7 +9,7 @@ class ContentAdmin(admin.ModelAdmin):
 
 @admin.register(Tags)
 class TagsAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name', 'description', 'macro_category')
 
 
 @admin.register(Like)
@@ -30,3 +30,8 @@ class FeedbackAdmin(admin.ModelAdmin):
 @admin.register(RemovedFavorite)
 class RemovedFavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'content', 'removed_at')
+
+
+@admin.register(MacroCategory)
+class MacroCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')

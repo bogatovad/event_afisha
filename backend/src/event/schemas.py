@@ -53,3 +53,7 @@ class LikeRequestSchema(Schema):
 class FeedbackRequestSchema(Schema):
     message: str
     username: str
+
+
+class UserPreferencesResponseSchema(Schema):
+    categories: list[str]

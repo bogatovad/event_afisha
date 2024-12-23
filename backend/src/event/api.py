@@ -2,8 +2,9 @@ from ninja_extra import NinjaExtraAPI
 
 from http import HTTPStatus
 from ninja_extra import api_controller, route
-from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite
-from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema
+from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite, UserCategoryPreference
+from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema, \
+    UserPreferencesResponseSchema
 from django.db.models import Q
 from datetime import date
 from ninja.errors import HttpError
@@ -176,6 +177,73 @@ class FeedbackController:
             user = User.objects.create(username=request_data.username)
         Feedback.objects.create(user=user, message=request_data.message)
         return {"status": "ok"}
+
+
+@api_controller(
+    prefix_or_class="/api/v1",
+)
+class PreferencesController:
+    @route.post(
+        path="/preferences/categories",
+        response={200: dict},
+    )
+    def set_category_preferences(self, username: str, tag_id: int):
+        user = User.objects.filter(username=username).first()
+        if not user:
+            user = User.objects.create(username=username)
+
+        tag = Tags.objects.filter(id=tag_id).first()
+        if tag:
+            UserCategoryPreference.objects.create(user=user, tag=tag)
+
+        return {"message": "Preferences updated successfully"}
+
+    @route.post(
+        path="/preferences/categories",
+        response={200: dict},
+    )
+    def set_category_preferences(self, username: str, tag_id: int):
+        """
+        Устанавливает предпочтение пользователя для указанной категории (тег).
+        """
+        user, _ = User.objects.get_or_create(username=username)
+        tag = Tags.objects.filter(id=tag_id).first()
+
+        if not tag:
+            raise HttpError(404, "Tag not found")
+
+        UserCategoryPreference.objects.get_or_create(user=user, tag=tag)
+        return {"message": f"Preference for tag_id {tag_id} added successfully"}
+
+    @route.delete(
+        path="/preferences/categories",
+        response={200: dict},
+    )
+    def delete_category_preference(self, username: str, tag_id: int):
+        """
+        Удаляет конкретное предпочтение пользователя по категории (тегу).
+        """
+        user, _ = User.objects.get_or_create(username=username)
+        preference = UserCategoryPreference.objects.filter(user=user, tag_id=tag_id).first()
+
+        if not preference:
+            raise HttpError(404, "Preference not found for the specified tag")
+
+        preference.delete()
+        return {"message": f"Preference for tag_id {tag_id} deleted successfully"}
+
+    @route.get(
+        path="/preferences/categories",
+        response={200: UserPreferencesResponseSchema},
+    )
+    def get_user_preferences(self, username: str) -> UserPreferencesResponseSchema:
+        """
+        Возвращает список всех предпочтений пользователя по категориям (тегам).
+        """
+        user, _ = User.objects.get_or_create(username=username)
+        preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
+        categories = [pref.tag.name for pref in preferences]
+        return UserPreferencesResponseSchema(categories=categories)
 
 
 api = NinjaExtraAPI(title="afisha", version="0.0.1")
