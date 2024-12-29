@@ -10,11 +10,12 @@ import {useReactionsStore} from "@/features/likes-dislikes";
 import {useSelectedTagStore} from "@/features/tag-selected";
 import {Event, EventCard, useEventCardStore} from "@/entities/event";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
-import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
 import Icon from "@/shared/ui/Icons/Icon";
+import {SwipedAll} from "@/widgets/events-swiper/ui/SwipedAll";
+import {useShallow} from "zustand/react/shallow";
 
 export const EventsSwiper = () => {
   const theme = useTheme<Theme>();
@@ -23,27 +24,40 @@ export const EventsSwiper = () => {
   const swiperRef = useRef<Swiper<Event> | null>();
 
   const {
-    events,
-    isLoading, hasError,
-    swipedAll, setSwipedAll,
-    fetchEvents,
-  } = useEventsSwiperStore();
+    events, isLoading, hasError, swipedAll, setSwipedAll, fetchEvents
+  } = useEventsSwiperStore(useShallow(state => ({
+    events: state.events,
+    isLoading: state.isLoading,
+    hasError: state.hasError,
+    swipedAll: state.swipedAll,
+    setSwipedAll: state.setSwipedAll,
+    fetchEvents: state.fetchEvents,
+  })));
 
-  const { selectedDays} = useCalendarStore();
-  const { tag, setTag } = useSelectedTagStore();
   const {
-    addLikedEvent, addDislikedEvent,
-    removeLikedEvent, removeDislikedEvent,
-    saveAction
-  } = useReactionsStore();
-  const { swipeEnabled } = useEventCardStore();
+    selectedDays
+  } = useCalendarStore(useShallow(state => ({selectedDays: state.selectedDays,})));
 
-  const swipedAllInfoOpacity = useSharedValue(0);
+  const {
+    tag, setTag
+  } = useSelectedTagStore(useShallow(state => ({
+    tag: state.tag,
+    setTag: state.setTag,
+  })));
 
-  const swipedAllInfoStyle = useAnimatedStyle(() => ({
-    opacity: swipedAllInfoOpacity.value,
-    gap: 16
-  }));
+  const {
+    addLikedEvent, addDislikedEvent, removeLikedEvent, removeDislikedEvent, saveAction
+  } = useReactionsStore(useShallow(state => ({
+    addLikedEvent: state.addLikedEvent,
+    addDislikedEvent: state.addDislikedEvent,
+    removeLikedEvent: state.removeLikedEvent,
+    removeDislikedEvent: state.removeDislikedEvent,
+    saveAction: state.saveAction,
+  })));
+
+  const {
+    swipeEnabled
+  } = useEventCardStore(useShallow(state => ({swipeEnabled: state.swipeEnabled})));
 
   const likeOpacity = useSharedValue(0);
   const dislikeOpacity = useSharedValue(0);
@@ -70,15 +84,7 @@ export const EventsSwiper = () => {
       date_start: borders.date_start,
       date_end: borders.date_end
     });
-  }, [tag, selectedDays]);
-
-  useEffect(() => {
-    if (swipedAll) {
-      swipedAllInfoOpacity.value = withTiming(1);
-    } else {
-      swipedAllInfoOpacity.value = withTiming(0);
-    }
-  }, [swipedAll]);
+  }, [tag, selectedDays, username]);
 
   const renderCard = (event: Event) => (
     <EventCard
@@ -92,88 +98,85 @@ export const EventsSwiper = () => {
     />
   );
 
+  console.log("swiper", isLoading, hasError, swipedAll, selectedDays, tag, swipeEnabled);
 
   if (isLoading) return <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>
   if (hasError) return <ErrorCard />
+  if (swipedAll) return <SwipedAll/>
 
   return (
     <Box
       flex={1}
       backgroundColor="bg_color"
     >
-      {
-        !swipedAll && (
-          <Box flex={1} backgroundColor="bg_color">
-            <Swiper
-              ref={swiper => {
-                swiperRef.current = swiper;
-              }}
-              cards={events}
-              renderCard={renderCard}
-              keyExtractor={(event) => event.id.toString()}
-              backgroundColor="white"
-              horizontalSwipe={swipeEnabled}
-              verticalSwipe={false}
-              stackSize={3}
-              stackScale={0}
-              stackSeparation={0}
-              stackAnimationTension={100}
-              stackAnimationFriction={15}
-              swipeBackCard
-              containerStyle={{ backgroundColor: theme.colors.bg_color }}
-              cardStyle={{ height: "100%" }}
-              cardVerticalMargin={0}
-              cardHorizontalMargin={0}
-              childrenOnTop={true}
-              onSwipedAll={() => setSwipedAll(true)}
-              onSwipedRight={(cardIndex) => {
-                saveAction({
-                  action: "like",
-                  contentId: events[cardIndex].id,
-                  username: username
-                }).then(() => {
-                  addLikedEvent(events[cardIndex]);
-                  removeDislikedEvent(events[cardIndex].id);
-                })
-              }}
-              onSwipedLeft={(cardIndex) => {
-                saveAction({
-                  action: "dislike",
-                  contentId: events[cardIndex].id,
-                  username: username
-                }).then(() => {
-                  addDislikedEvent(events[cardIndex])
-                  removeLikedEvent(events[cardIndex].id);
-                })
-              }}
-              onSwiping={(x) => {
-                likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
-                dislikeOpacity.value = x < 0 ? Math.min(-x / 100, 1) : 0;
-              }}
-              onSwiped={resetOpacity}
-              onSwipedAborted={resetOpacity}
-              inputRotationRange={[-100 / 2, 0, 100 / 2]}
-              outputRotationRange={["0deg", "0deg", "0deg"]}
-            />
+      <Box flex={1} backgroundColor="bg_color">
+        <Swiper
+          ref={swiper => {
+            swiperRef.current = swiper;
+          }}
+          cards={events}
+          renderCard={renderCard}
+          horizontalSwipe={swipeEnabled}
+          cardIndex={3}
+          verticalSwipe={false}
+          stackSize={2}
+          stackScale={0}
+          stackSeparation={0}
+          stackAnimationTension={100}
+          stackAnimationFriction={15}
+          swipeBackCard
+          containerStyle={{ backgroundColor: theme.colors.bg_color }}
+          cardStyle={{ height: "100%" }}
+          cardVerticalMargin={0}
+          cardHorizontalMargin={0}
+          childrenOnTop={true}
+          onSwipedAll={() => setSwipedAll(true)}
+          onSwipedRight={(cardIndex) => {
+            saveAction({
+              action: "like",
+              contentId: events[cardIndex].id,
+              username: username
+            }).then(() => {
+              addLikedEvent(events[cardIndex]);
+              removeDislikedEvent(events[cardIndex].id);
+            })
+          }}
+          onSwipedLeft={(cardIndex) => {
+            saveAction({
+              action: "dislike",
+              contentId: events[cardIndex].id,
+              username: username
+            }).then(() => {
+              addDislikedEvent(events[cardIndex])
+              removeLikedEvent(events[cardIndex].id);
+            })
+          }}
+          onSwiping={(x) => {
+            likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
+            dislikeOpacity.value = x < 0 ? Math.min(-x / 100, 1) : 0;
+          }}
+          onSwiped={resetOpacity}
+          onSwipedAborted={resetOpacity}
+          inputRotationRange={[-100 / 2, 0, 100 / 2]}
+          outputRotationRange={["0deg", "0deg", "0deg"]}
+        />
 
-            {/* Иконка лайка */}
-            <Animated.View style={[likeStyle, { position: "absolute", right: 0, top: "50%" }]}>
-              <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
-                   backgroundColor={"red"} borderRadius={"l"}>
-                <Icon name={"likeFilled"} color={theme.colors.gray} size={24}/>
-              </Box>
-            </Animated.View>
-
-            {/* Иконка дизлайка */}
-            <Animated.View style={[dislikeStyle, { position: "absolute", left: 0, top: "50%" }]}>
-              <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
-                   backgroundColor={"gray"} borderRadius={"l"}>
-                <Icon name={"dislike"} color={theme.colors.red} size={24}/>
-              </Box>
-            </Animated.View>
+         {/*Иконка лайка */}
+        <Animated.View style={[likeStyle, { position: "absolute", right: 0, top: "50%" }]}>
+          <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
+               backgroundColor={"red"} borderRadius={"l"}>
+            <Icon name={"likeFilled"} color={theme.colors.gray} size={24}/>
           </Box>
-        )
-      }
+        </Animated.View>
+
+        {/* Иконка дизлайка */}
+        <Animated.View style={[dislikeStyle, { position: "absolute", left: 0, top: "50%" }]}>
+          <Box width={50} height={50} alignItems={"center"} justifyContent={"center"}
+               backgroundColor={"gray"} borderRadius={"l"}>
+            <Icon name={"dislike"} color={theme.colors.red} size={24}/>
+          </Box>
+        </Animated.View>
+      </Box>
 
       {/* Buttons area */}
       <Box
@@ -187,7 +190,7 @@ export const EventsSwiper = () => {
       >
         {/* Back button */}
         {
-          tag && !swipedAll && (
+          tag && (
             <Pressable
               onPress={() => {
                 router.replace("/(tabs)/tags");
@@ -207,105 +210,22 @@ export const EventsSwiper = () => {
         }
 
         {/* Swipe back card button */}
-        {
-          !swipedAll && (
-            <Pressable
-              onPress={ () => swiperRef.current?.swipeBack() }
-            >
-              <Box
-                backgroundColor={"cardBGColor"}
-                width={40} height={40}
-                borderRadius={"eventCard"}
-                alignItems={"center"} justifyContent={"center"}
-              >
-                <Icon name={"back"} color={theme.colors.gray} size={24}/>
-              </Box>
-            </Pressable>
-          )
-        }
-      </Box>
-
-      {
-        swipedAll && (
+        <Pressable
+          onPress={ () => {
+            console.log("Back pressed");
+            swiperRef.current?.swipeBack()
+          }}
+        >
           <Box
-            flex={1}
-            alignItems="center"
-            justifyContent="center"
-            backgroundColor="bg_color"
-            padding="xl"
+            backgroundColor={"cardBGColor"}
+            width={40} height={40}
+            borderRadius={"eventCard"}
+            alignItems={"center"} justifyContent={"center"}
           >
-            <Animated.View
-              style={ swipedAllInfoStyle }
-            >
-              <Text
-                variant="body"
-                color="text_color"
-                textAlign="center"
-              >
-                { tag ? "Мероприятия в этой категории закончились" : "Мероприятия закончились" }
-              </Text>
-
-              {
-                tag && (
-                  <Pressable
-                    onPress={ () => {
-                      router.navigate("/tags");
-                      setTag(undefined);
-                    }}
-                  >
-                    <Box
-                      flexDirection="row"
-                      height={44}
-                      padding="l"
-                      alignItems="center"
-                      justifyContent="center"
-                      backgroundColor="button_color"
-                      style={{
-                        borderRadius: 12
-                      }}
-                    >
-                      <Text
-                        variant="body"
-                        color="button_text_color"
-                      >
-                        { "Выбрать другую категорию" }
-                      </Text>
-                    </Box>
-                  </Pressable>
-                )
-              }
-
-              {
-                Object.keys(selectedDays).length > 0 && (
-                  <Pressable
-                    onPress={ () => router.navigate("/(tabs)/calendar")}
-                  >
-                    <Box
-                      flexDirection="row"
-                      height={44}
-                      padding="l"
-                      alignItems="center"
-                      justifyContent="center"
-                      backgroundColor="button_color"
-                      style={{
-                        borderRadius: 12
-                      }}
-                    >
-                      <Text
-                        variant="body"
-                        color="button_text_color"
-                        textAlign={"center"}
-                      >
-                        { "Изменить даты мероприятий" }
-                      </Text>
-                    </Box>
-                  </Pressable>
-                )
-              }
-            </Animated.View>
+            <Icon name={"back"} color={theme.colors.gray} size={24}/>
           </Box>
-        )
-      }
+        </Pressable>
+      </Box>
     </Box>
   )
 }

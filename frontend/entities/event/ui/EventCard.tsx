@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Image, ImageBackground, Platform, Pressable} from "react-native";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
@@ -26,7 +26,7 @@ interface EventCardProps {
   onDislike: () => void;
 }
 
-export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDislike }) => {
+export const EventCard: React.FC<EventCardProps> = ({ event, onLike, onDislike }) => {
   const theme = useTheme<Theme>();
   const config = useConfig();
   const heightValue = useSharedValue(0);
@@ -359,5 +359,5 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
       </ImageBackground>
     </GestureHandlerRootView>
   );
-});
+};
 
