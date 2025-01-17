@@ -4,7 +4,6 @@ import {useOnboardingStore} from "@/widgets/onboarding-elements/model/store/useO
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
-import { border } from "@shopify/restyle";
 
 export const OnboardingIllustration = () => {
   const { page, pageTitle } = useOnboardingStore();
@@ -107,13 +106,15 @@ export const OnboardingIllustration = () => {
           position={"absolute"}
           top={92}
           alignSelf={"center"}
+          zIndex={2}
         >
           <Text
               variant={"onboardingTitle"}
               textAlign={"center"}
               lineHeight={34}
               style={{
-                color: "#000000"
+                color: "#000000",
+                
               }}
             >
               {pageTitle}
@@ -131,7 +132,7 @@ export const OnboardingIllustration = () => {
           <Box 
             style={{
               position: "relative",
-              right: 5
+              right: 5,
             }}
           >
             <Illustration name={"onboardingLike"}/>
@@ -141,7 +142,7 @@ export const OnboardingIllustration = () => {
               display: "flex",
               alignItems: "center",
               position: "relative",
-              right: 15
+              right: 15,
             }}
           >
             <Illustration name={"onboardingLikes"}/>

@@ -1,13 +1,10 @@
-import React, {useEffect, useState} from "react";
-import Animated, {interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
-import {useTheme} from "@shopify/restyle";
+import React, { useEffect } from "react";
+import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingStore} from "@/widgets/onboarding-elements";
-import {Theme} from "@/shared/providers/Theme";
 import {Box} from "@/shared/ui";
-import { ImageBackground, Text } from "react-native";
+import { ImageBackground } from "react-native";
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import {useRouter} from "expo-router";
-import { AnimatedText } from "react-native-reanimated/lib/typescript/reanimated2/component/Text";
+import { useRouter } from "expo-router";
 
 interface IAnimatedText {
   direction: string;
@@ -15,20 +12,9 @@ interface IAnimatedText {
 }
 
 export const OnboardingPage: React.FC = () => {
-  const theme = useTheme<Theme>();
   const backgroundAnimation = useSharedValue(0)
   const offsetX = useSharedValue(0)
   const startX = useSharedValue(0)
-
-  // const animatedBackground = useAnimatedStyle(() => ({
-  //   backgroundColor: interpolateColor(
-  //     backgroundAnimation.value,
-  //     [1, 2, 3],
-  //     [theme.colors.lime, theme.colors.blue, theme.colors.lightblue],
-  //     'RGB',
-  //     {gamma: 2.2}
-  //   ),
-  // }));
 
   const AnimatedOnboardingText = ({direction, offsetX} : IAnimatedText) => {
     const animatedStyle = useAnimatedStyle(() => {
@@ -116,10 +102,6 @@ export const OnboardingPage: React.FC = () => {
           >
             <OnboardingIllustration />
 
-            {/* <AnimatedOnboardingText 
-              direction={direction}
-              offsetX={offsetX}
-            /> */}
             <OnboardingText/>
 
             <OnboardingNav />

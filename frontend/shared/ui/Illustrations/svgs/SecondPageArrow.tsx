@@ -1,5 +1,5 @@
 import * as React from "react";
-import Svg, {Ellipse, Path} from "react-native-svg";
+import Svg, {Path} from "react-native-svg";
 import {IllustrationComponentProps} from "@/shared/ui/Illustrations/IllustrationComponentProps";
 
 export const SecondPageArrow: React.FC<IllustrationComponentProps> = ({width = 286, height = 286}) => (
