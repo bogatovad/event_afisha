@@ -5,36 +5,36 @@ interface OnboardingState {
   pageTitle: string;
   pageSubtitle: string;
   incPage: () => void;
-  decPage: () => void;
   setPageText: () => void;
 }
 
 export const useOnboardingStore = create<OnboardingState>((set,get) => ({
   page: 1,
-  pageTitle: "",
-  pageSubtitle: "Смотри ленту событий, созданную\nспециально",
+  pageTitle: "ХОЧЕШЬ ЗДОРОВО ПРОВЕСТИ ВРЕМЯ?",
+  pageSubtitle: "Выберите нужный город и наслаждайтесь интересными событиями!",
 
   incPage: () => set({ page: Math.min(3, get().page + 1) }),
-  decPage: () => set({ page: Math.max(1, get().page - 1) }),
+
   setPageText: () => {
     switch (get().page) {
       case 1: {
         set({
-          pageSubtitle: "Смотри ленту событий, созданную\nспециально"
+          pageTitle: "ХОЧЕШЬ ЗДОРОВО ПРОВЕСТИ ВРЕМЯ?",
+          pageSubtitle: "Выберите нужный город и наслаждайтесь интересными событиями!"
         })
         break;
       }
       case 2: {
         set({
-          pageTitle: "СОХРАНИ МОМЕНТЫ,\nКОТОРЫЕ ЖДУТ ТЕБЯ",
-          pageSubtitle: "Лайкни понравившееся\nмероприятие — и оно всегда будет у\nтебя "
+          pageTitle: "МЫ ПОДБЕРЕМ ТО, ЧТО ПО ДУШЕ",
+          pageSubtitle: "Вы выбирайте свои интересы – мы попадаем вам в сердечко, все просто!"
         })
         break;
       }
       case 3: {
         set({
-          pageTitle: "МЫ ВСЕГДА РЯДОМ,\nЧТОБЫ НАПОМНИТЬ!",
-          pageSubtitle: "Не переживай о том, что забудешь о\nмероприятии - мы обязательно\nпришлём тебе напоминание!"
+          pageTitle: "СОХРАНЯЙ СОБЫТИЕ В КАЛЕНДАРЬ",
+          pageSubtitle: "А мы напомним тебе, чтобы ничего не пропустить"
         })
         break;
       }
