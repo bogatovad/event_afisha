@@ -28,6 +28,7 @@ export default function TabLayout() {
           tabBarStyle: {
             backgroundColor: theme.colors.bg_color,
             borderTopWidth: 0,
+            backfaceVisibility: "hidden"
           },
         }}
         sceneContainerStyle={{
