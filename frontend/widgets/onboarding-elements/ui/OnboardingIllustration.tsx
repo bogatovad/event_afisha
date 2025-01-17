@@ -4,12 +4,12 @@ import {useOnboardingStore} from "@/widgets/onboarding-elements/model/store/useO
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
-import { border } from "@shopify/restyle";
 
 export const OnboardingIllustration = () => {
-  const { page, pageTitle } = useOnboardingStore();
+  const { page } = useOnboardingStore();
   const [pageSubTick, setPageSubTick] = useState(page);
-  const opacity = useSharedValue(0);
+
+  const opacity = useSharedValue(1);
 
   useEffect(() => {
     if (page != 1) {
@@ -18,10 +18,7 @@ export const OnboardingIllustration = () => {
         opacity.value = withTiming(1, { duration: 200 });
       });
     } else {
-      opacity.value = withTiming(0, { duration: 200 }, () => {
-        runOnJS(setPageSubTick)(page);
-        opacity.value = withTiming(1, { duration: 200 })
-      })  
+      opacity.value = withTiming(1, { duration: 200 }, () => runOnJS(setPageSubTick)(page));
     }
   }, [page]);
 
@@ -44,109 +41,71 @@ export const OnboardingIllustration = () => {
       >
         <Box
           position={"absolute"}
-          top={100}
-          alignSelf={"center"}
+          width={"100%"}
+          top={60}
+          zIndex={-1}
         >
-          <Text variant={"onboardingIam"} style={{ color: "#000000" }}>
-            ВЫБИРАЙ ИЗ{" "}
-            <Text style={{ color: "#8E00FF" }}>10 КАТЕГОРИЙ</Text>
-          </Text>
-          <Box
-            style={{
-              marginTop: 30,
-              marginLeft: 35,
-              gap: 10
-            }}
-          >
-            <Box
-              style={{
-                display: "flex",
-                justifyContent: "flex-start"
-              }}
-            >
-              <Text fontWeight={600} variant={"tagsHeaderQuestion"}>— ОТ КОНЦЕРТОВ</Text>
-            </Box>
-            <Box
-              style={{
-                marginLeft: 160
-              }}
-            >
-              <Text fontWeight={600} variant={"tagsHeaderQuestion"}>ДО ВЫСТАВОК</Text>
-            </Box>
-          </Box>
+          <Illustration name={"topLine"} width={"100%"}/>
         </Box>
 
-        <Box
-          height={"100%"}
+        <Text
+          variant={"onboardingHello"}
+          color={"toxicBlue"}
           style={{
-            flex: 1, 
-            flexDirection: "column", 
-            justifyContent: "center", 
-            alignItems: "center",
-            position: "relative"
+            position: "absolute",
+            top: 16,
+            left: 36
           }}
         >
-          <Illustration name={"firstPageArrow"}/>
+          { "ПРИВЕТ!" }
+        </Text>
+
+        <Box
+          position={"absolute"}
+          backgroundColor={"toxicBlue"}
+          top={94}
+          left={76}
+          right={0}
+          style={{
+            borderTopLeftRadius: 25,
+            borderBottomLeftRadius: 25,
+            paddingHorizontal: 42,
+            paddingVertical: 32
+          }}
+        >
+          <Text
+            variant={"onboardingIam"}
+            color={"lime"}
+          >
+            { "Я — Стрелка, твой гид и помощник в поиске мероприятий" }
+          </Text>
         </Box>
-      
+
+
+        <Illustration name={"arrow"} height={"100%"}/>
+
+        <Box
+          position={"absolute"}
+          width={"100%"}
+          bottom={4}
+          zIndex={-1}
+        >
+          <Illustration name={"bottomLine"} width={"100%"}/>
+        </Box>
       </Animated.View>
     )
   }
 
   if (pageSubTick == 2) {
     return (
-      <Animated.View style={[
-        animatedOpacity,
-        {
-          position: "absolute",
-          height: "100%",
-          width: "100%"
-        }
-      ]}>
-        <Box
-          position={"absolute"}
-          top={92}
-          alignSelf={"center"}
-        >
-          <Text
-              variant={"onboardingTitle"}
-              textAlign={"center"}
-              lineHeight={34}
-              style={{
-                color: "#000000"
-              }}
-            >
-              {pageTitle}
-          </Text>
-        </Box>
-        
+      <Animated.View style={animatedOpacity}>
         <Box
           flex={1}
+          paddingHorizontal={"xl"}
           justifyContent={"center"}
           alignItems={"center"}
-          style={{
-            marginBottom: 93
-          }}
         >
-          <Box 
-            style={{
-              position: "relative",
-              right: 5
-            }}
-          >
-            <Illustration name={"onboardingLike"}/>
-          </Box>
-          <Box
-            style={{
-              display: "flex",
-              alignItems: "center",
-              position: "relative",
-              right: 15
-            }}
-          >
-            <Illustration name={"onboardingLikes"}/>
-          </Box>
-          <Illustration name={"secondPageArrow"}/>
+          <Illustration name={"like"} width={"100%"} height={"100%"}/>
         </Box>
       </Animated.View>
     )
@@ -154,41 +113,14 @@ export const OnboardingIllustration = () => {
 
   {/* page == 3 */}
   return (
-    <Animated.View style={[
-      animatedOpacity,
-      {
-        position: "absolute",
-        height: "100%",
-        width: "100%"
-      }
-    ]}>
-      <Box
-          position={"absolute"}
-          top={100}
-          alignSelf={"center"}
-      >
-        <Text
-            variant={"onboardingTitle"}
-            textAlign={"center"}
-            lineHeight={34}
-            style={{
-              color: "#000000"
-            }}
-          >
-            {pageTitle}
-        </Text>
-      </Box>
+    <Animated.View style={animatedOpacity}>
       <Box
         flex={1}
         paddingHorizontal={"xl"}
-        flexDirection={"row"}
         justifyContent={"center"}
         alignItems={"center"}
-        style={{
-          marginBottom: 60
-        }}
       >
-        <Illustration name={"thirdPageArrow"}/>
+        <Illustration name={"calendar"} width={"100%"} height={"100%"}/>
       </Box>
     </Animated.View>
   )
