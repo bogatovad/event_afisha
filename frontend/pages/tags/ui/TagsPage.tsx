@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import { Box} from "@/shared/ui";
 import { TagsHeader } from "@/pages/tags/ui/TagsHeader";
 import { TagsList } from "@/widgets/tags-list";
@@ -8,8 +8,26 @@ import Animated, {
   interpolate,
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
+import {useFocusEffect, useLocalSearchParams, useRouter} from "expo-router";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export const TagsPage = () => {
+  const { service } = useLocalSearchParams();
+  const { BackButton } = useConfig();
+  const router = useRouter();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (BackButton) {
+        BackButton.show();
+        BackButton.onClick(() => router.navigate("/tags"));
+        return () => BackButton.hide();
+      }
+
+      return () => console.log("End focus");
+    }, [])
+  );
+
   const scrollY = useSharedValue(0);
 
   const onScroll = useAnimatedScrollHandler({
