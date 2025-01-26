@@ -91,5 +91,7 @@ export const Text = {
     fontFamily: 'MontserratMedium',
     fontSize: 16,
   },
+  serviceName: { fontFamily: 'UnboundedExtraBold', fontSize: 26, },
+  serviceDescription: { fontFamily: 'MontserratSemiBold', fontSize: 16, },
   defaults: {},
 }
