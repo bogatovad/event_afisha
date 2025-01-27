@@ -1,10 +1,10 @@
 from django.contrib import admin
-from event.models import Content, Tags, Like, User, Feedback, RemovedFavorite, MacroCategory
+from event.models import Content, Tags, Like, User, Feedback, RemovedFavorite, MacroCategory, UserCategoryPreference
 
 
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image', 'contact', 'get_tags', 'date', 'time', 'cost', 'location')
+    list_display = ('name', 'image', 'contact', 'get_tags', 'date', 'time', 'cost', 'location', 'city')
 
 
 @admin.register(Tags)
@@ -35,3 +35,8 @@ class RemovedFavoriteAdmin(admin.ModelAdmin):
 @admin.register(MacroCategory)
 class MacroCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
+
+
+@admin.register(UserCategoryPreference)
+class UserCategoryPreferenceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'tag')

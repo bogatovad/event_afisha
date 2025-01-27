@@ -1,5 +1,13 @@
 from django.db import models
 
+CITY_CHOICES = [
+    ('spb', 'Санкт-Петербург'),
+    ('msk', 'Москва'),
+    ('ekb', 'Екатеринбург'),
+    ('nsk', 'Новосибирск'),
+    ('nn', 'Нижний Новгород')
+]
+
 
 class GenericModel(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -11,6 +19,11 @@ class GenericModel(models.Model):
 
 class User(GenericModel):
     username = models.CharField(max_length=250)
+    city = models.CharField(
+        max_length=50,
+        choices=CITY_CHOICES,
+        default='nn'
+    )
 
     def __str__(self):
         return f"{self.username}"
@@ -46,6 +59,11 @@ class Content(GenericModel):
     time = models.CharField(max_length=250, null=True, blank=True, default=None)
     location = models.CharField(max_length=250, null=True, blank=True, default=None)
     cost = models.IntegerField(null=True, blank=True, default=None)
+    city = models.CharField(
+        max_length=50,
+        choices=CITY_CHOICES,
+        default='nn'
+    )
 
     def get_tags(self):
         return "\n".join([t.name for t in self.tags.all()])

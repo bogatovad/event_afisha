@@ -4,6 +4,7 @@ from pydantic import field_validator
 
 
 class TagSchema(Schema):
+    id: int
     name: str
     description: str
     image: str | None = None
@@ -16,6 +17,11 @@ class TagSchema(Schema):
             return None
         image_not_addr = image[17:]
         return "https://afishabot.ru" + image_not_addr
+
+
+class TagsResponseSchema(Schema):
+    tags: list[TagSchema]
+    preferences: list[int] | None = None
 
 
 class ContentSchema(Schema):
