@@ -4,7 +4,7 @@ import {Box, Text} from "@/shared/ui";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 interface ServiceCardProps {
-  service: Service
+  service: Service;
 }
 
 export const ServiceCard: React.FC<ServiceCardProps> = ({
@@ -18,8 +18,8 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       paddingHorizontal={"m"}
       gap={"m"}
       style={{
-        marginTop: 100, marginBottom: 70,
-        backgroundColor: "#F8F8F8", borderRadius: 30, borderColor: "#DBDFFB", paddingVertical: 100,
+        backgroundColor: service.id == "organizers" || service.id == "trips" ? "#E1E1E1" : "#F8F8F8",
+        borderRadius: 30, borderColor: "#DBDFFB", paddingVertical: 100,
         flex: 1,
         shadowColor: '#4C4C4C',
         shadowOffset: {

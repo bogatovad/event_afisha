@@ -16,12 +16,12 @@ export const ServicesPage = () => {
 
   const animatedBackgroundStyle = useAnimatedStyle(() => {
     const currentIndex = Math.floor(cardIndex.value);
-    const nextIndex = (currentIndex + 1) % ServicesColors.length;
+    const nextIndex = (currentIndex + 1) % Object.keys(ServicesColors).length;
 
     const backgroundColor = interpolateColor(
       swipeProgress.value,
       [0, 1],
-      [ServicesColors[currentIndex], ServicesColors[nextIndex]],
+      [Object.values(ServicesColors)[currentIndex], Object.values(ServicesColors)[nextIndex]],
       'RGB', { gamma: 2 }
     );
 
@@ -39,20 +39,22 @@ export const ServicesPage = () => {
         stackSize={4}
         containerStyle={{ backgroundColor: "transparent", paddingTop: 30 }}
         cardHorizontalMargin={30}
-        cardVerticalMargin={0}
+        cardVerticalMargin={100}
         stackSeparation={-20}
         onTapCard={(index) => {
-          router.navigate({
-            pathname: '/tags/[service]',
-            params: { service: Services[index].name }
-          })
+          if (Services[index].id != "organizers" && Services[index].id != "trips") {
+            router.push({
+              pathname: '/tags/[service]',
+              params: { service: Services[index].id }
+            })
+          }
         }}
         onSwiping={(x, y) => {
           swipeProgress.value = Math.min(Math.max(Math.abs(x), Math.abs(y)) / 100, 1);
         }}
         onSwiped={(index) => {
           swipeProgress.value = withTiming(1, { duration: 150 }, () => {
-            cardIndex.value = (index + 1) % ServicesColors.length;
+            cardIndex.value = (index + 1) % Object.keys(ServicesColors).length;
             swipeProgress.value = 0;
           });
         }}
