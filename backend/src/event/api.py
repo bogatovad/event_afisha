@@ -52,6 +52,8 @@ class TagsController:
                 name=tag.name,
                 description=tag.description,
                 image=tag.image.url if tag.image else None,
+                # todo: ИСПРАВИТЬ!
+                # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
                 count=tag.content_count
             )
             for tag in tags
@@ -70,7 +72,7 @@ class ContentController:
         },
     )
     def get_content_for_feed(self, username: str, date_start: date | None = None,
-                    date_end: date | None = None) -> list[ContentSchema]:
+                             date_end: date | None = None) -> list[ContentSchema]:
         q_filter = Q()
         if date_start and date_end:
             q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
@@ -83,10 +85,12 @@ class ContentController:
 
         preferred_tags = current_user.category_preferences.values_list("tag_id", flat=True)
 
+        # Если у пользователя нет предпочтений, возвращаем весь контент
         if not preferred_tags:
-            return []
+            contents = Content.objects.filter(q_filter).distinct()
+        else:
+            contents = Content.objects.filter(q_filter, tags__id__in=preferred_tags).distinct()
 
-        contents = Content.objects.filter(q_filter, tags__id__in=preferred_tags).distinct()
         likes = current_user.likes
         content_ids = [like.content.id for like in likes.all()]
         contents_not_mark = contents.filter(~Q(id__in=content_ids))
@@ -111,6 +115,9 @@ class ContentController:
         contents = Content.objects.filter(q_filter)
         current_user = User.objects.filter(username=username).first()
         if not current_user:
+
+            # todo: при таком раскладе пользователь никогда не увидит приветственных экранов,
+            #  тут я должен генерить исключение для редиректа.
             current_user = User.objects.create(username=username)
         likes = current_user.likes
         content_ids = [like.content.id for like in likes.all()]
