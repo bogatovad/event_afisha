@@ -59,7 +59,7 @@ export const TagsPage = () => {
       <Animated.ScrollView
         onScroll={onScroll}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
         scrollEnabled={!isLoading}
       >
         <LinearGradient

@@ -7,7 +7,6 @@ import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useCalendarStore} from "@/features/dates";
 
 export const FeedPage = () => {
-  console.log(123);
   const username = useConfig().initDataUnsafe.user.username;
   const {
     feed,

@@ -9,7 +9,7 @@ export const TagsHeader: React.FC = () => {
         zIndex: 1,
       }}
     >
-      <Text variant="tagsHeader" color="text_color" textAlign="center">
+      <Text variant="tagsHeader" color={"black"} textAlign="center">
         {"КАТЕГОРИИ"}
       </Text>
     </Box>

@@ -45,8 +45,8 @@ export const TagsList: React.FC<TagsListProps> = ({
 
   if (hasError) {
     return (
-      <Box flex={1} backgroundColor="bg_color">
-        <ErrorCard />
+      <Box flex={1}>
+        <ErrorCard style={{ backgroundColor: "transparent" }}/>
       </Box>
     );
   }

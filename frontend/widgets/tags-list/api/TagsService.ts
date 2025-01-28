@@ -20,9 +20,9 @@ class TagsService {
 
     const response: PreferencesResponse = await axiosInstance.post<string>(
       "/preferences/categories",
+      {},
       {
-        username: params.username,
-        tag_id: params.tag_id
+        params: params
       }
     );
 
