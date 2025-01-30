@@ -1,39 +1,38 @@
 import React from "react";
-import { Image } from "react-native";
 import { Box, Text } from "@/shared/ui";
+import {Pressable} from "react-native";
+import Icon from "@/shared/ui/Icons/Icon";
+import {useRouter} from "expo-router";
 
 export const TagsHeader: React.FC = () => {
+  const router = useRouter();
+
   return (
     <Box
       style={{
-        paddingBottom: 28,
+        paddingBottom: 16, paddingTop: 108,
         zIndex: 1,
       }}
     >
-      <Image
-        source={require("@/shared/assets/images/BlurredCircles.png")}
-        resizeMode="stretch"
-        style={{
-          position: "absolute",
-          zIndex: -1,
-          width: "100%",
-          height: 150,
+      <Pressable
+        onPress={() => {
+          router.back();
         }}
-      />
-
-      <Box
-        paddingTop="eventCardPadding"
-        gap="xl"
-        style={{ paddingHorizontal: 20 }}
+        style={{ position: "absolute", zIndex: 1, top: 16, left: 16 }}
       >
-        <Text variant="tagsHeaderQuestion" color="text_color">
-          {`Какое мероприятие\nты хотел бы выбрать?`}
-        </Text>
+        <Box
+          backgroundColor={"cardBGColor"}
+          width={40} height={40}
+          borderRadius={"eventCard"}
+          alignItems={"center"} justifyContent={"center"}
+        >
+          <Icon name={"chevronLeft"} color={"#ECEBE8"} size={24}/>
+        </Box>
+      </Pressable>
 
-        <Text variant="tagsHeader" color="text_color" textAlign="center">
-          {"КАТЕГОРИИ"}
-        </Text>
-      </Box>
+      <Text variant="tagsHeader" color={"black"} textAlign="center">
+        {"КАТЕГОРИИ"}
+      </Text>
     </Box>
   );
 };
