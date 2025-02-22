@@ -25,11 +25,11 @@ export const ServicesPage = () => {
       'RGB', { gamma: 2 }
     );
 
-    return { backgroundColor, opacity: 0.8 };
+    return { backgroundColor, opacity: 0.75 };
   });
 
   return (
-    <Box style={[{ flex: 1, alignItems: "center", justifyContent: "center" }]}>
+    <Box backgroundColor={"white"} style={[{ flex: 1, alignItems: "center", justifyContent: "center" }]}>
       <BlurView
         intensity={100}
         style={{ width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}
