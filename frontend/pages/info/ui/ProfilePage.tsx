@@ -51,9 +51,8 @@ export const ProfilePage = () => {
       </Pressable>
 
       <Box
-        flex={1}
-        gap={"m"} style={{ marginTop: 80 }}
-        alignItems={"center"}
+        flex={1} alignItems={"center"} justifyContent={"center"}
+        gap={"m"} style={{ margin: "auto", gap: 8 }}
       >
         <Image
           source={{ uri: initDataUnsafe.user.photo_url }}
@@ -71,6 +70,25 @@ export const ProfilePage = () => {
         >
           { initDataUnsafe.user.first_name }
         </Text>
+
+        {initDataUnsafe.user.username && (
+          <Text variant={"cardSubheader"} color={"black"} textAlign={"center"}>
+            { initDataUnsafe.user.username }
+          </Text>
+        )}
+
+        <Box
+          flexDirection={"row"} alignItems={"center"}
+          backgroundColor={"white"}
+          style={{
+            paddingHorizontal: 12, paddingVertical: 4, gap: 4,
+            borderWidth: 1, borderRadius: 20, borderColor: "#B4C9FE"
+          }}
+        >
+          <Icon name={"location"} color={"#A22CFF"} size={20}/>
+
+          <Text variant={"profileCity"} color={"black"}>{"Нижний Новгород"}</Text>
+        </Box>
       </Box>
 
       <ProfileMenu/>
