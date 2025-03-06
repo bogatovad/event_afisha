@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, Text} from "@/shared/ui";
+import {Box, LoadingCard, Text} from "@/shared/ui";
 import {Dimensions, Image, Pressable} from "react-native";
 import {cities, City, CityCard, useCitySelectStore} from "@/features/city-select";
 import {useConfig} from "@/shared/providers/TelegramConfig";
@@ -10,7 +10,7 @@ const window = Dimensions.get("window");
 
 export const CityPage = () => {
   const {
-    citySelected, availableCities,
+    citySelected, availableCities, isLoading,
     getCities, saveCity, onCitySelected
   } = useCitySelectStore();
   const user = useConfig().initDataUnsafe.user;
@@ -35,7 +35,11 @@ export const CityPage = () => {
         <Text color={"lime"} style={{ fontFamily: "MontserratBold", fontWeight: "800", fontSize: 24 }}>{"НУЖНЫЙ ГОРОД"}</Text>
       </Box>
 
-      {availableCities && (
+      {isLoading && (
+        <LoadingCard style={{ width: Dimensions.get("window").width * 0.9, height: Math.min(window.height - 328, 650), borderRadius: 25}}/>
+      )}
+
+      {availableCities && !isLoading && (
         <Carousel
           data={availableCities}
           loop={true}
