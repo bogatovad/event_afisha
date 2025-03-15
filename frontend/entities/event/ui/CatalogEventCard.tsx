@@ -74,7 +74,7 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
           </DropShadow>
         )}
 
-        <Text style={{ fontFamily: "MontserratSemiBold", fontSize: 14 }} color={"text_color"}>
+        <Text style={{ fontFamily: "MontserratSemiBold", fontSize: 14 }} numberOfLines={2} color={"text_color"}>
           {props.event.name}
         </Text>
 
