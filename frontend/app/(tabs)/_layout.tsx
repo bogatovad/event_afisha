@@ -16,6 +16,7 @@ export default function TabLayout() {
   const { initDataUnsafe } = useConfig();
   const segments = useSegments();
 
+  // @ts-ignore
   const isCalendarScreen = segments.includes("calendar");
 
   return (
@@ -29,7 +30,6 @@ export default function TabLayout() {
       }}
     >
       <Tabs
-        initialRouteName={"feed"}
         screenOptions={{
           tabBarActiveTintColor: theme.colors.text_color,
           tabBarInactiveTintColor: theme.colors.subtitle_text_color,
