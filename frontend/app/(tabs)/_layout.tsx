@@ -38,10 +38,10 @@ export default function TabLayout() {
             backgroundColor: theme.colors.bg_color,
             paddingHorizontal: 32, height: 57,
             borderTopWidth: 0,
+          },
+          sceneStyle: {
+            backgroundColor: theme.colors.bg_color,
           }
-        }}
-        sceneContainerStyle={{
-          backgroundColor: theme.colors.bg_color,
         }}
       >
         <Tabs.Screen
