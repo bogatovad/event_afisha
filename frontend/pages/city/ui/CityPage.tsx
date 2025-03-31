@@ -5,6 +5,9 @@ import {cities, City, CityCard, useCitySelectStore} from "@/features/city-select
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useRouter} from "expo-router";
 import Carousel from "react-native-reanimated-carousel";
+import {getPeriodBorders} from "@/shared/scripts/date";
+import {useCalendarStore} from "@/features/dates";
+import {useFeedStore} from "@/features/content";
 
 const window = Dimensions.get("window");
 
@@ -35,7 +38,7 @@ export const CityPage = () => {
         <Text color={"lime"} style={{ fontFamily: "MontserratBold", fontWeight: "800", fontSize: 24 }}>{"НУЖНЫЙ ГОРОД"}</Text>
       </Box>
 
-      {isLoading && (
+      {(isLoading || !availableCities) && (
         <LoadingCard style={{ width: Dimensions.get("window").width * 0.9, height: Math.min(window.height - 328, 650), borderRadius: 25}}/>
       )}
 
@@ -71,7 +74,15 @@ export const CityPage = () => {
         <Pressable
           onPress={() => saveCity(
             user.username ? user.username : user.id.toString(),
-            () => router.replace('/profile')
+            () => {
+              const borders = getPeriodBorders(Object.keys(useCalendarStore.getState().selectedDays));
+              useFeedStore.getState().fetchFeed({
+                username: user.username ? user.username : user.id.toString(),
+                date_start: borders.date_start,
+                date_end: borders.date_end,
+              })
+              router.replace('/profile')
+            }
           )}
           disabled={!citySelected}
         >
